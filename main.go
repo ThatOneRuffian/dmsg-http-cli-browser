@@ -106,7 +106,7 @@ func clearScreen() {
 	fmt.Print("\033[H\033[2J")
 }
 
-func dmsggetWrapper(publicKey, file string) {
+func dmsggetWrapper(publicKey string, file string) {
 	fetchString := fmt.Sprintf("dmsg://%s:80/%s", publicKey, file)
 	//fetchString := "dmsg://02da372fab7ebb28d77508629dfed017011b12608a8454ab76f1f4359c01519a8d:80/test_file.txt" //test download
 	fmt.Println(fetchString)
