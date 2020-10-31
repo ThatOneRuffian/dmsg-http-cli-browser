@@ -16,6 +16,9 @@ var SavedServers map[int][2]string
 //IndexDownloadLoc is where the active server's index is downloaded
 var IndexDownloadLoc string = "/tmp/"
 
+// DownloadsLoc is the location where downloads are stored
+var MainDownloadsLoc string = "/home/marcus/Downloads"
+
 func main() {
 	clearScreen()
 	// if config not found then run the first launch wizard
@@ -61,7 +64,7 @@ ServerMenu:
 		fmt.Println("Number entered?", userInt)
 		if userInt >= 1 && userInt <= len(SavedServers) {
 			fmt.Println(SavedServers[userInt-1][0])
-			dmsggetWrapper(SavedServers[userInt-1][1], "test_file.txt")
+			dmsggetWrapper(SavedServers[userInt-1][1], "index", IndexDownloadLoc)
 		} else {
 			break
 		}
@@ -106,9 +109,8 @@ func clearScreen() {
 	fmt.Print("\033[H\033[2J")
 }
 
-func dmsggetWrapper(publicKey string, file string) {
+func dmsggetWrapper(publicKey string, file string, downloadLoc string) {
 	fetchString := fmt.Sprintf("dmsg://%s:80/%s", publicKey, file)
-	//fetchString := "dmsg://02da372fab7ebb28d77508629dfed017011b12608a8454ab76f1f4359c01519a8d:80/test_file.txt" //test download
 	fmt.Println(fetchString)
 
 	dmsggetPath, err := exec.LookPath("dmsgget")
@@ -130,6 +132,12 @@ func dmsggetWrapper(publicKey string, file string) {
 }
 
 // =========== File I/O ===========
+func downloadServerIndex(userDLChoiceIndex int, serverPublicKey string) {
+
+	fmt.Println(IndexDownloadLoc)
+	dmsggetWrapper(SavedServers[-1][1], "test_file.txt", MainDownloadsLoc)
+}
+
 func clearCacheConfig() {
 	configFile := generateConfigAbsPath()
 	file, err := os.Create(configFile)
