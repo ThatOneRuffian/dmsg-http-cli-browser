@@ -13,6 +13,9 @@ import (
 //SavedServers stores server cache - initalized on loadCache
 var SavedServers map[int][2]string
 
+//IndexDownloadLoc is where the active server's index is downloaded
+var IndexDownloadLoc string = "/tmp/"
+
 func main() {
 	clearScreen()
 	// if config not found then run the first launch wizard
