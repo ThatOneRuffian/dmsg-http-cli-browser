@@ -97,8 +97,11 @@ ServerIndexMenu:
 		goto ExitLoop
 	case "P":
 		//TODO
+		goto ServerIndexMenu
+
 	case "N":
 		//TODO
+		goto ServerIndexMenu
 
 	default:
 		userInt, err := strconv.Atoi(userChoice)
@@ -112,8 +115,8 @@ ServerIndexMenu:
 		} else {
 			break
 		}
+		goto ServerIndexMenu
 	}
-	goto ServerIndexMenu
 ExitLoop:
 }
 
