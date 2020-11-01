@@ -246,7 +246,6 @@ func parseConfigFile(file **os.File) {
 
 	fileScan := bufio.NewScanner(*file)
 
-	//read in data and append to string slice
 	i := 0
 	for fileScan.Scan() {
 		splitStringArray := [2]string{"", ""}
