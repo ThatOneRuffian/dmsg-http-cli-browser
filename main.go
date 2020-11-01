@@ -13,10 +13,13 @@ import (
 //SavedServers stores server cache - initalized on loadCache
 var SavedServers map[int][2]string
 
+//CurrentServerIndex will store the parsed server index values
+var CurrentServerIndex map[int]string
+
 //IndexDownloadLoc is where the active server's index is downloaded
 var IndexDownloadLoc string = "/tmp/"
 
-// DownloadsLoc is the location where downloads are stored
+// MainDownloadsLoc is the location where downloads are stored
 var MainDownloadsLoc string = "/home/marcus/Downloads"
 
 func main() {
@@ -65,7 +68,10 @@ ServerMenu:
 		if userInt >= 1 && userInt <= len(SavedServers) {
 			fmt.Println(SavedServers[userInt-1][0])
 			serverPublicKey := SavedServers[userInt-1][1]
+			// download server index file
 			dmsggetWrapper(serverPublicKey, IndexDownloadLoc, "index", "index."+serverPublicKey)
+			loadServerIndex(serverPublicKey)
+			fmt.Println(CurrentServerIndex)
 		} else {
 			break
 		}
@@ -105,6 +111,12 @@ func generateConfigAbsPath() string {
 	return homeDir + configPath
 }
 
+func generateServerIndexAbsPath(serverPublicKey string) string {
+	indexPath := "/tmp/index." + serverPublicKey
+
+	return indexPath
+}
+
 func clearScreen() {
 	//TODO find a more elegant way of accomplishing this
 	fmt.Print("\033[H\033[2J")
@@ -132,6 +144,33 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 }
 
 // =========== File I/O ===========
+func loadServerIndex(serverPublicKey string) bool {
+	returnBool := true
+	file, err := os.Open(generateServerIndexAbsPath(serverPublicKey))
+	defer file.Close()
+	defer func() {
+		if err := recover(); err != nil {
+		}
+	}()
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	fileStats, err := file.Stat()
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	if fileStats.Size() == 0 {
+		returnBool = false
+	}
+
+	parseServerIndex(&file)
+	return returnBool
+}
+
 func clearCacheConfig() {
 	configFile := generateConfigAbsPath()
 	file, err := os.Create(configFile)
@@ -205,7 +244,6 @@ func parseConfigFile(file **os.File) {
 		}
 	}()
 
-	//var dataSlices []string
 	fileScan := bufio.NewScanner(*file)
 
 	//read in data and append to string slice
@@ -220,6 +258,26 @@ func parseConfigFile(file **os.File) {
 		i++
 	}
 	SavedServers = savedServers
+}
+
+func parseServerIndex(file **os.File) {
+	currentServerIndex := make(map[int]string)
+
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println(err)
+			fmt.Println("Error parsing server index file.")
+		}
+	}()
+
+	fileScan := bufio.NewScanner(*file)
+
+	i := 0
+	for fileScan.Scan() {
+		currentServerIndex[i] = fileScan.Text()
+		i++
+	}
+	CurrentServerIndex = currentServerIndex
 }
 
 // =========== Wizards ===========
