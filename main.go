@@ -36,6 +36,7 @@ func main() {
 	}
 }
 
+// =========== User Interface ===========
 func menuHandler() {
 	consoleInput := bufio.NewReader(os.Stdin)
 ServerMenu:
@@ -139,8 +140,10 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 	}
 
 	if err := dmsggetCmd.Run(); err != nil {
-		fmt.Println(err)
+		fmt.Println("There was an error fetching the file")
+		// file exists?
 	}
+
 }
 
 // =========== File I/O ===========
