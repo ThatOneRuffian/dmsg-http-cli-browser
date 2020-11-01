@@ -64,7 +64,8 @@ ServerMenu:
 		fmt.Println("Number entered?", userInt)
 		if userInt >= 1 && userInt <= len(SavedServers) {
 			fmt.Println(SavedServers[userInt-1][0])
-			dmsggetWrapper(SavedServers[userInt-1][1], "index", IndexDownloadLoc)
+			serverPublicKey := SavedServers[userInt-1][1]
+			dmsggetWrapper(serverPublicKey, IndexDownloadLoc, "index", "index."+serverPublicKey)
 		} else {
 			break
 		}
@@ -109,7 +110,7 @@ func clearScreen() {
 	fmt.Print("\033[H\033[2J")
 }
 
-func dmsggetWrapper(publicKey string, file string, downloadLoc string) {
+func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternateFileName string) {
 	fetchString := fmt.Sprintf("dmsg://%s:80/%s", publicKey, file)
 	fmt.Println(fetchString)
 
@@ -120,11 +121,10 @@ func dmsggetWrapper(publicKey string, file string, downloadLoc string) {
 
 	dmsggetCmd := &exec.Cmd{
 		Path:   dmsggetPath,
-		Args:   []string{dmsggetPath, fetchString},
+		Args:   []string{dmsggetPath, "-O", downloadLoc + alternateFileName, fetchString},
 		Stdout: os.Stdout,
 		Stderr: os.Stdout,
 	}
-	fmt.Println(dmsggetCmd.String())
 
 	if err := dmsggetCmd.Run(); err != nil {
 		fmt.Println(err)
@@ -132,12 +132,6 @@ func dmsggetWrapper(publicKey string, file string, downloadLoc string) {
 }
 
 // =========== File I/O ===========
-func downloadServerIndex(userDLChoiceIndex int, serverPublicKey string) {
-
-	fmt.Println(IndexDownloadLoc)
-	dmsggetWrapper(SavedServers[-1][1], "test_file.txt", MainDownloadsLoc)
-}
-
 func clearCacheConfig() {
 	configFile := generateConfigAbsPath()
 	file, err := os.Create(configFile)
@@ -252,7 +246,7 @@ func firstRunWizard() {
 }
 
 func addServer() {
-	keyLength := 5
+	keyLength := 66
 	consoleInput := bufio.NewReader(os.Stdin)
 	fmt.Print("Please enter the public key for the dmsg-http server you want to add: ")
 
