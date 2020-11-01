@@ -187,9 +187,9 @@ func clearScreen() {
 	fmt.Print("\033[H\033[2J")
 }
 
-func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternateFileName string) {
+func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternateFileName string) bool {
 	fetchString := fmt.Sprintf("dmsg://%s:80/%s", publicKey, file)
-
+	returnValue := true
 	dmsggetPath, err := exec.LookPath("dmsgget")
 	if err != nil {
 		fmt.Println(err)
@@ -204,8 +204,9 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 	if err := dmsggetCmd.Run(); err != nil {
 		fmt.Println("There was an error fetching the file")
 		// file exists?
+		returnValue = false
 	}
-
+	return returnValue
 }
 
 // =========== File I/O ===========
