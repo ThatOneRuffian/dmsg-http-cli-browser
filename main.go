@@ -32,12 +32,14 @@ func main() {
 	}
 
 	for true {
-		menuHandler()
+		userChoice := menuHandler()
+		serverIndexMenuHandler(userChoice)
 	}
 }
 
 // =========== User Interface ===========
-func menuHandler() {
+func menuHandler() string {
+	serverPublicKey := ""
 	consoleInput := bufio.NewReader(os.Stdin)
 ServerMenu:
 
@@ -64,21 +66,55 @@ ServerMenu:
 		if err != nil {
 			break
 		}
-
-		fmt.Println("Number entered?", userInt)
 		if userInt >= 1 && userInt <= len(SavedServers) {
-			fmt.Println(SavedServers[userInt-1][0])
-			serverPublicKey := SavedServers[userInt-1][1]
-			// download server index file
+			serverPublicKey = SavedServers[userInt-1][1]
+			// download file from server
 			dmsggetWrapper(serverPublicKey, IndexDownloadLoc, "index", "index."+serverPublicKey)
 			loadServerIndex(serverPublicKey)
-			fmt.Println(CurrentServerIndex)
+			goto ExitLoop
 		} else {
 			break
 		}
-		os.Exit(1)
 	}
 	goto ServerMenu
+ExitLoop:
+	return serverPublicKey
+}
+
+func serverIndexMenuHandler(serverPublicKey string) {
+	consoleInput := bufio.NewReader(os.Stdin)
+ServerIndexMenu:
+
+	renderServerIndexBrowser()
+
+	fmt.Print("(E to Exit Server File Browser, Q to quit): ")
+	userChoice, _ := consoleInput.ReadString('\n')
+	userChoice = strings.ToUpper(removeNewline(userChoice))
+	switch userChoice {
+	case "Q":
+		os.Exit(1)
+	case "e":
+		goto ExitLoop
+	case "P":
+		//TODO
+	case "N":
+		//TODO
+
+	default:
+		userInt, err := strconv.Atoi(userChoice)
+		if err != nil {
+			break
+		}
+		if userInt >= 1 && userInt <= len(CurrentServerIndex) {
+			filenameDownload := CurrentServerIndex[userInt-1]
+			// download file
+			dmsggetWrapper(serverPublicKey, MainDownloadsLoc, filenameDownload, "")
+		} else {
+			break
+		}
+	}
+	goto ServerIndexMenu
+ExitLoop:
 }
 
 func renderServerBrowser() {
@@ -91,6 +127,24 @@ func renderServerBrowser() {
 
 	for i := 0; i < len(SavedServers); i++ {
 		listEntry := fmt.Sprintf("%d) %s", i+1, SavedServers[i][0])
+		fmt.Println(listEntry)
+	}
+
+	fmt.Println(divider)
+	fmt.Println(pageStatus)
+	fmt.Println("<< P  |  N >>")
+}
+
+func renderServerIndexBrowser() {
+	pageStatus := fmt.Sprintf("page (%d / %d)", 1, 20)
+	divider := "----------------------"
+	clearScreen()
+
+	fmt.Println("SERVER DOWNLOAD INDEX")
+	fmt.Println(divider)
+
+	for i := 0; i < len(CurrentServerIndex); i++ {
+		listEntry := fmt.Sprintf("%d) %s", i+1, CurrentServerIndex[i])
 		fmt.Println(listEntry)
 	}
 
@@ -138,7 +192,7 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 		Stdout: os.Stdout,
 		Stderr: os.Stdout,
 	}
-
+	fmt.Println(fetchString)
 	if err := dmsggetCmd.Run(); err != nil {
 		fmt.Println("There was an error fetching the file")
 		// file exists?
