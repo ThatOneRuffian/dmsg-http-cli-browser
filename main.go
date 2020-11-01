@@ -69,6 +69,8 @@ ServerMenu:
 		if userInt >= 1 && userInt <= len(SavedServers) {
 			serverPublicKey = SavedServers[userInt-1][1]
 			// download file from server
+			clearScreen()
+			fmt.Println("Downloading Server Index...")
 			dmsggetWrapper(serverPublicKey, IndexDownloadLoc, "index", "index."+serverPublicKey)
 			loadServerIndex(serverPublicKey)
 			goto ExitLoop
@@ -87,7 +89,7 @@ ServerIndexMenu:
 
 	renderServerIndexBrowser()
 
-	fmt.Print("(E to Exit Server File Browser, Q to quit): ")
+	fmt.Print("(R to Refresh Server Index, E to Exit Server File Browser, Q to quit): ")
 	userChoice, _ := consoleInput.ReadString('\n')
 	userChoice = strings.ToUpper(removeNewline(userChoice))
 	switch userChoice {
@@ -98,9 +100,11 @@ ServerIndexMenu:
 	case "P":
 		//TODO
 		goto ServerIndexMenu
-
 	case "N":
 		//TODO
+		goto ServerIndexMenu
+	case "R":
+		//TODOq
 		goto ServerIndexMenu
 
 	default:
@@ -111,6 +115,9 @@ ServerIndexMenu:
 		if userInt >= 1 && userInt <= len(CurrentServerIndex) {
 			filenameDownload := CurrentServerIndex[userInt-1]
 			// download file
+			clearScreen()
+			downloadInfo := fmt.Sprintf("Downloading %s to %s/", filenameDownload, MainDownloadsLoc)
+			fmt.Println(downloadInfo)
 			dmsggetWrapper(serverPublicKey, MainDownloadsLoc, filenameDownload, "")
 		} else {
 			break
@@ -182,7 +189,6 @@ func clearScreen() {
 
 func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternateFileName string) {
 	fetchString := fmt.Sprintf("dmsg://%s:80/%s", publicKey, file)
-	fmt.Println(fetchString)
 
 	dmsggetPath, err := exec.LookPath("dmsgget")
 	if err != nil {
@@ -190,12 +196,11 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 	}
 
 	dmsggetCmd := &exec.Cmd{
-		Path:   dmsggetPath,
-		Args:   []string{dmsggetPath, "-O", downloadLoc + alternateFileName, fetchString},
-		Stdout: os.Stdout,
+		Path: dmsggetPath,
+		Args: []string{dmsggetPath, "-O", downloadLoc + alternateFileName, fetchString},
+		//Stdout: os.Stdout,
 		Stderr: os.Stdout,
 	}
-	fmt.Println(fetchString)
 	if err := dmsggetCmd.Run(); err != nil {
 		fmt.Println("There was an error fetching the file")
 		// file exists?
