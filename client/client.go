@@ -20,15 +20,14 @@ var CurrentServerIndex map[int]string
 var IndexDownloadLoc string = "/tmp/"
 
 // MainDownloadsLoc is the location where downloads are stored
-var MainDownloadsLoc string = "/home/marcus/Downloads"
+var MainDownloadsLoc string
 
 func main() {
 	clearScreen()
+	initDownloadsFolder()
 	// if config not found then run the first launch wizard
 	if !loadCache() {
 		firstRunWizard()
-		browseNow()
-		loadCache()
 	}
 
 	for true {
@@ -158,6 +157,13 @@ func renderServerIndexBrowser() {
 	fmt.Println(pageStatus)
 	fmt.Println("<< P  |  N >>")
 }
+func initDownloadsFolder() {
+	tmpString, err := os.UserHomeDir()
+	if err != nil {
+		fmt.Println("Error initializing downloads location")
+	}
+	MainDownloadsLoc = tmpString + "/Downloads"
+}
 func refreshServerIndex(serverPublicKey string, clearCache bool) {
 	clearScreen()
 
@@ -253,6 +259,7 @@ func loadServerIndex(serverPublicKey string) bool {
 	parseServerIndex(&file)
 	return returnBool
 }
+
 func clearServerIndexFile(serverPublicKey string) {
 	serverCacheLoc := "/tmp/index." + serverPublicKey
 	os.Remove(serverCacheLoc)
@@ -368,7 +375,7 @@ func parseServerIndex(file **os.File) {
 }
 
 // =========== Wizards ===========
-func browseNow() {
+func browseNow(serverPublicKey string) {
 	consoleInput := bufio.NewReader(os.Stdin)
 
 Browse:
@@ -377,7 +384,8 @@ Browse:
 
 	switch formattedInput := strings.ToUpper(removeNewline(userAnswer)); formattedInput {
 	case "Y":
-		print("YES!... Attempting to load server index")
+		refreshServerIndex(serverPublicKey, true)
+		serverIndexMenuHandler(serverPublicKey)
 		//load server index
 	case "N":
 		// continue to main menu
@@ -387,10 +395,12 @@ Browse:
 }
 func firstRunWizard() {
 	fmt.Println("It looks like this is your frist time running the dmsg-http CLI browser.")
-	addServer()
+	serverPublicKey := addServer()
+	refreshServerIndex(serverPublicKey, true)
+	browseNow(serverPublicKey)
 }
 
-func addServer() {
+func addServer() string {
 	keyLength := 66
 	consoleInput := bufio.NewReader(os.Stdin)
 	fmt.Print("Please enter the public key for the dmsg-http server you want to add: ")
@@ -417,7 +427,7 @@ PubKeyInput:
 		fmt.Print("Invalid key length please enter public key again: ")
 		goto PubKeyInput
 	}
-
+	return publicKey
 }
 
 func deleteServerIndex(indexToDelete int) {
