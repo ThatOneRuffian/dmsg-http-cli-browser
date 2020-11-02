@@ -68,11 +68,7 @@ ServerMenu:
 		}
 		if userInt >= 1 && userInt <= len(SavedServers) {
 			serverPublicKey = SavedServers[userInt-1][1]
-			// download file from server
-			clearScreen()
-			fmt.Println("Downloading Server Index...")
-			dmsggetWrapper(serverPublicKey, IndexDownloadLoc, "index", "index."+serverPublicKey, false)
-			loadServerIndex(serverPublicKey)
+			refreshServerIndex(serverPublicKey, false)
 			goto ExitLoop
 		} else {
 			break
@@ -104,7 +100,7 @@ ServerIndexMenu:
 		//TODO
 		goto ServerIndexMenu
 	case "R":
-		//TODOq
+		refreshServerIndex(serverPublicKey, true)
 		goto ServerIndexMenu
 
 	default:
@@ -161,6 +157,17 @@ func renderServerIndexBrowser() {
 	fmt.Println(divider)
 	fmt.Println(pageStatus)
 	fmt.Println("<< P  |  N >>")
+}
+func refreshServerIndex(serverPublicKey string, clearCache bool) {
+	clearScreen()
+
+	if clearCache {
+		clearServerIndexFile(serverPublicKey)
+	}
+
+	fmt.Println("Downloading Server Index...")
+	dmsggetWrapper(serverPublicKey, IndexDownloadLoc, "index", "index."+serverPublicKey, false)
+	loadServerIndex(serverPublicKey)
 }
 
 func generateConfigAbsPath() string {
@@ -245,6 +252,10 @@ func loadServerIndex(serverPublicKey string) bool {
 
 	parseServerIndex(&file)
 	return returnBool
+}
+func clearServerIndexFile(serverPublicKey string) {
+	serverCacheLoc := "/tmp/index." + serverPublicKey
+	os.Remove(serverCacheLoc)
 }
 
 func clearCacheConfig() {
@@ -410,7 +421,6 @@ PubKeyInput:
 }
 
 func deleteServerIndex(indexToDelete int) {
-	// SavedServers[indexToDelete]
 	clearCacheConfig()
 
 	for index := 0; index < len(SavedServers); index++ {
