@@ -33,10 +33,6 @@ func main() {
 		clearCurrentIndex()
 		for entry := range directory {
 
-			if strings.Index(directory[entry], "/") != -1 {
-				tmpString := "/"
-				directory[entry] = tmpString + directory[entry]
-			}
 			appendToIndex(directory[entry])
 		}
 		time.Sleep(sleepInterval)
