@@ -216,6 +216,7 @@ func loadServerIndex(serverPublicKey string) bool {
 	defer file.Close()
 	defer func() {
 		if err := recover(); err != nil {
+			CurrentServerIndex = make(map[int]string)
 		}
 	}()
 
@@ -332,6 +333,7 @@ func parseServerIndex(file **os.File) {
 		if err := recover(); err != nil {
 			fmt.Println(err)
 			fmt.Println("Error parsing server index file.")
+			CurrentServerIndex = make(map[int]string)
 		}
 	}()
 
