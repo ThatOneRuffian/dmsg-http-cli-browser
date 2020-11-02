@@ -111,8 +111,7 @@ ServerIndexMenu:
 			filenameDownload := CurrentServerIndex[userInt-1]
 			// download file
 			clearScreen()
-			downloadInfo := fmt.Sprintf("Downloading %s to %s/", filenameDownload, MainDownloadsLoc)
-			fmt.Println(downloadInfo)
+
 			dmsggetWrapper(serverPublicKey, MainDownloadsLoc, filenameDownload, "", true)
 		} else {
 			break
@@ -201,9 +200,29 @@ func clearScreen() {
 }
 
 func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternateFileName string, stdOutput bool) bool {
+	downloadInfo := ""
+
+	if strings.Contains(file, "/") {
+		fileName := strings.Split(file, "/")
+
+		fileName[0] = fileName[len(fileName)-1]
+		alternateFileName = fileName[0]
+		downloadInfo = fmt.Sprintf("Downloading %s to %s", string(alternateFileName), downloadLoc)
+
+	} else {
+		downloadInfo = fmt.Sprintf("Downloading %s to %s", file, downloadLoc)
+
+	}
+	if downloadLoc == MainDownloadsLoc {
+		clearFile(downloadLoc + "/" + alternateFileName)
+		clearFile(downloadLoc + "/" + file)
+	}
+
+	fmt.Println(alternateFileName)
 	fetchString := fmt.Sprintf("dmsg://%s:80/%s", publicKey, file)
 	returnValue := true
 	stdOutLoc := os.Stdout
+	fmt.Println(downloadInfo)
 	if !stdOutput {
 		nullFile, err := os.OpenFile("/dev/null", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
@@ -219,12 +238,12 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 
 	dmsggetCmd := &exec.Cmd{
 		Path:   dmsggetPath,
-		Args:   []string{dmsggetPath, "-O", downloadLoc + alternateFileName, fetchString},
+		Args:   []string{dmsggetPath, "-O", downloadLoc + "/" + alternateFileName, fetchString},
 		Stdout: stdOutLoc,
 		Stderr: os.Stderr,
 	}
 	if err := dmsggetCmd.Run(); err != nil {
-		fmt.Println("There was an error fetching the file")
+		fmt.Println("There was an error fetching the file", err)
 		// file exists?
 		returnValue = false
 	}
@@ -258,6 +277,9 @@ func loadServerIndex(serverPublicKey string) bool {
 
 	parseServerIndex(&file)
 	return returnBool
+}
+func clearFile(filename string) {
+	os.Remove(filename)
 }
 
 func clearServerIndexFile(serverPublicKey string) {
