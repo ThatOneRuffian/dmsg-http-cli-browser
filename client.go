@@ -71,7 +71,7 @@ ServerMenu:
 			// download file from server
 			clearScreen()
 			fmt.Println("Downloading Server Index...")
-			dmsggetWrapper(serverPublicKey, IndexDownloadLoc, "index", "index."+serverPublicKey)
+			dmsggetWrapper(serverPublicKey, IndexDownloadLoc, "index", "index."+serverPublicKey, false)
 			loadServerIndex(serverPublicKey)
 			goto ExitLoop
 		} else {
@@ -118,7 +118,7 @@ ServerIndexMenu:
 			clearScreen()
 			downloadInfo := fmt.Sprintf("Downloading %s to %s/", filenameDownload, MainDownloadsLoc)
 			fmt.Println(downloadInfo)
-			dmsggetWrapper(serverPublicKey, MainDownloadsLoc, filenameDownload, "")
+			dmsggetWrapper(serverPublicKey, MainDownloadsLoc, filenameDownload, "", true)
 		} else {
 			break
 		}
@@ -187,19 +187,28 @@ func clearScreen() {
 	fmt.Print("\033[H\033[2J")
 }
 
-func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternateFileName string) bool {
+func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternateFileName string, stdOutput bool) bool {
 	fetchString := fmt.Sprintf("dmsg://%s:80/%s", publicKey, file)
 	returnValue := true
+	stdOutLoc := os.Stdout
+	if !stdOutput {
+		nullFile, err := os.OpenFile("/dev/null", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		if err != nil {
+			fmt.Printf("Error opening /dev/null for writing")
+		}
+		defer nullFile.Close()
+		stdOutLoc = nullFile
+	}
 	dmsggetPath, err := exec.LookPath("dmsgget")
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	dmsggetCmd := &exec.Cmd{
-		Path: dmsggetPath,
-		Args: []string{dmsggetPath, "-O", downloadLoc + alternateFileName, fetchString},
-		//Stdout: os.Stdout,
-		Stderr: os.Stdout,
+		Path:   dmsggetPath,
+		Args:   []string{dmsggetPath, "-O", downloadLoc + alternateFileName, fetchString},
+		Stdout: stdOutLoc,
+		Stderr: os.Stderr,
 	}
 	if err := dmsggetCmd.Run(); err != nil {
 		fmt.Println("There was an error fetching the file")
