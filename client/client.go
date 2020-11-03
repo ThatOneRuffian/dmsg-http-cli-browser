@@ -419,6 +419,7 @@ func firstRunWizard() {
 	fmt.Println("It looks like this is your frist time running the dmsg-http CLI browser.")
 	serverPublicKey := addServer()
 	browseNow(serverPublicKey)
+	loadCache()
 }
 
 func addServer() string {
