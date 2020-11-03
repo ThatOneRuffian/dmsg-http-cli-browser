@@ -22,6 +22,12 @@ var IndexDownloadLoc string = "/tmp/"
 // MainDownloadsLoc is the location where downloads are stored
 var MainDownloadsLoc string
 
+//DownloadListLength is how many entries are displayed on-screen at a time
+var DownloadListLength int = 20
+
+//DownloadBrowserIndex stores the current page of the download browsers
+var DownloadBrowserIndex int = 1
+
 func main() {
 	clearScreen()
 	initDownloadsFolder()
@@ -54,7 +60,7 @@ ServerMenu:
 		clearScreen()
 		addServer()
 		loadCache()
-	case "P":
+	case "B":
 		//TODO
 	case "N":
 		//TODO
@@ -90,13 +96,19 @@ ServerIndexMenu:
 	switch userChoice {
 	case "Q":
 		os.Exit(1)
-	case "e":
+	case "E":
 		goto ExitLoop
-	case "P":
-		//TODO
+	case "B":
+		if DownloadBrowserIndex > 1 {
+			DownloadBrowserIndex--
+		}
+
 		goto ServerIndexMenu
 	case "N":
-		//TODO
+		if DownloadBrowserIndex*DownloadListLength < len(CurrentServerIndex) {
+			DownloadBrowserIndex++
+		}
+
 		goto ServerIndexMenu
 	case "R":
 		refreshServerIndex(serverPublicKey, true)
@@ -116,8 +128,9 @@ ServerIndexMenu:
 		} else {
 			break
 		}
-		goto ServerIndexMenu
 	}
+	goto ServerIndexMenu
+
 ExitLoop:
 }
 
@@ -136,25 +149,33 @@ func renderServerBrowser() {
 
 	fmt.Println(divider)
 	fmt.Println(pageStatus)
-	fmt.Println("<< P  |  N >>")
+	fmt.Println("<< B  |  N >>")
 }
 
 func renderServerIndexBrowser() {
-	pageStatus := fmt.Sprintf("page (%d / %d)", 1, 20)
+
+	pageCountMax := len(CurrentServerIndex) / DownloadListLength
+	pageRemainder := len(CurrentServerIndex) % DownloadListLength
+	if pageRemainder > 0 {
+		pageCountMax++
+	}
+	pageStatus := fmt.Sprintf("page (%d / %d)", DownloadBrowserIndex, pageCountMax)
 	divider := "----------------------"
 	clearScreen()
-
 	fmt.Println("SERVER DOWNLOAD INDEX")
 	fmt.Println(divider)
-
-	for i := 0; i < len(CurrentServerIndex); i++ {
-		listEntry := fmt.Sprintf("%d) %s", i+1, CurrentServerIndex[i])
-		fmt.Println(listEntry)
+	renderIndex := 1
+	for ; renderIndex <= DownloadListLength; renderIndex++ {
+		itemIndex := renderIndex + (DownloadListLength*DownloadBrowserIndex - 1) - DownloadListLength + 1
+		if itemIndex-1 < len(CurrentServerIndex) {
+			listEntry := fmt.Sprintf("%d) %s", itemIndex, CurrentServerIndex[itemIndex-1])
+			fmt.Println(listEntry)
+		}
 	}
 
 	fmt.Println(divider)
 	fmt.Println(pageStatus)
-	fmt.Println("<< P  |  N >>")
+	fmt.Println("<< B  |  N >>")
 }
 func initDownloadsFolder() {
 	tmpString, err := os.UserHomeDir()
