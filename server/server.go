@@ -33,7 +33,10 @@ func main() {
 		clearCurrentIndex()
 		for entry := range directory {
 
-			appendToIndex(directory[entry])
+			if directory[entry] != "index" {
+				fmt.Println(directory[entry])
+				appendToIndex(directory[entry])
+			}
 		}
 		time.Sleep(sleepInterval)
 	}
