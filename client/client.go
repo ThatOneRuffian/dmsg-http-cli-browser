@@ -160,8 +160,9 @@ func renderServerIndexBrowser() {
 		pageCountMax++
 	}
 	pageStatus := fmt.Sprintf("page (%d / %d)", DownloadBrowserIndex, pageCountMax)
-	divider := "----------------------"
+	divider := "------------------------------------------"
 	clearScreen()
+	fmt.Println(divider)
 	fmt.Println("SERVER DOWNLOAD INDEX")
 	fmt.Println(divider)
 	renderIndex := 1
