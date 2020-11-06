@@ -15,7 +15,7 @@ func main() {
 	sleepInterval := time.Duration(10) * time.Second
 
 	//parse program arguments
-	programArguments := os.Args[0]
+	programArguments := ""
 	if len(os.Args) > 1 {
 		programArguments = os.Args[1]
 	}
@@ -24,6 +24,7 @@ func main() {
 	} else {
 		sleepInterval = time.Duration(intergerValue) * time.Second
 	}
+
 	// enter main file monitor loop
 	for true {
 		directory, err := FilePathWalk(".")
@@ -33,7 +34,7 @@ func main() {
 		clearCurrentIndex()
 		for entry := range directory {
 
-			if directory[entry] != "index" {
+			if directory[entry][0] != "index" {
 				fmt.Println(directory[entry])
 				appendToIndex(directory[entry])
 			}
@@ -43,11 +44,22 @@ func main() {
 }
 
 // FilePathWalk will list all files and sub directories in a path
-func FilePathWalk(root string) ([]string, error) {
-	var files []string
+func FilePathWalk(root string) ([][2]string, error) {
+	var files [][2]string
+	var appendData [2]string
+
 	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 		if !info.IsDir() {
-			files = append(files, path)
+			fileInfo, err := os.Stat(path)
+			if err != nil {
+				fmt.Println(err)
+			}
+			fileSize := fmt.Sprint(fileInfo.Size())
+			fmt.Println(fileSize) // bytes
+			appendData[0] = path
+			appendData[1] = string(fileSize)
+
+			files = append(files, appendData)
 		}
 		return nil
 	})
@@ -65,9 +77,9 @@ func clearCurrentIndex() {
 
 }
 
-func appendToIndex(filename string) {
-	filename = removeNewline(filename)
-	rawData := filename + string('\n')
+func appendToIndex(filename [2]string) {
+	filename[0] = removeNewline(filename[0])
+	rawData := fmt.Sprintf("%s;%s\n", filename[0], filename[1])
 
 	dataToWrite := []byte(rawData)
 
