@@ -35,7 +35,6 @@ func main() {
 		for entry := range directory {
 
 			if directory[entry][0] != "index" {
-				fmt.Println(directory[entry])
 				appendToIndex(directory[entry])
 			}
 		}
@@ -55,7 +54,6 @@ func FilePathWalk(root string) ([][2]string, error) {
 				fmt.Println(err)
 			}
 			fileSize := fmt.Sprint(fileInfo.Size())
-			fmt.Println(fileSize) // bytes
 			appendData[0] = path
 			appendData[1] = string(fileSize)
 
@@ -79,7 +77,7 @@ func clearCurrentIndex() {
 
 func appendToIndex(filename [2]string) {
 	filename[0] = removeNewline(filename[0])
-	rawData := fmt.Sprintf("%s---%s\n", filename[0], filename[1])
+	rawData := fmt.Sprintf("%s;%s\n", filename[0], filename[1])
 
 	dataToWrite := []byte(rawData)
 
