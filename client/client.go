@@ -218,7 +218,9 @@ func generateServerIndexAbsPath(serverPublicKey string) string {
 
 func clearScreen() {
 	//TODO find a more elegant way of accomplishing this
-	fmt.Print("\033[H\033[2J")
+	cmd := exec.Command("clear") //Linux example, its tested
+	cmd.Stdout = os.Stdout
+	cmd.Run()
 }
 
 func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternateFileName string, stdOutput bool) bool {
