@@ -79,7 +79,7 @@ func clearCurrentIndex() {
 
 func appendToIndex(filename [2]string) {
 	filename[0] = removeNewline(filename[0])
-	rawData := fmt.Sprintf("%s;%s\n", filename[0], filename[1])
+	rawData := fmt.Sprintf("%s---%s\n", filename[0], filename[1])
 
 	dataToWrite := []byte(rawData)
 

@@ -14,7 +14,7 @@ import (
 var SavedServers map[int][2]string
 
 //CurrentServerIndex will store the parsed server index values
-var CurrentServerIndex map[int]string
+var CurrentServerIndex map[int][2]string
 
 //IndexDownloadLoc is where the active server's index is downloaded
 var IndexDownloadLoc string = "/tmp/"
@@ -120,7 +120,7 @@ ServerIndexMenu:
 			break
 		}
 		if userInt >= 1 && userInt <= len(CurrentServerIndex) {
-			filenameDownload := CurrentServerIndex[userInt-1]
+			filenameDownload := CurrentServerIndex[userInt-1][0]
 			// download file
 			clearScreen()
 
@@ -169,7 +169,7 @@ func renderServerIndexBrowser() {
 	for ; renderIndex <= DownloadListLength; renderIndex++ {
 		itemIndex := renderIndex + (DownloadListLength*DownloadBrowserIndex - 1) - DownloadListLength + 1
 		if itemIndex-1 < len(CurrentServerIndex) {
-			listEntry := fmt.Sprintf("%d) %s", itemIndex, CurrentServerIndex[itemIndex-1])
+			listEntry := fmt.Sprintf("%d) %s\t\t\t%s", itemIndex, CurrentServerIndex[itemIndex-1][0], fmt.Sprintf(CurrentServerIndex[itemIndex-1][1]))
 			fmt.Println(listEntry)
 		}
 	}
@@ -279,7 +279,7 @@ func loadServerIndex(serverPublicKey string) bool {
 	defer file.Close()
 	defer func() {
 		if err := recover(); err != nil {
-			CurrentServerIndex = make(map[int]string)
+			CurrentServerIndex = make(map[int][2]string)
 		}
 	}()
 
@@ -398,13 +398,12 @@ func parseConfigFile(file **os.File) {
 }
 
 func parseServerIndex(file **os.File) {
-	currentServerIndex := make(map[int]string)
+	currentServerIndex := make(map[int][2]string)
 
 	defer func() {
 		if err := recover(); err != nil {
 			fmt.Println(err)
 			fmt.Println("Error parsing server index file.")
-			CurrentServerIndex = make(map[int]string)
 		}
 	}()
 
@@ -412,9 +411,18 @@ func parseServerIndex(file **os.File) {
 
 	i := 0
 	for fileScan.Scan() {
-		currentServerIndex[i] = fileScan.Text()
-		i++
+		var swapVar [2]string
+		inputRow := fileScan.Text()
+		if sepIndex := strings.Index(inputRow, ";"); sepIndex != -1 {
+			//convert slice back into array
+			parsedString := strings.Split(inputRow, ";")
+			swapVar[0] = parsedString[0]
+			swapVar[1] = parsedString[1]
+			currentServerIndex[i] = swapVar
+			i++
+		}
 	}
+
 	CurrentServerIndex = currentServerIndex
 }
 
