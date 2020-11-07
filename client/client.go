@@ -217,8 +217,7 @@ func generateServerIndexAbsPath(serverPublicKey string) string {
 }
 
 func clearScreen() {
-	//TODO find a more elegant way of accomplishing this
-	cmd := exec.Command("clear") //Linux example, its tested
+	cmd := exec.Command("clear")
 	cmd.Stdout = os.Stdout
 	cmd.Run()
 }
