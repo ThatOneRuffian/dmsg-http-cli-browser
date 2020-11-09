@@ -18,10 +18,6 @@ var SavedServers map[int][2]string
 //CurrentServerIndex will store the parsed server index values
 var CurrentServerIndex map[int][2]string
 
-func New_test() {
-	print("testing123")
-}
-
 func ClearScreen() {
 	cmd := exec.Command("clear")
 	cmd.Stdout = os.Stdout
@@ -38,11 +34,6 @@ func RefreshServerIndex(serverPublicKey string, clearCache bool) {
 	fmt.Println("Downloading Server Index...")
 	dmsggetWrapper(serverPublicKey, IndexDownloadLoc, "index", "index."+serverPublicKey, false)
 	LoadServerIndex(serverPublicKey)
-}
-
-func ClearServerIndexFile(serverPublicKey string) {
-	serverCacheLoc := "/tmp/index." + serverPublicKey
-	os.Remove(serverCacheLoc)
 }
 
 func RenderServerBrowser() {

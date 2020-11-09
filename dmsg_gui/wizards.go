@@ -8,20 +8,6 @@ import (
 	"strings"
 )
 
-func DeleteServerIndex(indexToDelete int) {
-	ClearCacheConfig()
-
-	for index := 0; index < len(SavedServers); index++ {
-		if index == indexToDelete-1 {
-			continue
-		} else {
-			AppendToConfig(SavedServers[index][0], SavedServers[index][1])
-		}
-	}
-
-	LoadCache()
-}
-
 func DeleteServerWizard() {
 DeletePrompt:
 	fmt.Print("Which server do you want to delete? (Enter C to Cancel): ")
@@ -63,24 +49,6 @@ DeletePrompt:
 	}
 	goto DeletePrompt
 ExitLoop:
-}
-
-// =========== String formatting functions ===========
-
-func removeNewline(userInput string) string {
-	return strings.TrimRight(userInput, "\n")
-}
-
-func removeSemiColon(stringToScan string) string {
-	semiColonCode := byte(59)
-	spaceBarCode := byte(32)
-	tmpByteString := []byte(stringToScan)
-	for i, v := range tmpByteString {
-		if v == semiColonCode {
-			tmpByteString[i] = spaceBarCode
-		}
-	}
-	return string(tmpByteString)
 }
 
 func addServer() string {
@@ -137,4 +105,22 @@ Browse:
 	default:
 		goto Browse
 	}
+}
+
+// =========== String formatting functions ===========
+
+func removeNewline(userInput string) string {
+	return strings.TrimRight(userInput, "\n")
+}
+
+func removeSemiColon(stringToScan string) string {
+	semiColonCode := byte(59)
+	spaceBarCode := byte(32)
+	tmpByteString := []byte(stringToScan)
+	for i, v := range tmpByteString {
+		if v == semiColonCode {
+			tmpByteString[i] = spaceBarCode
+		}
+	}
+	return string(tmpByteString)
 }

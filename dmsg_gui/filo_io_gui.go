@@ -47,6 +47,11 @@ func ClearFile(filename string) {
 	os.Remove(filename)
 }
 
+func ClearServerIndexFile(serverPublicKey string) {
+	serverCacheLoc := "/tmp/index." + serverPublicKey
+	os.Remove(serverCacheLoc)
+}
+
 func ParseServerIndex(file **os.File) {
 	currentServerIndex := make(map[int][2]string)
 
@@ -189,4 +194,18 @@ func LoadCache() bool {
 	// load up map values
 	ParseConfigFile(&file)
 	return returnBool
+}
+
+func DeleteServerIndex(indexToDelete int) {
+	ClearCacheConfig()
+
+	for index := 0; index < len(SavedServers); index++ {
+		if index == indexToDelete-1 {
+			continue
+		} else {
+			AppendToConfig(SavedServers[index][0], SavedServers[index][1])
+		}
+	}
+
+	LoadCache()
 }

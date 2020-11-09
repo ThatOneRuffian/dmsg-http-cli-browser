@@ -17,5 +17,3 @@ func main() {
 		dmsg_gui.ServerIndexMenuHandler(userChoice)
 	}
 }
-
-// =========== User Interface ===========
