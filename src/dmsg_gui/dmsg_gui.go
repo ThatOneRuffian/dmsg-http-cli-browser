@@ -71,7 +71,15 @@ func RenderServerIndexBrowser() {
 		pageCountMax++
 	}
 	pageStatus := fmt.Sprintf("page (%d / %d)", DownloadBrowserIndex, pageCountMax)
-	divider := "------------------------------------------"
+	terminalWidth, err := SttyWrapperGetTerminalWidth()
+	if err != nil {
+		fmt.Println(err)
+	}
+	divider := ""
+	for i := 0; i < terminalWidth; i++ {
+		divider += "-"
+	}
+	//divider := "------------------------------------------"
 	ClearScreen()
 	fmt.Println(divider)
 	fmt.Println("SERVER DOWNLOAD INDEX")
