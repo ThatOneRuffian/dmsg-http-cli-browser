@@ -41,6 +41,7 @@ func RenderServerBrowser() {
 	divider := "----------------------"
 	ClearScreen()
 
+	fmt.Println(divider)
 	fmt.Println("DMSG HTTP SERVER LIST")
 	fmt.Println(divider)
 
