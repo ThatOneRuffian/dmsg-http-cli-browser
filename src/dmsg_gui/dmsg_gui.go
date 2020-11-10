@@ -55,7 +55,13 @@ func RenderServerBrowser() {
 }
 
 func RenderServerIndexBrowser() {
-
+	bufferHeight := 7
+	DownloadListLength, err := SttyWrapperGetTerminalHeight()
+	if err != nil {
+		DownloadListLength = DownloadListLength - bufferHeight
+	} else {
+		DownloadListLength = 10 //default on error
+	}
 	pageCountMax := len(CurrentServerIndex) / DownloadListLength
 	pageRemainder := len(CurrentServerIndex) % DownloadListLength
 	if pageRemainder > 0 {
