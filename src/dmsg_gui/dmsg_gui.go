@@ -26,7 +26,7 @@ func ClearScreen() {
 
 func RefreshServerIndex(serverPublicKey string, clearCache bool) {
 	ClearScreen()
-
+	DownloadBrowserIndex = 1
 	if clearCache {
 		ClearServerIndexFile(serverPublicKey)
 	}
