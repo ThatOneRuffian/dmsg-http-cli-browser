@@ -1,9 +1,14 @@
 package dmsg_gui
 
 import (
+	"bufio"
+	"errors"
 	"fmt"
+	"io"
+	"log"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 )
 
@@ -56,4 +61,38 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 		returnValue = false
 	}
 	return returnValue
+}
+
+func SttyWrapperGetTerminalHeight() (int, error) {
+	returnValue := 0
+	cmd := exec.Command("tput", "lines")
+	cmd.Stderr = os.Stderr
+
+	stdOut, err := cmd.StdoutPipe()
+	if nil != err {
+		log.Fatalf("Error attaching to tput stdout: %s", err.Error())
+	}
+	stdOutReader := bufio.NewReader(stdOut)
+	go func(stdOutReader io.Reader) {
+		scanner := bufio.NewScanner(stdOutReader)
+		for scanner.Scan() {
+			returnValue, err = strconv.Atoi(scanner.Text())
+			if err != nil {
+				returnValue = 0
+			}
+		}
+	}(stdOutReader)
+
+	if err := cmd.Start(); nil != err {
+		fmt.Println(fmt.Sprintf("Error starting program: %s, %s", cmd.Path, err.Error()))
+		fmt.Println("Make sure that tput is installed on your system")
+	}
+	cmd.Wait()
+	if returnValue == 0 {
+		docdeError := errors.New("Error decoding tput output")
+		return returnValue, docdeError
+	} else {
+		return returnValue, nil
+	}
+
 }
