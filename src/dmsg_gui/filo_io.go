@@ -15,7 +15,7 @@ var ConfigFileHomePath string = "/.config"
 var MainDownloadsLoc string
 
 //DownloadListLength is how many entries are displayed on-screen at a time
-var DownloadListLength int = 20
+var DownloadListLength int = 10
 
 //IndexDownloadLoc is where the active server's index is downloaded
 var IndexDownloadLoc string = os.TempDir()
