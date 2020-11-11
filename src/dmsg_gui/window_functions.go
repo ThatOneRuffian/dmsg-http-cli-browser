@@ -68,7 +68,7 @@ func RenderServerIndexBrowser() {
 		pageCountMax++
 	}
 	pageStatus := fmt.Sprintf("page (%d / %d)", DownloadBrowserIndex, pageCountMax)
-	terminalWidth, err := SttyWrapperGetTerminalWidth()
+	terminalWidth, err := sttyWrapperGetTerminalWidth()
 	if err != nil {
 		fmt.Println(err)
 	}

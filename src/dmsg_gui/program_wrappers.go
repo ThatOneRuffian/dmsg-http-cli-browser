@@ -100,7 +100,7 @@ func SttyWrapperGetTerminalHeight() (int, error) {
 
 }
 
-func SttyWrapperGetTerminalWidth() (int, error) {
+func sttyWrapperGetTerminalWidth() (int, error) {
 	returnValue := 0
 
 	cmd := exec.Command("tput", "cols")
