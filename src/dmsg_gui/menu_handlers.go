@@ -13,7 +13,7 @@ func MenuHandler() string {
 	consoleInput := bufio.NewReader(os.Stdin)
 ServerMenu:
 
-	RenderServerBrowser()
+	renderServerBrowser()
 
 	fmt.Print("(Press A to Add server, D to Delete a server, Q to quit): ")
 	userChoice, _ := consoleInput.ReadString('\n')

@@ -36,7 +36,7 @@ func RefreshServerIndex(serverPublicKey string, clearCache bool) {
 	LoadServerIndex(serverPublicKey)
 }
 
-func RenderServerBrowser() {
+func renderServerBrowser() {
 	pageStatus := fmt.Sprintf("page (%d / %d)", 1, 20)
 	divider := "----------------------"
 	ClearScreen()
