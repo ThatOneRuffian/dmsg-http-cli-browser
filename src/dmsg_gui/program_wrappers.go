@@ -57,9 +57,13 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 		Stderr: os.Stderr,
 	}
 	if err := dmsggetCmd.Run(); err != nil {
-		fmt.Println("There was an error fetching the file", err)
-		// file exists?
-		returnValue = false
+		// dmsgget no hard defined return values, so parse string return
+
+		stringError := fmt.Sprint(err)
+		successfulRun := "exit status 1"
+		if stringError != successfulRun {
+			returnValue = false
+		}
 	}
 	return returnValue
 }
