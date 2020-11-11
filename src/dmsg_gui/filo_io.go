@@ -8,10 +8,10 @@ import (
 	"strings"
 )
 
-// ConfigFileHomePath stores the path, in the user's home dir, where the server address cache is saved
+//ConfigFileHomePath stores the path, in the user's home dir, where the server address cache is saved
 var ConfigFileHomePath string = "/.config"
 
-// MainDownloadsLoc is the location where downloads are stored
+//MainDownloadsLoc is the location where downloads are stored
 var MainDownloadsLoc string
 
 //DownloadListLength is how many entries are displayed on-screen at a time
