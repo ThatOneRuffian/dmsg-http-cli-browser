@@ -54,12 +54,15 @@ ExitLoop:
 func addServer() string {
 	keyLength := 66
 	consoleInput := bufio.NewReader(os.Stdin)
-	fmt.Print("Please enter the public key for the dmsg-http server you want to add: ")
+	fmt.Print("Please enter the public key for the dmsg-http server you want to add (C to Cancel): ")
 
 PubKeyInput:
 	publicKey, _ := consoleInput.ReadString('\n')
 	publicKey = removeNewline(publicKey)
-
+	if strings.ToUpper(publicKey) == "C" {
+		publicKey = ""
+		goto Exit
+	}
 	if len(publicKey) == keyLength {
 		fmt.Print("Add a friendly name to this public key (default: [public_key]): ")
 		friendlyName, _ := consoleInput.ReadString('\n')
@@ -75,9 +78,10 @@ PubKeyInput:
 	} else {
 		errorInfo := fmt.Sprintf("Provided key has length of %d. Expected length of %d.", len(publicKey), keyLength)
 		fmt.Println(errorInfo)
-		fmt.Print("Invalid key length please enter public key again: ")
+		fmt.Print("Invalid key length please enter public key again (C to Cancel): ")
 		goto PubKeyInput
 	}
+Exit:
 	return publicKey
 }
 
@@ -90,20 +94,21 @@ func FirstRunWizard() {
 
 func browseNow(serverPublicKey string) {
 	consoleInput := bufio.NewReader(os.Stdin)
+	if len(serverPublicKey) > 0 {
+	Browse:
+		fmt.Print("Would you like to browse this server now? (Y/N): ")
+		userAnswer, _ := consoleInput.ReadString('\n')
 
-Browse:
-	fmt.Print("Would you like to browse this server now? (Y/N): ")
-	userAnswer, _ := consoleInput.ReadString('\n')
-
-	switch formattedInput := strings.ToUpper(removeNewline(userAnswer)); formattedInput {
-	case "Y":
-		refreshServerIndex(serverPublicKey, true)
-		ServerIndexMenuHandler(serverPublicKey)
-		//load server index
-	case "N":
-		// continue to main menu
-	default:
-		goto Browse
+		switch formattedInput := strings.ToUpper(removeNewline(userAnswer)); formattedInput {
+		case "Y":
+			refreshServerIndex(serverPublicKey, true)
+			ServerIndexMenuHandler(serverPublicKey)
+			//load server index
+		case "N":
+			// continue to main menu
+		default:
+			goto Browse
+		}
 	}
 }
 
