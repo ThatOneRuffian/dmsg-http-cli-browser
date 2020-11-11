@@ -88,7 +88,14 @@ func renderServerIndexBrowser() {
 		for ; renderIndex <= DownloadListLength; renderIndex++ {
 			itemIndex := renderIndex + (DownloadListLength*DownloadBrowserIndex - 1) - DownloadListLength + 1
 			if itemIndex-1 < len(CurrentServerIndex) {
-				listEntry := fmt.Sprintf("%d) %s\t\t\t%s", itemIndex, CurrentServerIndex[itemIndex-1][0], fmt.Sprintf(CurrentServerIndex[itemIndex-1][1]))
+				fileBuffer := ""
+				tmpEntry := fmt.Sprintf("%d) %s%s", itemIndex, CurrentServerIndex[itemIndex-1][0], fmt.Sprintf(CurrentServerIndex[itemIndex-1][1]))
+				bufferToAdd := terminalWidth - len(tmpEntry)
+				for i := 0; i < bufferToAdd; i++ {
+					fileBuffer += "-"
+				}
+				listEntry := fmt.Sprintf("%d) %s%s%s", itemIndex, CurrentServerIndex[itemIndex-1][0], fileBuffer, fmt.Sprintf(CurrentServerIndex[itemIndex-1][1]))
+
 				fmt.Println(listEntry)
 			} else {
 				fmt.Println("-")
