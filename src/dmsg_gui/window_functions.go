@@ -6,7 +6,7 @@ import (
 	"os/exec"
 )
 
-// ServerPageCountMax holds the max page give the current server's index
+//ServerPageCountMax holds the max page give the current server's index
 var ServerPageCountMax int
 
 //DownloadBrowserIndex stores the current page of the download browsers
