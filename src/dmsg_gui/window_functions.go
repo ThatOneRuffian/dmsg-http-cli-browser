@@ -6,6 +6,9 @@ import (
 	"os/exec"
 )
 
+// ServerPageCountMax holds the max page give the current server's index
+var ServerPageCountMax int
+
 //DownloadBrowserIndex stores the current page of the download browsers
 var DownloadBrowserIndex int = 1
 
@@ -62,12 +65,12 @@ func renderServerIndexBrowser() {
 		DownloadListLength = DownloadListLength - bufferHeight
 
 	}
-	pageCountMax := len(CurrentServerIndex) / DownloadListLength
+	ServerPageCountMax = len(CurrentServerIndex) / DownloadListLength
 	pageRemainder := len(CurrentServerIndex) % DownloadListLength
 	if pageRemainder > 0 {
-		pageCountMax++
+		ServerPageCountMax++
 	}
-	pageStatus := fmt.Sprintf("page (%d / %d)", DownloadBrowserIndex, pageCountMax)
+	pageStatus := fmt.Sprintf("page (%d / %d)", DownloadBrowserIndex, ServerPageCountMax)
 	terminalWidth, err := sttyWrapperGetTerminalWidth()
 	if err != nil {
 		fmt.Println(err)

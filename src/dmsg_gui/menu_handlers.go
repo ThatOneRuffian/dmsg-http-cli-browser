@@ -72,7 +72,8 @@ ServerIndexMenu:
 
 		goto ServerIndexMenu
 	case "N":
-		if DownloadBrowserIndex*DownloadListLength < len(CurrentServerIndex) {
+		if DownloadBrowserIndex < ServerPageCountMax {
+
 			DownloadBrowserIndex++
 		}
 
