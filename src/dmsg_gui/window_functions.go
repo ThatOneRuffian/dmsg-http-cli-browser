@@ -70,6 +70,9 @@ func renderServerIndexBrowser() {
 	if pageRemainder > 0 {
 		ServerPageCountMax++
 	}
+	if ServerPageCountMax == 0 {
+		ServerPageCountMax = 1
+	}
 	pageStatus := fmt.Sprintf("page (%d / %d)", DownloadBrowserIndex, ServerPageCountMax)
 	terminalWidth, err := sttyWrapperGetTerminalWidth()
 	if err != nil {
