@@ -46,7 +46,8 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 	}
 	dmsggetPath, err := exec.LookPath("dmsgget")
 	if err != nil {
-		fmt.Println(err)
+		ClearScreen()
+		log.Fatal("Unable to find dmsgget. Make sure dmsgget's location is included in your PATH variable.")
 	}
 
 	dmsggetCmd := &exec.Cmd{
