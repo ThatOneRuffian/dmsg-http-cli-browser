@@ -70,6 +70,7 @@ func renderServerIndexBrowser() {
 	if pageRemainder > 0 {
 		ServerPageCountMax++
 	}
+	// Avoid 1/0 pages
 	if ServerPageCountMax == 0 {
 		ServerPageCountMax = 1
 	}
