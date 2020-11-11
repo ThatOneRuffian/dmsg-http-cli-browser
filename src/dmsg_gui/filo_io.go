@@ -155,7 +155,7 @@ func AppendToConfig(friendlyName string, serverPublicKey string) {
 	configDirPath := generateConfigAbsDirPath()
 	err := os.Chdir(configDirPath)
 
-	if !os.IsExist(err) {
+	if os.IsNotExist(err) {
 		dirErr := os.Mkdir(configDirPath, 0700)
 		if dirErr != nil {
 			errorInfo := fmt.Sprintf("There was an error writng the config file to: %s\n%s", configDirPath, dirErr)
