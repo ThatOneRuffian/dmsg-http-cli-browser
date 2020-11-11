@@ -64,7 +64,7 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 	return returnValue
 }
 
-func SttyWrapperGetTerminalHeight() (int, error) {
+func sttyWrapperGetTerminalHeight() (int, error) {
 	returnValue := 0
 
 	cmd := exec.Command("tput", "lines")
