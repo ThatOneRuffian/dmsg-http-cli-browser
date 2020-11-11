@@ -151,7 +151,18 @@ func AppendToConfig(friendlyName string, serverPublicKey string) {
 	rawData := friendlyName + ";" + serverPublicKey + string('\n')
 
 	dataToWrite := []byte(rawData)
-	// err := os.Chdir()
+
+	configDirPath := generateConfigAbsDirPath()
+	err := os.Chdir(configDirPath)
+
+	if !os.IsExist(err) {
+		dirErr := os.Mkdir(configDirPath, 0700)
+		if dirErr != nil {
+			errorInfo := fmt.Sprintf("There was an error writng the config file to: %s\n%s", configDirPath, dirErr)
+			log.Fatal(errorInfo)
+		}
+	}
+
 	f, err := os.OpenFile(generateConfigAbsFilePath(), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 
 	if err != nil {
