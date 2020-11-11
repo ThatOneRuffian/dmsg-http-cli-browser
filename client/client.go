@@ -13,7 +13,7 @@ func main() {
 	}
 
 	for true {
-		userChoice := dmsg_gui.MenuHandler()
+		userChoice := dmsg_gui.ServerListMainMenu()
 		dmsg_gui.ServerIndexMenuHandler(userChoice)
 	}
 }

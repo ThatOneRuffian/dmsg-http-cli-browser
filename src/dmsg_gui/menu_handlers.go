@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func MenuHandler() string {
+func ServerListMainMenu() string {
 	serverPublicKey := ""
 	consoleInput := bufio.NewReader(os.Stdin)
 ServerMenu:
