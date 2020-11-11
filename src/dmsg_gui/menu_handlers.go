@@ -39,7 +39,7 @@ ServerMenu:
 		}
 		if userInt >= 1 && userInt <= len(SavedServers) {
 			serverPublicKey = SavedServers[userInt-1][1]
-			RefreshServerIndex(serverPublicKey, false)
+			refreshServerIndex(serverPublicKey, false)
 			goto ExitLoop
 		} else {
 			break
@@ -79,7 +79,7 @@ ServerIndexMenu:
 
 		goto ServerIndexMenu
 	case "R":
-		RefreshServerIndex(serverPublicKey, true)
+		refreshServerIndex(serverPublicKey, true)
 		goto ServerIndexMenu
 
 	default:

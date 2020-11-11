@@ -97,7 +97,7 @@ Browse:
 
 	switch formattedInput := strings.ToUpper(removeNewline(userAnswer)); formattedInput {
 	case "Y":
-		RefreshServerIndex(serverPublicKey, true)
+		refreshServerIndex(serverPublicKey, true)
 		ServerIndexMenuHandler(serverPublicKey)
 		//load server index
 	case "N":

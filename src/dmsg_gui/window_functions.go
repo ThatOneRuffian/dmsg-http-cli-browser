@@ -24,7 +24,7 @@ func ClearScreen() {
 	cmd.Run()
 }
 
-func RefreshServerIndex(serverPublicKey string, clearCache bool) {
+func refreshServerIndex(serverPublicKey string, clearCache bool) {
 	ClearScreen()
 	DownloadBrowserIndex = 1
 	if clearCache {
