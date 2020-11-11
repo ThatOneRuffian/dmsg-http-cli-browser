@@ -54,7 +54,7 @@ func RenderServerBrowser() {
 
 func renderServerIndexBrowser() {
 	bufferHeight := 7
-	DownloadListLength, err := SttyWrapperGetTerminalHeight()
+	DownloadListLength, err := sttyWrapperGetTerminalHeight()
 	if err != nil {
 		DownloadListLength = 10 //default on error
 
