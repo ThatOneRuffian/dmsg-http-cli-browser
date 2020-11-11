@@ -52,7 +52,7 @@ func RenderServerBrowser() {
 	fmt.Println("<< B  |  N >>")
 }
 
-func RenderServerIndexBrowser() {
+func renderServerIndexBrowser() {
 	bufferHeight := 7
 	DownloadListLength, err := SttyWrapperGetTerminalHeight()
 	if err != nil {
