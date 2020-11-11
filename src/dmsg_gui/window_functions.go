@@ -91,6 +91,8 @@ func renderServerIndexBrowser() {
 			if itemIndex-1 < len(CurrentServerIndex) {
 				listEntry := fmt.Sprintf("%d) %s\t\t\t%s", itemIndex, CurrentServerIndex[itemIndex-1][0], fmt.Sprintf(CurrentServerIndex[itemIndex-1][1]))
 				fmt.Println(listEntry)
+			} else {
+				fmt.Println("-")
 			}
 		}
 	} else {
