@@ -18,7 +18,7 @@ var MainDownloadsLoc string
 var DownloadListLength int = 20
 
 //IndexDownloadLoc is where the active server's index is downloaded
-var IndexDownloadLoc string = "/tmp/"
+var IndexDownloadLoc string = os.TempDir()
 
 func LoadServerIndex(serverPublicKey string) bool {
 	returnBool := true
