@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternateFileName string, stdOutput bool) bool {
+func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternateFileName string, stdOutput bool) {
 	downloadInfo := ""
 
 	if strings.Contains(file, "/") {
@@ -33,7 +33,6 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 
 	fmt.Println(alternateFileName)
 	fetchString := fmt.Sprintf("dmsg://%s:80/%s", publicKey, file)
-	returnValue := true
 	stdOutLoc := os.Stdout
 	fmt.Println(downloadInfo)
 	if !stdOutput {
@@ -57,15 +56,8 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 		Stderr: os.Stderr,
 	}
 	if err := dmsggetCmd.Run(); err != nil {
-		// dmsgget no hard defined return values, so parse string return
 
-		stringError := fmt.Sprint(err)
-		successfulRun := "exit status 1"
-		if stringError != successfulRun {
-			returnValue = false
-		}
 	}
-	return returnValue
 }
 
 func sttyWrapperGetTerminalHeight() (int, error) {
