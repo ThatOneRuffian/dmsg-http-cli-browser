@@ -9,9 +9,6 @@ import (
 //DownloadBrowserIndex stores the current page of the download browsers
 var DownloadBrowserIndex int = 1
 
-//IndexDownloadLoc is where the active server's index is downloaded
-var IndexDownloadLoc string = "/tmp/"
-
 //SavedServers stores server cache - initalized on loadCache
 var SavedServers map[int][2]string
 
