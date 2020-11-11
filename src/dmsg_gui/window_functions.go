@@ -77,7 +77,7 @@ func renderServerIndexBrowser() {
 	}
 	divider := ""
 	for i := 0; i < terminalWidth; i++ {
-		divider += "-"
+		divider += "="
 	}
 	ClearScreen()
 	fmt.Println(divider)
