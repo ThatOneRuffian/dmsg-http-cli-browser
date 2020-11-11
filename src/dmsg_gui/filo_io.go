@@ -86,7 +86,7 @@ func ParseServerIndex(file **os.File) {
 }
 
 func ClearCacheConfig() {
-	configFile := generateConfigAbsPath()
+	configFile := generateConfigAbsFilePath()
 	file, err := os.Create(configFile)
 
 	if err != nil {
@@ -102,17 +102,20 @@ func GenerateServerIndexAbsPath(serverPublicKey string) string {
 	return indexPath
 }
 
-func generateConfigAbsPath() string {
-
+func generateConfigAbsDirPath() string {
 	homeDir, err := os.UserHomeDir()
 
 	if err != nil {
 		log.Fatal(err)
 	}
+	return homeDir + ConfigFileHomePath
+}
 
-	configPath := fmt.Sprintf("%s/dmsg-http-browser.config", ConfigFileHomePath)
+func generateConfigAbsFilePath() string {
 
-	return homeDir + configPath
+	configAbsFilePath := fmt.Sprintf("%s/dmsg-http-browser.config", generateConfigAbsDirPath())
+
+	return configAbsFilePath
 }
 
 func ParseConfigFile(file **os.File) {
@@ -148,8 +151,8 @@ func AppendToConfig(friendlyName string, serverPublicKey string) {
 	rawData := friendlyName + ";" + serverPublicKey + string('\n')
 
 	dataToWrite := []byte(rawData)
-
-	f, err := os.OpenFile(generateConfigAbsPath(), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	// err := os.Chdir()
+	f, err := os.OpenFile(generateConfigAbsFilePath(), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 
 	if err != nil {
 		log.Fatal(err)
@@ -174,7 +177,7 @@ func InitDownloadsFolder() {
 
 func LoadCache() bool {
 	returnBool := true
-	file, err := os.Open(generateConfigAbsPath())
+	file, err := os.Open(generateConfigAbsFilePath())
 	defer file.Close()
 	defer func() {
 		if err := recover(); err != nil {
