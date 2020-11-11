@@ -82,12 +82,16 @@ func renderServerIndexBrowser() {
 	fmt.Println("SERVER DOWNLOAD INDEX")
 	fmt.Println(divider)
 	renderIndex := 1
-	for ; renderIndex <= DownloadListLength; renderIndex++ {
-		itemIndex := renderIndex + (DownloadListLength*DownloadBrowserIndex - 1) - DownloadListLength + 1
-		if itemIndex-1 < len(CurrentServerIndex) {
-			listEntry := fmt.Sprintf("%d) %s\t\t\t%s", itemIndex, CurrentServerIndex[itemIndex-1][0], fmt.Sprintf(CurrentServerIndex[itemIndex-1][1]))
-			fmt.Println(listEntry)
+	if len(CurrentServerIndex) > 0 {
+		for ; renderIndex <= DownloadListLength; renderIndex++ {
+			itemIndex := renderIndex + (DownloadListLength*DownloadBrowserIndex - 1) - DownloadListLength + 1
+			if itemIndex-1 < len(CurrentServerIndex) {
+				listEntry := fmt.Sprintf("%d) %s\t\t\t%s", itemIndex, CurrentServerIndex[itemIndex-1][0], fmt.Sprintf(CurrentServerIndex[itemIndex-1][1]))
+				fmt.Println(listEntry)
+			}
 		}
+	} else {
+		fmt.Println("[Empty server index/Could not fetch list]")
 	}
 
 	fmt.Println(divider)
