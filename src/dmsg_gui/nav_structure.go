@@ -73,21 +73,10 @@ func parseServerIndex2(file **os.File) {
 		}
 	}
 	navPtr = &rootDir
-	for item := range navPtr.subDirs {
-		//item += ""
-		fmt.Println(item, *navPtr.subDirs[item])
-	}
+	fmt.Println(*navPtr)
 	navPtr = rootDir.subDirs["Educational_Media"]
-	navPtr = navPtr.subDirs["Working with SSH"]
+	navPtr = navPtr.subDirs["A+"]
 	fmt.Println(navPtr)
-
-	/*
-		navPtr = navPtr.subDirs["Books"]
-		fmt.Println(navPtr)
-
-		navPtr = navPtr.subDirs["Movies"]
-		fmt.Println(navPtr)*/
-
 }
 
 func populateFileSystem(fullFilePath string) {
@@ -105,41 +94,35 @@ func populateFileSystem(fullFilePath string) {
 	//converting filename from slice into string
 	fileNameString := strings.Join(fileNameSlice, "")
 	fileNameAndSize[fileNameString] = fileSize
-	fileStructure := strings.Split(fullPath, "/")[:len(strings.Split(fullPath, "/"))-1] // strip filename from path
-	//create dir
-	createDirPath(fileStructure)
+	dirStructure := strings.Split(fullPath, "/")[:len(strings.Split(fullPath, "/"))-1] // strip filename from path
+	//create dir structure
+	createDirPath(dirStructure)
 	//append file to dir.files[]
 
 }
 
 func createDirPath(fullDirPath []string) {
 	//create the dir path for the passed string
-	var currentDirPtr *Directory = &rootDir
-
+	currentDirPtr := &rootDir
 	for _, currentPathName := range fullDirPath {
-		//_, ok := currentDirPtr.subDirs[value]
+		_, ok := currentDirPtr.subDirs[currentPathName]
+		if ok {
+			//if directory already present then move into
+			currentDirPtr = currentDirPtr.subDirs[currentPathName]
+		} else {
+			//create file tree
+			newDirectory := Directory{
+				files:     make(map[string]int),
+				subDirs:   make(map[string]*Directory),
+				parentDir: currentDirPtr,
+				dirName:   currentPathName,
+			}
+			currentDirPtr.subDirs[currentPathName] = &newDirectory
 
-		//create file tree
-		newDirectory := Directory{
-			files:     make(map[string]int),
-			subDirs:   make(map[string]*Directory),
-			parentDir: currentDirPtr,
-			dirName:   currentPathName,
+			currentDirPtr = &newDirectory
 		}
 
-		currentDirPtr.subDirs[currentPathName] = &newDirectory
-		currentDirPtr = &newDirectory
 	}
-
-	//check if dir is present
-	//create subdirs in root
-	//link subdirs back to parent folders
-}
-
-func createDir(currentDir *Directory, newDirName string) {
-	fmt.Println(currentDir, newDirName)
-
-	fmt.Println("-----------------------")
 }
 
 type Directoryz struct {
