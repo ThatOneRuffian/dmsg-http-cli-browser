@@ -13,6 +13,7 @@ var navPtr *Directory = nil
 
 //var rootDir Directory
 var rootDir Directory = Directory{
+	files:     make(map[string]int),
 	parentDir: nil,
 	dirName:   "/",
 	subDirs:   make(map[string]*Directory),
@@ -65,18 +66,18 @@ func parseServerIndex2(file **os.File) {
 				populateFileSystem(inputRow)
 
 			} else {
-				//root dir level file
+				fileInfo := strings.Split(inputRow, ";")
+				fileSize, err := strconv.Atoi(fileInfo[1])
+				if err != nil {
+					fmt.Println("Unable to convert filesize string into int")
+				}
+				rootDir.files[fileInfo[0]] = fileSize
 				fmt.Println("root dir level file found: ", strings.Split(inputRow, ";")[0])
 			}
 
 			i++
 		}
 	}
-	navPtr = &rootDir
-	fmt.Println(*navPtr)
-	navPtr = rootDir.subDirs["Educational_Media"]
-	navPtr = navPtr.subDirs["A+"]
-	fmt.Println(navPtr)
 }
 
 func populateFileSystem(fullFilePath string) {
@@ -97,8 +98,27 @@ func populateFileSystem(fullFilePath string) {
 	dirStructure := strings.Split(fullPath, "/")[:len(strings.Split(fullPath, "/"))-1] // strip filename from path
 	//create dir structure
 	createDirPath(dirStructure)
-	//append file to dir.files[]
+	//insert file into dir
+	insertFileIntoDir(dirStructure, fileNameString, fileSize)
+}
 
+func insertFileIntoDir(filePath []string, fileName string, fileSize int) {
+	currentDirPtr := &rootDir
+
+	for _, currentPathName := range filePath {
+		_, ok := currentDirPtr.subDirs[currentPathName]
+		// if the subdir exist then point to that
+		if ok {
+			currentDirPtr = currentDirPtr.subDirs[currentPathName]
+			if currentPathName == filePath[len(filePath)-1] {
+				// final directory reached
+				currentDirPtr.files[fileName] = fileSize
+			}
+		} else {
+			fmt.Println("Dir does not exist cannot create file")
+			break
+		}
+	}
 }
 
 func createDirPath(fullDirPath []string) {
