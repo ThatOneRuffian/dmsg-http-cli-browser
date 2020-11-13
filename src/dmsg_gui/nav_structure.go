@@ -109,6 +109,7 @@ func createDirPath(fullDirPath []string) {
 		if ok {
 			//if directory already present then move into
 			currentDirPtr = currentDirPtr.subDirs[currentPathName]
+
 		} else {
 			//create file tree
 			newDirectory := Directory{
@@ -123,11 +124,4 @@ func createDirPath(fullDirPath []string) {
 		}
 
 	}
-}
-
-type Directoryz struct {
-	files     map[string]int
-	subDirs   map[string]*Directory
-	parentDir *Directory
-	dirName   string
 }
