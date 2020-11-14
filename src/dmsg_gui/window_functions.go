@@ -56,8 +56,8 @@ func renderServerBrowser() {
 	fmt.Println("<< B  |  N >>")
 }
 
-func RenderServerBrowser2() map[int]map[string]bool {
-	currendDirPtr := &rootDir
+func renderServerBrowser2() map[int]map[string]bool {
+	currendDirPtr := navPtr
 	bufferHeight := 7
 	terminalHeight, err := sttyWrapperGetTerminalHeight()
 	if err != nil {
@@ -90,8 +90,6 @@ func RenderServerBrowser2() map[int]map[string]bool {
 	fmt.Println(divider)
 	fmt.Println("SERVER DOWNLOAD INDEX")
 	fmt.Println(divider)
-	currendDirPtr = currendDirPtr.subDirs["Books"]
-	//currendDirPtr = currendDirPtr.subDirs["Future reports"]
 	dirIndexMetaData, indexStartValue := renderDirectories(currendDirPtr, terminalWidth)
 	fileIndexMetaData := renderFiles(currendDirPtr, terminalWidth, indexStartValue)
 	//merge metadata
@@ -110,7 +108,10 @@ func RenderServerBrowser2() map[int]map[string]bool {
 func renderDirectories(dirPtr *Directory, terminalWidth int) (map[int]map[string]bool, int) {
 	//sort sub dirs A-Z
 	var subDirKeys []string
-	subDirKeys = append(subDirKeys, "..")
+	if dirPtr != &rootDir {
+		subDirKeys = append(subDirKeys, "..")
+	}
+
 	for key := range dirPtr.subDirs {
 		subDirKeys = append(subDirKeys, key)
 	}
@@ -147,7 +148,7 @@ func renderDirectories(dirPtr *Directory, terminalWidth int) (map[int]map[string
 		swapDir = make(map[string]bool)
 	}
 
-	return returnValue, len(returnValue)
+	return returnValue, len(returnValue) + 1
 }
 
 func renderFiles(dirPtr *Directory, terminalWidth int, indexStartValue int) map[int]map[string]bool {
