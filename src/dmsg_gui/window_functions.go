@@ -99,6 +99,10 @@ func renderServerBrowser2() map[int]map[string]bool {
 		metaData[key] = value
 	}
 
+	for i := 0; i < terminalHeight-len(metaData); i++ {
+		fmt.Println("-")
+	}
+
 	fmt.Println(divider)
 	fmt.Println(pageStatus)
 	fmt.Println("<< B  |  N >>")
