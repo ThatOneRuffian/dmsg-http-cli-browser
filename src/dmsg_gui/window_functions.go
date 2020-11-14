@@ -90,8 +90,10 @@ func RenderServerBrowser2() {
 	fmt.Println(divider)
 	fmt.Println("SERVER DOWNLOAD INDEX")
 	fmt.Println(divider)
-	currendDirPtr = currendDirPtr.subDirs["Cowboy_Bebop"]
+	currendDirPtr = currendDirPtr.subDirs["Books"]
+	//currendDirPtr = currendDirPtr.subDirs["A+"]
 	renderDirectories(currendDirPtr, terminalWidth)
+
 	renderFiles(currendDirPtr, terminalWidth)
 	fmt.Println(divider)
 	fmt.Println(pageStatus)
@@ -101,6 +103,7 @@ func RenderServerBrowser2() {
 func renderDirectories(dirPtr *Directory, terminalWidth int) {
 	//sort sub dirs A-Z
 	var subDirKeys []string
+	subDirKeys = append(subDirKeys, "..")
 	for key := range dirPtr.subDirs {
 		subDirKeys = append(subDirKeys, key)
 	}
@@ -111,14 +114,14 @@ func renderDirectories(dirPtr *Directory, terminalWidth int) {
 	if len(subDirKeys) > 0 {
 		for _, key := range subDirKeys {
 			itemIndex := renderIndex + (terminalWidth*DownloadBrowserIndex - 1) - terminalWidth + 1
-			if itemIndex-1 < len(dirPtr.subDirs) {
+			if itemIndex-1 < len(subDirKeys) {
 				fileBuffer := ""
-				tmpEntry := fmt.Sprintf("%d) %s%s", itemIndex, key, "Directory")
+				tmpEntry := fmt.Sprintf("%d) %s/%s", itemIndex, key, "Directory")
 				bufferToAdd := terminalWidth - len(tmpEntry)
 				for i := 0; i < bufferToAdd; i++ {
 					fileBuffer += "-"
 				}
-				listEntry := fmt.Sprintf("%d) %s%s%s", itemIndex, key, fileBuffer, "Directory")
+				listEntry := fmt.Sprintf("%d) %s/%s%s", itemIndex, key, fileBuffer, "Directory")
 				fmt.Println(listEntry)
 			} else {
 				fmt.Println("-")
@@ -129,6 +132,7 @@ func renderDirectories(dirPtr *Directory, terminalWidth int) {
 		//fmt.Println("[Empty server index/Could not fetch list]")
 	}
 }
+
 func renderFiles(dirPtr *Directory, terminalWidth int) {
 	//sort sub dirs A-Z
 	var fileNames []string
@@ -157,7 +161,7 @@ func renderFiles(dirPtr *Directory, terminalWidth int) {
 			itemIndex++
 		}
 	} else {
-		fmt.Println("[Empty Dir]")
+		//fmt.Println("[No files in this dir]")
 	}
 }
 
