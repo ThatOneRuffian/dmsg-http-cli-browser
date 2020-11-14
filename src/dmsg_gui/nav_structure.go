@@ -60,7 +60,6 @@ func getPresentWorkingDirectory() string {
 			tmpPtr = tmpPtr.parentDir
 		}
 		for i := len(dirs) - 1; i >= 0; i-- {
-			fmt.Println(dirs[i])
 			workingDir = workingDir + "/" + dirs[i]
 		}
 	}
