@@ -48,6 +48,26 @@ func assembleFileStructure(serverPublicKey string) {
 	parseServerIndex2(&file)
 }
 
+func getPresentWorkingDirectory() string {
+	var workingDir string
+	var dirs []string
+
+	if navPtr != nil {
+		tmpPtr := navPtr
+
+		for tmpPtr.parentDir != nil {
+			dirs = append(dirs, tmpPtr.dirName)
+			tmpPtr = tmpPtr.parentDir
+		}
+		for i := len(dirs) - 1; i >= 0; i-- {
+			fmt.Println(dirs[i])
+			workingDir = workingDir + "/" + dirs[i]
+		}
+	}
+
+	return workingDir + "/"
+}
+
 func parseServerIndex2(file **os.File) {
 	defer func() {
 		if err := recover(); err != nil {
