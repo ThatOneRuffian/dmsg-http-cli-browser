@@ -80,7 +80,6 @@ func renderServerBrowser2() map[int]map[string]bool {
 	if ServerPageCountMax == 0 {
 		ServerPageCountMax = 1
 	}
-	pageStatus := fmt.Sprintf("page (%d / %d)", DownloadBrowserIndex, ServerPageCountMax)
 
 	divider := ""
 	for i := 0; i < terminalWidth; i++ {
@@ -88,7 +87,16 @@ func renderServerBrowser2() map[int]map[string]bool {
 	}
 	ClearScreen()
 	fmt.Println(divider)
-	fmt.Println("SERVER DOWNLOAD INDEX")
+	menuTitle := "SERVER DOWNLOAD INDEX"
+	currentDir := getPresentWorkingDirectory()
+	tmpTitle := fmt.Sprintf("%s%s", menuTitle, currentDir)
+	titleBufferLength := terminalWidth - len(tmpTitle)
+	titleBuffer := ""
+
+	for i := 0; i < titleBufferLength; i++ {
+		titleBuffer = titleBuffer + " "
+	}
+	fmt.Println(fmt.Sprintf("%s%s%s", menuTitle, titleBuffer, currentDir))
 	fmt.Println(divider)
 	dirIndexMetaData, indexStartValue := renderDirectories(currendDirPtr, terminalWidth)
 	fileIndexMetaData := renderFiles(currendDirPtr, terminalWidth, indexStartValue)
@@ -98,12 +106,20 @@ func renderServerBrowser2() map[int]map[string]bool {
 	for key, value := range fileIndexMetaData {
 		metaData[key] = value
 	}
-
-	for i := 0; i < terminalHeight-len(metaData); i++ {
-		fmt.Println("-")
+	metaDataLength := len(metaData)
+	if metaDataLength > 0 {
+		for i := 0; i < terminalHeight-metaDataLength; i++ {
+			fmt.Println("-")
+		}
+	} else {
+		fmt.Println("[Empty]")
+		for i := 0; i < terminalHeight-metaDataLength; i++ {
+			fmt.Println("-")
+		}
 	}
 
 	fmt.Println(divider)
+	pageStatus := fmt.Sprintf("page (%d / %d)", DownloadBrowserIndex, ServerPageCountMax)
 	fmt.Println(pageStatus)
 	fmt.Println("<< B  |  N >>")
 	return metaData
