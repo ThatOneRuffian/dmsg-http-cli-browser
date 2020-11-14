@@ -30,10 +30,10 @@ func refreshServerIndex(serverPublicKey string, clearCache bool) {
 	DownloadBrowserIndex = 1
 	if clearCache {
 		ClearServerIndexFile(serverPublicKey)
+		fmt.Println("Downloading Server Index...")
+		dmsggetWrapper(serverPublicKey, IndexDownloadLoc, "index", "index."+serverPublicKey, false)
 	}
 
-	fmt.Println("Downloading Server Index...")
-	dmsggetWrapper(serverPublicKey, IndexDownloadLoc, "index", "index."+serverPublicKey, false)
 	LoadServerIndex(serverPublicKey)
 }
 
