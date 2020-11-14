@@ -28,8 +28,8 @@ type Directory struct {
 	dirName   string
 }
 
-func CreateTest() {
-	file, err := os.Open(GenerateServerIndexAbsPath("02da372fab7ebb28d77508629dfed017011b12608a8454ab76f1f4359c01519a8d"))
+func assembleFileStructure(serverPublicKey string) {
+	file, err := os.Open(GenerateServerIndexAbsPath(serverPublicKey))
 	defer file.Close()
 	defer func() {
 		if err := recover(); err != nil {
