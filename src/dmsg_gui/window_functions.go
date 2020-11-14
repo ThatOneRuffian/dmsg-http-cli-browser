@@ -100,7 +100,7 @@ func RenderServerBrowser2() {
 	fmt.Println("<< B  |  N >>")
 }
 
-func renderDirectories(dirPtr *Directory, terminalWidth int) {
+func renderDirectories(dirPtr *Directory, terminalWidth int) map[int]map[string]bool {
 	//sort sub dirs A-Z
 	var subDirKeys []string
 	subDirKeys = append(subDirKeys, "..")
@@ -131,6 +131,17 @@ func renderDirectories(dirPtr *Directory, terminalWidth int) {
 	} else {
 		//fmt.Println("[Empty server index/Could not fetch list]")
 	}
+	returnValue := make(map[int]map[string]bool)
+	swapDir := make(map[string]bool)
+
+	for key, value := range subDirKeys {
+		fmt.Println(key)
+		swapDir[value] = true
+		returnValue[key] = swapDir
+		swapDir = make(map[string]bool)
+	}
+
+	return returnValue
 }
 
 func renderFiles(dirPtr *Directory, terminalWidth int) {
