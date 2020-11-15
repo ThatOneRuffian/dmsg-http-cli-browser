@@ -60,7 +60,7 @@ func renderServerBrowser() {
 
 func renderServerBrowser2() map[int]map[string]bool {
 	currendDirPtr := navPtr
-	bufferHeight := 7
+	bufferHeight := 8
 	terminalHeight, err := sttyWrapperGetTerminalHeight()
 	if err != nil {
 		terminalHeight = 10 //default on error
@@ -111,7 +111,7 @@ func renderServerBrowser2() map[int]map[string]bool {
 	}
 	metaDataLength := len(metaData)
 	if metaDataLength > 0 {
-		for i := 0; i < terminalHeight-metaDataLength; i++ {
+		for i := 0; i <= terminalHeight-metaDataLength; i++ {
 			fmt.Println("-")
 		}
 	} else {
@@ -154,8 +154,6 @@ func renderDirectories(dirPtr *Directory, terminalWidth int, terminalHeight int)
 				}
 				listEntry := fmt.Sprintf("%d) %s/%s%s", itemIndex, key, fileBuffer, "Directory")
 				fmt.Println(listEntry)
-			} else {
-				fmt.Println("-")
 			}
 			renderIndex++
 		}
@@ -182,29 +180,30 @@ func renderFiles(dirPtr *Directory, terminalWidth int, terminalHeight int, index
 	}
 	sort.Strings(fileNames)
 
-	//Render directories
+	//Render files
+	//DownloadBrowserIndex terminalHeight
+
 	itemIndex := indexStartValue
 	if len(fileNames) > 0 {
-		for _, key := range fileNames {
-			if true {
-				fileSize := dirPtr.files[key]
-				tmpEntry := fmt.Sprintf("%d) %s%d", itemIndex, key, fileSize)
-				bufferToAdd := terminalWidth - len(tmpEntry)
-				fileBuffer := ""
-				for i := 0; i < bufferToAdd; i++ {
-					fileBuffer += "-"
-				}
-				listEntry := fmt.Sprintf("%d) %s%s%d", itemIndex, key, fileBuffer, fileSize)
-				fmt.Println(listEntry)
-			} else {
-				fmt.Println("-")
+		for i := 0; i < len(fileNames) && i < terminalHeight; i++ {
+			//fill horizontal space
+			fileSize := dirPtr.files[fileNames[i]]
+			tmpEntry := fmt.Sprintf("%d) %s%d", itemIndex, fileNames[i], fileSize)
+			bufferToAdd := terminalWidth - len(tmpEntry)
+			fileBuffer := ""
+			for z := 0; z < bufferToAdd; z++ {
+				fileBuffer += "-"
 			}
+			listEntry := fmt.Sprintf("%d) %s%s%d", itemIndex, fileNames[i], fileBuffer, fileSize)
+			fmt.Println(listEntry)
+
 			itemIndex++
 		}
 	} else {
 		//fmt.Println("[No files in this dir]")
 	}
 
+	//format return value
 	returnValue := make(map[int]map[string]bool)
 	swapDir := make(map[string]bool)
 
