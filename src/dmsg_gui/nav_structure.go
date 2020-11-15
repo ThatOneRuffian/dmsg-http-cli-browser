@@ -11,6 +11,9 @@ import (
 // navPtr points to the current directory object being browsed
 var navPtr *Directory = nil
 
+//DownloadBrowserIndex stores the current page number of the server's download list
+var DownloadBrowserIndex int = 0
+
 //var rootDir Directory
 var rootDir Directory = Directory{
 	files:     make(map[string]int),
