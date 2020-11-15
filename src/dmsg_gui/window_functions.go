@@ -33,8 +33,13 @@ func refreshServerIndex(serverPublicKey string, clearCache bool) {
 		fmt.Println("Downloading Server Index...")
 		dmsggetWrapper(serverPublicKey, IndexDownloadLoc, "index", "index."+serverPublicKey, false)
 	}
+	if LoadServerIndex(serverPublicKey) {
 
-	LoadServerIndex(serverPublicKey)
+	} else {
+		ClearServerIndexFile(serverPublicKey)
+		fmt.Println("Downloading Server Index...")
+		dmsggetWrapper(serverPublicKey, IndexDownloadLoc, "index", "index."+serverPublicKey, false)
+	}
 }
 
 func renderServerBrowser() {
