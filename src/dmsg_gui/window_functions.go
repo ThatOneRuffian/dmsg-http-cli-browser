@@ -10,9 +10,6 @@ import (
 //ServerPageCountMax holds the max page give the current server's index
 var ServerPageCountMax int
 
-//DownloadBrowserIndex stores the current page of the download browsers
-var DownloadBrowserIndex int = 1
-
 //SavedServers stores server cache - initalized on loadCache
 var SavedServers map[int][2]string
 
@@ -76,8 +73,9 @@ func renderServerBrowser2() map[int]map[string]bool {
 	if err != nil {
 		fmt.Println(err)
 	}
-	ServerPageCountMax = len(CurrentServerIndex) / terminalHeight
-	pageRemainder := len(CurrentServerIndex) % terminalHeight
+	dirNumberOfItems := (len(navPtr.subDirs) + len(navPtr.files))
+	ServerPageCountMax = dirNumberOfItems / terminalHeight
+	pageRemainder := dirNumberOfItems % terminalHeight
 	if pageRemainder > 0 {
 		ServerPageCountMax++
 	}
@@ -103,8 +101,8 @@ func renderServerBrowser2() map[int]map[string]bool {
 	}
 	fmt.Println(fmt.Sprintf("%s%s%s", menuTitle, titleBuffer, currentDir))
 	fmt.Println(divider)
-	dirIndexMetaData, indexStartValue := renderDirectories(currendDirPtr, terminalWidth)
-	fileIndexMetaData := renderFiles(currendDirPtr, terminalWidth, indexStartValue)
+	dirIndexMetaData, indexStartValue, remainingHeight := renderDirectories(currendDirPtr, terminalWidth, terminalHeight)
+	fileIndexMetaData := renderFiles(currendDirPtr, terminalWidth, remainingHeight, indexStartValue)
 	//merge metadata
 	metaData := dirIndexMetaData
 
@@ -130,7 +128,7 @@ func renderServerBrowser2() map[int]map[string]bool {
 	return metaData
 }
 
-func renderDirectories(dirPtr *Directory, terminalWidth int) (map[int]map[string]bool, int) {
+func renderDirectories(dirPtr *Directory, terminalWidth int, terminalHeight int) (map[int]map[string]bool, int, int) {
 	//sort sub dirs A-Z
 	var subDirKeys []string
 	if dirPtr != &rootDir {
@@ -166,17 +164,17 @@ func renderDirectories(dirPtr *Directory, terminalWidth int) (map[int]map[string
 	}
 	returnValue := make(map[int]map[string]bool)
 	swapDir := make(map[string]bool)
-
+	//todo iterate through number of spots left. need index like old method
 	for key, value := range subDirKeys {
 		swapDir[value] = true
 		returnValue[key+1] = swapDir
 		swapDir = make(map[string]bool)
 	}
 
-	return returnValue, len(returnValue) + 1
+	return returnValue, len(returnValue) + 1, terminalHeight
 }
 
-func renderFiles(dirPtr *Directory, terminalWidth int, indexStartValue int) map[int]map[string]bool {
+func renderFiles(dirPtr *Directory, terminalWidth int, terminalHeight int, indexStartValue int) map[int]map[string]bool {
 	//sort sub dirs A-Z
 	var fileNames []string
 	for key := range dirPtr.files {
