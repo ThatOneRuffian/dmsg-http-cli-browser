@@ -24,7 +24,7 @@ func ClearScreen() {
 
 func refreshServerIndex(serverPublicKey string, clearCache bool) {
 	ClearScreen()
-	DownloadBrowserIndex = 1
+	DownloadBrowserIndex = 0
 	if clearCache {
 		ClearServerIndexFile(serverPublicKey)
 		fmt.Println("Downloading Server Index...")
@@ -109,14 +109,14 @@ func renderServerBrowser2() map[int]map[string]bool {
 	dirMetaData := getCurrentDirMetaData()
 	renderMetaData(dirMetaData, terminalHeightAvailable)
 	fmt.Println(divider)
-	pageStatus := fmt.Sprintf("page (%d / %d)", DownloadBrowserIndex, ServerPageCountMax)
+	pageStatus := fmt.Sprintf("page (%d / %d)", DownloadBrowserIndex+1, ServerPageCountMax)
 	fmt.Println(pageStatus)
 	fmt.Println("<< B  |  N >>")
 	return dirMetaData
 }
 func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAvailable int) {
 	verticalHeightBuffer := terminalHeightAvailable
-	for index := 1; index < len(directoryMetaData) && index <= terminalHeightAvailable; index++ {
+	for index := 1 + DownloadBrowserIndex*terminalHeightAvailable; index < len(directoryMetaData) && index <= terminalHeightAvailable; index++ {
 		for key := range directoryMetaData[index] {
 			if directoryMetaData[index][key] {
 				lineEntry := fmt.Sprintf("%d) %s/", index, key)
