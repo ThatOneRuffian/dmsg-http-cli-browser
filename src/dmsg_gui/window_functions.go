@@ -102,21 +102,22 @@ func renderServerBrowser2() map[int]map[string]bool {
 	fmt.Println(fmt.Sprintf("%s%s%s", menuTitle, titleBuffer, currentDir))
 	fmt.Println(divider)
 	dirIndexMetaData, indexStartValue, remainingHeight := renderDirectories(currendDirPtr, terminalWidth, terminalHeight)
-	fileIndexMetaData := renderFiles(currendDirPtr, terminalWidth, remainingHeight, indexStartValue)
+	fileIndexMetaData, remainingHeight := renderFiles(currendDirPtr, terminalWidth, remainingHeight, indexStartValue)
+	//fmt.Println("test", terminalHeight, remainingHeight)
+
 	//merge metadata
 	metaData := dirIndexMetaData
-
 	for key, value := range fileIndexMetaData {
 		metaData[key] = value
 	}
 	metaDataLength := len(metaData)
 	if metaDataLength > 0 {
-		for i := 0; i <= terminalHeight-metaDataLength; i++ {
+		for i := 0; i <= remainingHeight; i++ {
 			fmt.Println("-")
 		}
 	} else {
 		fmt.Println("[Empty]")
-		for i := 0; i < terminalHeight-metaDataLength; i++ {
+		for i := 0; i < remainingHeight-metaDataLength; i++ {
 			fmt.Println("-")
 		}
 	}
@@ -128,7 +129,7 @@ func renderServerBrowser2() map[int]map[string]bool {
 	return metaData
 }
 
-func renderDirectories(dirPtr *Directory, terminalWidth int, terminalHeight int) (map[int]map[string]bool, int, int) {
+func renderDirectories(dirPtr *Directory, terminalWidth int, verticalHeightBuffer int) (map[int]map[string]bool, int, int) {
 	//sort sub dirs A-Z
 	var subDirKeys []string
 	if dirPtr != &rootDir {
@@ -142,37 +143,40 @@ func renderDirectories(dirPtr *Directory, terminalWidth int, terminalHeight int)
 
 	//Render directories
 	renderIndex := 1
+	verticalHeightSwap := verticalHeightBuffer
 	if len(subDirKeys) > 0 {
-		for _, key := range subDirKeys {
+		for i := 0; i < len(subDirKeys) && i <= verticalHeightBuffer; i++ {
 			itemIndex := renderIndex + (terminalWidth*DownloadBrowserIndex - 1) - terminalWidth + 1
 			if itemIndex-1 < len(subDirKeys) {
 				fileBuffer := ""
-				tmpEntry := fmt.Sprintf("%d) %s/%s", itemIndex, key, "Directory")
+				tmpEntry := fmt.Sprintf("%d) %s/%s", itemIndex, subDirKeys[i], "Directory")
 				bufferToAdd := terminalWidth - len(tmpEntry)
 				for i := 0; i < bufferToAdd; i++ {
 					fileBuffer += "-"
 				}
-				listEntry := fmt.Sprintf("%d) %s/%s%s", itemIndex, key, fileBuffer, "Directory")
+				listEntry := fmt.Sprintf("%d) %s/%s%s", itemIndex, subDirKeys[i], fileBuffer, "Directory")
 				fmt.Println(listEntry)
 			}
 			renderIndex++
+			verticalHeightSwap--
 		}
 	} else {
 		//fmt.Println("[Empty server index/Could not fetch list]")
 	}
+	verticalHeightBuffer = verticalHeightSwap
 	returnValue := make(map[int]map[string]bool)
 	swapDir := make(map[string]bool)
-	//todo iterate through number of spots left. need index like old method
+
 	for key, value := range subDirKeys {
 		swapDir[value] = true
 		returnValue[key+1] = swapDir
 		swapDir = make(map[string]bool)
 	}
 
-	return returnValue, len(returnValue) + 1, terminalHeight
+	return returnValue, len(returnValue) + 1, verticalHeightBuffer
 }
 
-func renderFiles(dirPtr *Directory, terminalWidth int, terminalHeight int, indexStartValue int) map[int]map[string]bool {
+func renderFiles(dirPtr *Directory, terminalWidth int, remainingHeight int, indexStartValue int) (map[int]map[string]bool, int) {
 	//sort sub dirs A-Z
 	var fileNames []string
 	for key := range dirPtr.files {
@@ -181,11 +185,11 @@ func renderFiles(dirPtr *Directory, terminalWidth int, terminalHeight int, index
 	sort.Strings(fileNames)
 
 	//Render files
-	//DownloadBrowserIndex terminalHeight
 
 	itemIndex := indexStartValue
+	swapHeight := remainingHeight
 	if len(fileNames) > 0 {
-		for i := 0; i < len(fileNames) && i < terminalHeight; i++ {
+		for i := 0; i < len(fileNames) && i <= remainingHeight; i++ {
 			//fill horizontal space
 			fileSize := dirPtr.files[fileNames[i]]
 			tmpEntry := fmt.Sprintf("%d) %s%d", itemIndex, fileNames[i], fileSize)
@@ -198,11 +202,12 @@ func renderFiles(dirPtr *Directory, terminalWidth int, terminalHeight int, index
 			fmt.Println(listEntry)
 
 			itemIndex++
+			swapHeight--
 		}
 	} else {
 		//fmt.Println("[No files in this dir]")
 	}
-
+	remainingHeight = swapHeight
 	//format return value
 	returnValue := make(map[int]map[string]bool)
 	swapDir := make(map[string]bool)
@@ -212,7 +217,7 @@ func renderFiles(dirPtr *Directory, terminalWidth int, terminalHeight int, index
 		returnValue[indexStartValue+key] = swapDir
 		swapDir = make(map[string]bool)
 	}
-	return returnValue
+	return returnValue, remainingHeight
 }
 
 func renderServerIndexBrowser() {
