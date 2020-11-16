@@ -73,7 +73,7 @@ ServerIndexMenu:
 		}
 		goto ExitLoop
 	case "B":
-		if DownloadBrowserIndex > 1 {
+		if DownloadBrowserIndex > 0 {
 			DownloadBrowserIndex--
 		}
 
@@ -117,58 +117,6 @@ ServerIndexMenu:
 
 			}
 
-		} else {
-			break
-		}
-	}
-	goto ServerIndexMenu
-
-ExitLoop:
-}
-
-func ServerIndexMenuHandler(serverPublicKey string) {
-	consoleInput := bufio.NewReader(os.Stdin)
-ServerIndexMenu:
-
-	renderServerIndexBrowser()
-
-	fmt.Print("(R to Refresh Server Index, E to Exit Server File Browser, Q to quit): ")
-	userChoice, _ := consoleInput.ReadString('\n')
-	userChoice = strings.ToUpper(removeNewline(userChoice))
-	switch userChoice {
-	case "Q":
-		ClearScreen()
-		os.Exit(1)
-	case "E":
-		goto ExitLoop
-	case "B":
-		if DownloadBrowserIndex > 1 {
-			DownloadBrowserIndex--
-		}
-
-		goto ServerIndexMenu
-	case "N":
-		if DownloadBrowserIndex < ServerPageCountMax {
-
-			DownloadBrowserIndex++
-		}
-
-		goto ServerIndexMenu
-	case "R":
-		refreshServerIndex(serverPublicKey, true)
-		goto ServerIndexMenu
-
-	default:
-		userInt, err := strconv.Atoi(userChoice)
-		if err != nil {
-			break
-		}
-		if userInt >= 1 && userInt <= len(CurrentServerIndex) {
-			filenameDownload := CurrentServerIndex[userInt-1][0]
-			// download file
-			ClearScreen()
-
-			dmsggetWrapper(serverPublicKey, MainDownloadsLoc, filenameDownload, "", true)
 		} else {
 			break
 		}
