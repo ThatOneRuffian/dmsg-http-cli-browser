@@ -49,12 +49,12 @@ ServerMenu:
 ExitLoop:
 	return serverPublicKey
 }
-func ServerIndexMenuHandler2(serverPublicKey string) {
+func ServerIndexMenuHandler(serverPublicKey string) {
 	navPtr = &rootDir
 	assembleFileStructure(serverPublicKey)
 
 ServerIndexMenu:
-	directoryMetaData := renderServerBrowser2()
+	directoryMetaData := renderServerDownloadList()
 	consoleInput := bufio.NewReader(os.Stdin)
 	fmt.Print("(R to Refresh Server Index, E to Exit Server File Browser, Q to quit): ")
 	userChoice, _ := consoleInput.ReadString('\n')

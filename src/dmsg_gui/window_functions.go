@@ -58,7 +58,7 @@ func renderServerBrowser() {
 	fmt.Println("<< B  |  N >>")
 }
 
-func renderServerBrowser2() map[int]map[string]bool {
+func renderServerDownloadList() map[int]map[string]bool {
 
 	bufferHeight := 7
 	terminalHeightAvailable, err := sttyWrapperGetTerminalHeight()

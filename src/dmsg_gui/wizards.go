@@ -102,7 +102,7 @@ func browseNow(serverPublicKey string) {
 		switch formattedInput := strings.ToUpper(removeNewline(userAnswer)); formattedInput {
 		case "Y":
 			refreshServerIndex(serverPublicKey, true)
-			ServerIndexMenuHandler2(serverPublicKey)
+			ServerIndexMenuHandler(serverPublicKey)
 			//load server index
 		case "N":
 			// continue to main menu
