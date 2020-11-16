@@ -40,17 +40,38 @@ func refreshServerIndex(serverPublicKey string, clearCache bool) {
 }
 
 func renderServerBrowser() {
-	pageStatus := fmt.Sprintf("page (%d / %d)", 1, 20)
-	divider := "----------------------"
-	ClearScreen()
+	bufferHeight := 7
+	divider := ""
+	terminalHeightAvailable, err := sttyWrapperGetTerminalHeight()
+	if err != nil {
+		terminalHeightAvailable = 10 //default on error
 
+	} else {
+		terminalHeightAvailable -= bufferHeight
+
+	}
+	terminalWidth, err := sttyWrapperGetTerminalWidth()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	pageStatus := fmt.Sprintf("page (%d / %d)", 1, 20)
+	for ; terminalWidth > 0; terminalWidth-- {
+		divider += "="
+
+	}
+	ClearScreen()
 	fmt.Println(divider)
 	fmt.Println("DMSG HTTP SERVER LIST")
 	fmt.Println(divider)
-
+	verticalHeightBuffer := terminalHeightAvailable
 	for i := 0; i < len(SavedServers); i++ {
 		listEntry := fmt.Sprintf("%d) %s", i+1, SavedServers[i][0])
 		fmt.Println(listEntry)
+		verticalHeightBuffer--
+	}
+	for ; verticalHeightBuffer > 0; verticalHeightBuffer-- {
+		fmt.Println("-")
 	}
 
 	fmt.Println(divider)
