@@ -12,7 +12,7 @@ import (
 var navPtr *Directory = nil
 
 //DownloadBrowserIndex stores the current page number of the server's download list
-var DownloadBrowserIndex int = 0
+var DownloadBrowserIndex int = 1
 
 //var rootDir Directory
 var rootDir Directory = Directory{

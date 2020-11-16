@@ -146,7 +146,7 @@ func renderDirectories(dirPtr *Directory, terminalWidth int, verticalHeightBuffe
 	verticalHeightSwap := verticalHeightBuffer
 	if len(subDirKeys) > 0 {
 		for i := 0; i < len(subDirKeys) && i <= verticalHeightBuffer; i++ {
-			itemIndex := renderIndex + (terminalWidth*DownloadBrowserIndex - 1) - terminalWidth + 1
+			itemIndex := renderIndex
 			if itemIndex-1 < len(subDirKeys) {
 				fileBuffer := ""
 				tmpEntry := fmt.Sprintf("%d) %s/%s", itemIndex, subDirKeys[i], "Directory")
