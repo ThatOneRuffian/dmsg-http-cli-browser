@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func DeleteServerWizard() {
+func deleteServerWizard() {
 DeletePrompt:
 	fmt.Print("Which server do you want to delete? (Enter C to Cancel): ")
 	consoleInputWhichServer := bufio.NewReader(os.Stdin)
@@ -36,7 +36,7 @@ DeletePrompt:
 			switch deleteConfirm {
 			case "Y":
 
-				DeleteServerIndex(userInt)
+				deleteServerIndex(userInt)
 				goto ExitLoop
 			case "N":
 				goto ExitLoop
@@ -69,9 +69,9 @@ PubKeyInput:
 		friendlyName = removeNewline(friendlyName)
 		friendlyName = removeSemiColon(friendlyName)
 		if len(friendlyName) == 0 {
-			AppendToConfig(publicKey, publicKey)
+			appendToConfig(publicKey, publicKey)
 		} else {
-			AppendToConfig(friendlyName, publicKey)
+			appendToConfig(friendlyName, publicKey)
 		}
 		fmt.Println("Entry cached.")
 

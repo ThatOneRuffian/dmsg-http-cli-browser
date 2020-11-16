@@ -32,7 +32,7 @@ type directory struct {
 }
 
 func assembleFileStructure(serverPublicKey string) {
-	file, err := os.Open(GenerateServerIndexAbsPath(serverPublicKey))
+	file, err := os.Open(generateServerIndexAbsPath(serverPublicKey))
 	defer file.Close()
 	defer func() {
 		if err := recover(); err != nil {

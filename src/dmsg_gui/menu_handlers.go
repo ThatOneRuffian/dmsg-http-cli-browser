@@ -31,7 +31,7 @@ ServerMenu:
 	case "N":
 		//TODO
 	case "D":
-		DeleteServerWizard()
+		deleteServerWizard()
 	default:
 		userInt, err := strconv.Atoi(userChoice)
 		if err != nil {
@@ -49,6 +49,7 @@ ServerMenu:
 ExitLoop:
 	return serverPublicKey
 }
+
 func ServerIndexMenuHandler(serverPublicKey string) {
 	navPtr = &rootDir
 	assembleFileStructure(serverPublicKey)

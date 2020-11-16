@@ -27,8 +27,8 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 
 	}
 	if downloadLoc == MainDownloadsLoc {
-		ClearFile(downloadLoc + "/" + alternateFileName)
-		ClearFile(downloadLoc + "/" + file)
+		clearFile(downloadLoc + "/" + alternateFileName)
+		clearFile(downloadLoc + "/" + file)
 	}
 
 	fmt.Println(alternateFileName)

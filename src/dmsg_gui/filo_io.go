@@ -20,9 +20,9 @@ var DownloadListLength int = 10
 //IndexDownloadLoc is where the active server's index is downloaded
 var IndexDownloadLoc string = os.TempDir()
 
-func LoadServerIndex(serverPublicKey string) bool {
+func loadServerIndex(serverPublicKey string) bool {
 	returnBool := true
-	file, err := os.Open(GenerateServerIndexAbsPath(serverPublicKey))
+	file, err := os.Open(generateServerIndexAbsPath(serverPublicKey))
 	defer file.Close()
 	defer func() {
 		if err := recover(); err != nil {
@@ -44,19 +44,20 @@ func LoadServerIndex(serverPublicKey string) bool {
 		returnBool = false
 	}
 
-	ParseServerIndex(&file)
+	parseServerIndex(&file)
 	return returnBool
 }
-func ClearFile(filename string) {
+
+func clearFile(filename string) {
 	os.Remove(filename)
 }
 
-func ClearServerIndexFile(serverPublicKey string) {
+func clearServerIndexFile(serverPublicKey string) {
 	serverCacheLoc := "/tmp/index." + serverPublicKey
 	os.Remove(serverCacheLoc)
 }
 
-func ParseServerIndex(file **os.File) {
+func parseServerIndex(file **os.File) {
 	currentServerIndex := make(map[int][2]string)
 
 	defer func() {
@@ -85,7 +86,7 @@ func ParseServerIndex(file **os.File) {
 	CurrentServerIndex = currentServerIndex
 }
 
-func ClearCacheConfig() {
+func clearCacheConfig() {
 	configFile := generateConfigAbsFilePath()
 	file, err := os.Create(configFile)
 
@@ -96,7 +97,7 @@ func ClearCacheConfig() {
 
 }
 
-func GenerateServerIndexAbsPath(serverPublicKey string) string {
+func generateServerIndexAbsPath(serverPublicKey string) string {
 	indexPath := "/tmp/index." + serverPublicKey
 
 	return indexPath
@@ -118,7 +119,7 @@ func generateConfigAbsFilePath() string {
 	return configAbsFilePath
 }
 
-func ParseConfigFile(file **os.File) {
+func parseConfigFile(file **os.File) {
 	savedServers := make(map[int][2]string)
 	friendlyNameIndex := 0
 	serverPubKeyIndex := 1
@@ -144,7 +145,7 @@ func ParseConfigFile(file **os.File) {
 	SavedServers = savedServers
 }
 
-func AppendToConfig(friendlyName string, serverPublicKey string) {
+func appendToConfig(friendlyName string, serverPublicKey string) {
 
 	friendlyName = removeNewline(friendlyName)
 	serverPublicKey = removeNewline(serverPublicKey)
@@ -210,18 +211,18 @@ func LoadCache() bool {
 	}
 
 	// load up map values
-	ParseConfigFile(&file)
+	parseConfigFile(&file)
 	return returnBool
 }
 
-func DeleteServerIndex(indexToDelete int) {
-	ClearCacheConfig()
+func deleteServerIndex(indexToDelete int) {
+	clearCacheConfig()
 
 	for index := 0; index < len(SavedServers); index++ {
 		if index == indexToDelete-1 {
 			continue
 		} else {
-			AppendToConfig(SavedServers[index][0], SavedServers[index][1])
+			appendToConfig(SavedServers[index][0], SavedServers[index][1])
 		}
 	}
 
