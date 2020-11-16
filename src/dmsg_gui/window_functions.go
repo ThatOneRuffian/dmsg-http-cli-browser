@@ -59,13 +59,14 @@ func renderServerBrowser() {
 }
 
 func renderServerBrowser2() map[int]map[string]bool {
-	bufferHeight := 8
-	terminalHeight, err := sttyWrapperGetTerminalHeight()
+
+	bufferHeight := 7
+	terminalHeightAvailable, err := sttyWrapperGetTerminalHeight()
 	if err != nil {
-		terminalHeight = 10 //default on error
+		terminalHeightAvailable = 10 //default on error
 
 	} else {
-		terminalHeight = terminalHeight - bufferHeight
+		terminalHeightAvailable -= bufferHeight
 
 	}
 	terminalWidth, err := sttyWrapperGetTerminalWidth()
@@ -73,16 +74,18 @@ func renderServerBrowser2() map[int]map[string]bool {
 		fmt.Println(err)
 	}
 	dirNumberOfItems := (len(navPtr.subDirs) + len(navPtr.files))
-	ServerPageCountMax = dirNumberOfItems / terminalHeight
-	pageRemainder := dirNumberOfItems % terminalHeight
+	ServerPageCountMax = dirNumberOfItems / terminalHeightAvailable
+	pageRemainder := dirNumberOfItems % terminalHeightAvailable
+
 	if pageRemainder > 0 {
 		ServerPageCountMax++
 	}
+
 	// Avoid 1/0 pages
 	if ServerPageCountMax == 0 {
 		ServerPageCountMax = 1
 	}
-
+	//Create header divider of appropriate length
 	divider := ""
 	for i := 0; i < terminalWidth; i++ {
 		divider += "="
@@ -104,12 +107,33 @@ func renderServerBrowser2() map[int]map[string]bool {
 	fmt.Println(divider)
 
 	dirMetaData := getCurrentDirMetaData()
-	fmt.Println(dirMetaData)
+	renderMetaData(dirMetaData, terminalHeightAvailable)
 	fmt.Println(divider)
 	pageStatus := fmt.Sprintf("page (%d / %d)", DownloadBrowserIndex, ServerPageCountMax)
 	fmt.Println(pageStatus)
 	fmt.Println("<< B  |  N >>")
 	return dirMetaData
+}
+func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAvailable int) {
+	verticalHeightBuffer := terminalHeightAvailable
+	for index := 1; index < len(directoryMetaData) && index <= terminalHeightAvailable; index++ {
+		for key := range directoryMetaData[index] {
+			if directoryMetaData[index][key] {
+				lineEntry := fmt.Sprintf("%d) %s/", index, key)
+				fmt.Println(lineEntry)
+			} else {
+				lineEntry := fmt.Sprintf("%d) %s", index, key)
+				fmt.Println(lineEntry)
+			}
+			verticalHeightBuffer--
+
+		}
+
+	}
+
+	for ; verticalHeightBuffer > 0; verticalHeightBuffer-- {
+		fmt.Println("-")
+	}
 }
 
 func getCurrentDirMetaData() map[int]map[string]bool {
