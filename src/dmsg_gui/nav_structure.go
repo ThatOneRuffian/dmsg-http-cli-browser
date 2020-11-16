@@ -9,25 +9,25 @@ import (
 )
 
 // navPtr points to the current directory object being browsed
-var navPtr *Directory = nil
+var navPtr *directory = nil
 
 //DownloadBrowserIndex stores the current page number of the server's download list
 var DownloadBrowserIndex int = 0
 
 //var rootDir Directory
-var rootDir Directory = Directory{
+var rootDir directory = directory{
 	files:     make(map[string]int),
 	parentDir: nil,
 	dirName:   "/",
-	subDirs:   make(map[string]*Directory),
+	subDirs:   make(map[string]*directory),
 }
 
-var subDir Directory
+var subDir directory
 
-type Directory struct {
+type directory struct {
 	files     map[string]int
-	subDirs   map[string]*Directory
-	parentDir *Directory
+	subDirs   map[string]*directory
+	parentDir *directory
 	dirName   string
 }
 
@@ -154,9 +154,9 @@ func createDirPath(fullDirPath []string) {
 
 		} else {
 			//create file tree
-			newDirectory := Directory{
+			newDirectory := directory{
 				files:     make(map[string]int),
-				subDirs:   make(map[string]*Directory),
+				subDirs:   make(map[string]*directory),
 				parentDir: currentDirPtr,
 				dirName:   currentPathName,
 			}

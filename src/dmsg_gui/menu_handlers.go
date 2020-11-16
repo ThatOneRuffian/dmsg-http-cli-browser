@@ -65,11 +65,11 @@ ServerIndexMenu:
 		os.Exit(1)
 	case "E":
 		//clear server root dir
-		rootDir = Directory{
+		rootDir = directory{
 			files:     make(map[string]int),
 			parentDir: nil,
 			dirName:   "/",
-			subDirs:   make(map[string]*Directory),
+			subDirs:   make(map[string]*directory),
 		}
 		goto ExitLoop
 	case "B":
