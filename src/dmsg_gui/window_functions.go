@@ -59,7 +59,6 @@ func renderServerBrowser() {
 }
 
 func renderServerBrowser2() map[int]map[string]bool {
-	currendDirPtr := navPtr
 	bufferHeight := 8
 	terminalHeight, err := sttyWrapperGetTerminalHeight()
 	if err != nil {
@@ -88,6 +87,8 @@ func renderServerBrowser2() map[int]map[string]bool {
 	for i := 0; i < terminalWidth; i++ {
 		divider += "="
 	}
+
+	//Render logic
 	ClearScreen()
 	fmt.Println(divider)
 	menuTitle := "SERVER DOWNLOAD INDEX"
@@ -101,32 +102,52 @@ func renderServerBrowser2() map[int]map[string]bool {
 	}
 	fmt.Println(fmt.Sprintf("%s%s%s", menuTitle, titleBuffer, currentDir))
 	fmt.Println(divider)
-	dirIndexMetaData, indexStartValue, remainingHeight := renderDirectories(currendDirPtr, terminalWidth, terminalHeight)
-	fileIndexMetaData, remainingHeight := renderFiles(currendDirPtr, terminalWidth, remainingHeight, indexStartValue)
-	//fmt.Println("test", terminalHeight, remainingHeight)
 
-	//merge metadata
-	metaData := dirIndexMetaData
-	for key, value := range fileIndexMetaData {
-		metaData[key] = value
-	}
-	metaDataLength := len(metaData)
-	if metaDataLength > 0 {
-		for i := 0; i <= remainingHeight; i++ {
-			fmt.Println("-")
-		}
-	} else {
-		fmt.Println("[Empty]")
-		for i := 0; i < remainingHeight-metaDataLength; i++ {
-			fmt.Println("-")
-		}
-	}
-
+	dirMetaData := getCurrentDirMetaData()
+	fmt.Println(dirMetaData)
 	fmt.Println(divider)
 	pageStatus := fmt.Sprintf("page (%d / %d)", DownloadBrowserIndex, ServerPageCountMax)
 	fmt.Println(pageStatus)
 	fmt.Println("<< B  |  N >>")
-	return metaData
+	return dirMetaData
+}
+
+func getCurrentDirMetaData() map[int]map[string]bool {
+	var subDirKeys []string
+	var fileNames []string
+
+	returnValue := make(map[int]map[string]bool)
+	swapDir := make(map[string]bool)
+
+	//dump dir names in current dir
+	if navPtr != &rootDir {
+		subDirKeys = append(subDirKeys, "..")
+	}
+
+	for key := range navPtr.subDirs {
+		subDirKeys = append(subDirKeys, key)
+	}
+
+	//dump files names in current dir
+	for key := range navPtr.files {
+		fileNames = append(fileNames, key)
+	}
+
+	sort.Strings(fileNames)
+	sort.Strings(subDirKeys)
+
+	//merge metadata
+	for key, value := range subDirKeys {
+		swapDir[value] = true
+		returnValue[key+1] = swapDir
+		swapDir = make(map[string]bool)
+	}
+	for key, value := range fileNames {
+		swapDir[value] = false
+		returnValue[key+1+len(subDirKeys)] = swapDir
+		swapDir = make(map[string]bool)
+	}
+	return returnValue
 }
 
 func renderDirectories(dirPtr *Directory, terminalWidth int, verticalHeightBuffer int) (map[int]map[string]bool, int, int) {
