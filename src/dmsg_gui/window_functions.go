@@ -114,9 +114,11 @@ func renderServerBrowser2() map[int]map[string]bool {
 	fmt.Println("<< B  |  N >>")
 	return dirMetaData
 }
+
 func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAvailable int) {
 	verticalHeightBuffer := terminalHeightAvailable
-	for index := 1 + DownloadBrowserIndex*terminalHeightAvailable; index < len(directoryMetaData) && index <= terminalHeightAvailable; index++ {
+
+	for index := 1 + DownloadBrowserIndex*terminalHeightAvailable; index <= len(directoryMetaData); index++ {
 		for key := range directoryMetaData[index] {
 			if directoryMetaData[index][key] {
 				lineEntry := fmt.Sprintf("%d) %s/", index, key)
@@ -126,14 +128,17 @@ func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAva
 				fmt.Println(lineEntry)
 			}
 			verticalHeightBuffer--
+			if verticalHeightBuffer == 0 {
+				goto END
+			}
 
 		}
 
 	}
-
 	for ; verticalHeightBuffer > 0; verticalHeightBuffer-- {
 		fmt.Println("-")
 	}
+END:
 }
 
 func getCurrentDirMetaData() map[int]map[string]bool {
