@@ -79,7 +79,7 @@ ServerIndexMenu:
 
 		goto ServerIndexMenu
 	case "N":
-		if DownloadBrowserIndex < ServerPageCountMax {
+		if DownloadBrowserIndex < ServerPageCountMax-1 {
 
 			DownloadBrowserIndex++
 		}
