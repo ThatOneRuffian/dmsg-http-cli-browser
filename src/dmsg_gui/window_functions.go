@@ -123,18 +123,18 @@ func renderServerDownloadList() map[int]map[string]bool {
 	currentDir := getPresentWorkingDirectory()
 	tmpTitle := fmt.Sprintf("%s%s", menuTitle, currentDir)
 	titleBufferLength := terminalWidth - len(tmpTitle)
-	menuHeader := fmt.Sprintf("%s%s%s", menuTitle, titleBuffer, currentDir)
-	pageStatus := fmt.Sprintf("page (%d / %d)", DownloadBrowserIndex+1, ServerPageCountMax)
 	for i := 0; i < titleBufferLength; i++ {
 		titleBuffer = titleBuffer + " "
 	}
+	menuHeader := fmt.Sprintf("%s%s%s", menuTitle, titleBuffer, currentDir)
+	pageStatus := fmt.Sprintf("page (%d / %d)", DownloadBrowserIndex+1, ServerPageCountMax)
 
 	//Render download menu
 	ClearScreen()
 	fmt.Println(divider)
 	fmt.Println(menuHeader)
 	fmt.Println(divider)
-	renderMetaData(dirMetaData, terminalHeightAvailable)
+	renderMetaData(dirMetaData, terminalHeightAvailable, terminalWidth)
 	fmt.Println(divider)
 	fmt.Println(pageStatus)
 	fmt.Println("<< B  |  N >>")
@@ -142,16 +142,28 @@ func renderServerDownloadList() map[int]map[string]bool {
 	return dirMetaData
 }
 
-func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAvailable int) {
+func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAvailable int, terminalWidthAvailable int) {
 	verticalHeightBuffer := terminalHeightAvailable
 
 	for index := 1 + DownloadBrowserIndex*terminalHeightAvailable; index <= len(directoryMetaData); index++ {
 		for key := range directoryMetaData[index] {
 			if directoryMetaData[index][key] {
-				lineEntry := fmt.Sprintf("%d) %s/", index, key)
+				tmpLineEntry := fmt.Sprintf("%d) %s/Directory", index, key)
+				horizontalFill := ""
+				for i := terminalWidthAvailable - len(tmpLineEntry); i > 0; i-- {
+					horizontalFill += "-"
+				}
+				lineEntry := fmt.Sprintf("%d) %s/%sDirectory", index, key, horizontalFill)
+
 				fmt.Println(lineEntry)
 			} else {
-				lineEntry := fmt.Sprintf("%d) %s", index, key)
+				tmpLineEntry := fmt.Sprintf("%d) %s%d", index, key, navPtr.files[key])
+				horizontalFill := ""
+				for i := terminalWidthAvailable - len(tmpLineEntry); i > 0; i-- {
+					horizontalFill += "-"
+				}
+				lineEntry := fmt.Sprintf("%d) %s%s%d", index, key, horizontalFill, navPtr.files[key])
+
 				fmt.Println(lineEntry)
 			}
 			verticalHeightBuffer--
