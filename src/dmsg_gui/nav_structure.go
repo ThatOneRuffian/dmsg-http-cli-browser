@@ -16,7 +16,7 @@ var DownloadBrowserIndex int = 0
 
 //var rootDir Directory
 var rootDir directory = directory{
-	files:     make(map[string]int),
+	files:     make(map[string]float64),
 	parentDir: nil,
 	dirName:   "/",
 	subDirs:   make(map[string]*directory),
@@ -25,7 +25,7 @@ var rootDir directory = directory{
 var subDir directory
 
 type directory struct {
-	files     map[string]int
+	files     map[string]float64
 	subDirs   map[string]*directory
 	parentDir *directory
 	dirName   string
@@ -93,7 +93,7 @@ func parseServerIndex2(file **os.File) {
 				if err != nil {
 					fmt.Println("Unable to convert filesize string into int")
 				}
-				rootDir.files[fileInfo[0]] = fileSize
+				rootDir.files[fileInfo[0]] = float64(fileSize)
 				fmt.Println("root dir level file found: ", strings.Split(inputRow, ";")[0])
 			}
 
@@ -134,7 +134,7 @@ func insertFileIntoDir(filePath []string, fileName string, fileSize int) {
 			currentDirPtr = currentDirPtr.subDirs[currentPathName]
 			if currentPathName == filePath[len(filePath)-1] {
 				// final directory reached
-				currentDirPtr.files[fileName] = fileSize
+				currentDirPtr.files[fileName] = float64(fileSize)
 			}
 		} else {
 			fmt.Println("Dir does not exist cannot create file")
@@ -155,7 +155,7 @@ func createDirPath(fullDirPath []string) {
 		} else {
 			//create file tree
 			newDirectory := directory{
-				files:     make(map[string]int),
+				files:     make(map[string]float64),
 				subDirs:   make(map[string]*directory),
 				parentDir: currentDirPtr,
 				dirName:   currentPathName,

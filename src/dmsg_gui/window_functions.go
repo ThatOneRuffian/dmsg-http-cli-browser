@@ -148,21 +148,21 @@ func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAva
 	for index := 1 + DownloadBrowserIndex*terminalHeightAvailable; index <= len(directoryMetaData); index++ {
 		for key := range directoryMetaData[index] {
 			if directoryMetaData[index][key] {
-				tmpLineEntry := fmt.Sprintf("%d) %s/Directory", index, key)
+				tmpLineEntry := fmt.Sprintf("%d) %s / Directory", index, key)
 				horizontalFill := ""
 				for i := terminalWidthAvailable - len(tmpLineEntry); i > 0; i-- {
 					horizontalFill += "-"
 				}
-				lineEntry := fmt.Sprintf("%d) %s/%sDirectory", index, key, horizontalFill)
+				lineEntry := fmt.Sprintf("%d) %s/ %s Directory", index, key, horizontalFill)
 
 				fmt.Println(lineEntry)
 			} else {
-				tmpLineEntry := fmt.Sprintf("%d) %s%d", index, key, navPtr.files[key])
+				tmpLineEntry := fmt.Sprintf("%d) %s  %.2f MB", index, key, navPtr.files[key]/1e6)
 				horizontalFill := ""
 				for i := terminalWidthAvailable - len(tmpLineEntry); i > 0; i-- {
 					horizontalFill += "-"
 				}
-				lineEntry := fmt.Sprintf("%d) %s%s%d", index, key, horizontalFill, navPtr.files[key])
+				lineEntry := fmt.Sprintf("%d) %s %s %.2f MB", index, key, horizontalFill, navPtr.files[key]/1e6)
 
 				fmt.Println(lineEntry)
 			}

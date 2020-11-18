@@ -67,7 +67,7 @@ ServerIndexMenu:
 	case "E":
 		//clear server root dir
 		rootDir = directory{
-			files:     make(map[string]int),
+			files:     make(map[string]float64),
 			parentDir: nil,
 			dirName:   "/",
 			subDirs:   make(map[string]*directory),
