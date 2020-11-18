@@ -81,23 +81,26 @@ func renderServerBrowser() {
 
 func renderServerDownloadList() map[int]map[string]bool {
 
-	bufferHeight := 7
-	terminalHeightAvailable, err := sttyWrapperGetTerminalHeight()
-	if err != nil {
+	bufferHeight := 7 //lines consumed by menu elemets
+	dirNumberOfItems := len(navPtr.subDirs) + len(navPtr.files)
+	terminalHeightAvailable, heightError := sttyWrapperGetTerminalHeight()
+	terminalWidth, widthError := sttyWrapperGetTerminalWidth()
+
+	if heightError != nil || widthError != nil {
+		fmt.Println("Error fetching terminal dimensions")
+		fmt.Println(heightError)
+		fmt.Println(widthError)
 		terminalHeightAvailable = 10 //default on error
+		terminalWidth = 20
 
 	} else {
 		terminalHeightAvailable -= bufferHeight
+	}
 
-	}
-	terminalWidth, err := sttyWrapperGetTerminalWidth()
-	if err != nil {
-		fmt.Println(err)
-	}
-	dirNumberOfItems := (len(navPtr.subDirs) + len(navPtr.files))
 	ServerPageCountMax = dirNumberOfItems / terminalHeightAvailable
 	pageRemainder := dirNumberOfItems % terminalHeightAvailable
 
+	// add additional page to fit remaining line items
 	if pageRemainder > 0 {
 		ServerPageCountMax++
 	}
@@ -106,33 +109,36 @@ func renderServerDownloadList() map[int]map[string]bool {
 	if ServerPageCountMax == 0 {
 		ServerPageCountMax = 1
 	}
+
 	//Create header divider of appropriate length
 	divider := ""
 	for i := 0; i < terminalWidth; i++ {
 		divider += "="
 	}
 
-	//Render logic
-	ClearScreen()
-	fmt.Println(divider)
+	//Render variables
+	titleBuffer := ""
 	menuTitle := "SERVER DOWNLOAD INDEX"
+	dirMetaData := getCurrentDirMetaData()
 	currentDir := getPresentWorkingDirectory()
 	tmpTitle := fmt.Sprintf("%s%s", menuTitle, currentDir)
 	titleBufferLength := terminalWidth - len(tmpTitle)
-	titleBuffer := ""
-
+	menuHeader := fmt.Sprintf("%s%s%s", menuTitle, titleBuffer, currentDir)
+	pageStatus := fmt.Sprintf("page (%d / %d)", DownloadBrowserIndex+1, ServerPageCountMax)
 	for i := 0; i < titleBufferLength; i++ {
 		titleBuffer = titleBuffer + " "
 	}
-	fmt.Println(fmt.Sprintf("%s%s%s", menuTitle, titleBuffer, currentDir))
-	fmt.Println(divider)
 
-	dirMetaData := getCurrentDirMetaData()
+	//Render download menu
+	ClearScreen()
+	fmt.Println(divider)
+	fmt.Println(menuHeader)
+	fmt.Println(divider)
 	renderMetaData(dirMetaData, terminalHeightAvailable)
 	fmt.Println(divider)
-	pageStatus := fmt.Sprintf("page (%d / %d)", DownloadBrowserIndex+1, ServerPageCountMax)
 	fmt.Println(pageStatus)
 	fmt.Println("<< B  |  N >>")
+
 	return dirMetaData
 }
 
