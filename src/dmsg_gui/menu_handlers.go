@@ -79,6 +79,14 @@ ServerIndexMenu:
 		}
 
 		goto ServerIndexMenu
+	case "F":
+		DownloadBrowserIndex = 0
+		goto ServerIndexMenu
+
+	case "L":
+		DownloadBrowserIndex = ServerPageCountMax - 1
+		goto ServerIndexMenu
+
 	case "N":
 		if DownloadBrowserIndex < ServerPageCountMax-1 {
 

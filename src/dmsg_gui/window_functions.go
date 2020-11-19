@@ -137,7 +137,7 @@ func renderServerDownloadList() map[int]map[string]bool {
 	renderMetaData(dirMetaData, terminalHeightAvailable, terminalWidth)
 	fmt.Println(divider)
 	fmt.Println(pageStatus)
-	fmt.Println("<< B  |  N >>")
+	fmt.Println("<<F <B | N> L>>")
 
 	return dirMetaData
 }
