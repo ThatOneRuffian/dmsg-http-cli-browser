@@ -57,7 +57,7 @@ func ServerIndexMenuHandler(serverPublicKey string) {
 ServerIndexMenu:
 	directoryMetaData := renderServerDownloadList()
 	consoleInput := bufio.NewReader(os.Stdin)
-	fmt.Print("(R to Refresh Server Index, E to Exit Server File Browser, Q to quit): ")
+	fmt.Print("(R to Refresh Server Index, E to Exit Server File Browser, G to Goto page, Q to quit): ")
 	userChoice, _ := consoleInput.ReadString('\n')
 	userChoice = strings.ToUpper(removeNewline(userChoice))
 	switch userChoice {
@@ -81,6 +81,20 @@ ServerIndexMenu:
 		goto ServerIndexMenu
 	case "F":
 		DownloadBrowserIndex = 0
+		goto ServerIndexMenu
+	case "G":
+		fmt.Print("Enter page number:")
+		consoleReader := bufio.NewReader(os.Stdin)
+		pageNumber, _ := consoleReader.ReadString('\n')
+		pageNumber = strings.ToUpper(removeNewline(pageNumber))
+		pageNumber2, err := strconv.Atoi(pageNumber)
+
+		if err != nil {
+
+		} else if pageNumber2 > 0 && pageNumber2-1 < ServerPageCountMax {
+			DownloadBrowserIndex = pageNumber2 - 1
+		}
+
 		goto ServerIndexMenu
 
 	case "L":
