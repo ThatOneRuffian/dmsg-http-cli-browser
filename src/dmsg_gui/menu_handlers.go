@@ -83,10 +83,8 @@ ServerIndexMenu:
 			DownloadBrowserIndex--
 		}
 
-		goto ServerIndexMenu
 	case "F":
 		DownloadBrowserIndex = 0
-		goto ServerIndexMenu
 	case "G":
 		fmt.Print("Enter page number:")
 		consoleReader := bufio.NewReader(os.Stdin)
@@ -100,11 +98,8 @@ ServerIndexMenu:
 			DownloadBrowserIndex = pageNumber2 - 1
 		}
 
-		goto ServerIndexMenu
-
 	case "L":
 		DownloadBrowserIndex = ServerPageCountMax - 1
-		goto ServerIndexMenu
 
 	case "N":
 		if DownloadBrowserIndex < ServerPageCountMax-1 {
@@ -112,11 +107,9 @@ ServerIndexMenu:
 			DownloadBrowserIndex++
 		}
 
-		goto ServerIndexMenu
 	case "R":
 		refreshServerIndex(serverPublicKey, true)
 		assembleFileStructure(serverPublicKey)
-		goto ServerIndexMenu
 
 	default:
 		userInputVar, err := strconv.Atoi(userChoice)
