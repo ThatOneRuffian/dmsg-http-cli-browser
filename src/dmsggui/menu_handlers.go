@@ -104,14 +104,14 @@ ServerIndexMenu:
 	case "G":
 		fmt.Print("Enter page number:")
 		consoleReader := bufio.NewReader(os.Stdin)
-		pageNumber, _ := consoleReader.ReadString('\n')
-		pageNumber = strings.ToUpper(removeNewline(pageNumber))
-		pageNumber2, err := strconv.Atoi(pageNumber)
+		userInput, _ := consoleReader.ReadString('\n')
+		userInput = strings.ToUpper(removeNewline(userInput))
+		pageNumber, err := strconv.Atoi(userInput)
 
 		if err != nil {
 
-		} else if pageNumber2 > 0 && pageNumber2-1 < serverPageCountMax {
-			DownloadBrowserIndex = pageNumber2 - 1
+		} else if pageNumber > 0 && pageNumber-1 < serverPageCountMax {
+			DownloadBrowserIndex = pageNumber - 1
 		}
 
 	case "L":
