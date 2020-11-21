@@ -30,6 +30,10 @@ ServerMenu:
 		if DownloadBrowserIndex > 0 {
 			DownloadBrowserIndex--
 		}
+	case "F":
+		DownloadBrowserIndex = 0
+	case "L":
+		DownloadBrowserIndex = mainMenuPageCountMax - 1
 	case "N":
 		if DownloadBrowserIndex < mainMenuPageCountMax-1 {
 
