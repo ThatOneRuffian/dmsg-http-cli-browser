@@ -133,20 +133,6 @@ func renderHomeMenuServerList(terminalHeightAvailable int, terminalWidthAvailabl
 		fmt.Println("-")
 	}
 END:
-	/*verticalHeightBuffer := terminalHeightAvailable
-		for i := 0; i < len(SavedServers); i++ {
-			listEntry := fmt.Sprintf("%d) %s", i+1, SavedServers[i][0])
-			fmt.Println(listEntry)
-			verticalHeightBuffer--
-			if verticalHeightBuffer == 0 {
-				goto END
-			}
-		}
-		for ; verticalHeightBuffer > 0; verticalHeightBuffer-- {
-			fmt.Println("-")
-			verticalHeightBuffer--
-		}
-	END:*/
 }
 
 func renderServerDownloadList() map[int]map[string]bool {
