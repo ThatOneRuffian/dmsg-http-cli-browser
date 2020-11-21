@@ -120,7 +120,7 @@ func generateConfigAbsFilePath() string {
 }
 
 func parseConfigFile(file **os.File) {
-	savedServers := make(map[int][2]string)
+	_savedServers := make(map[int][2]string)
 	friendlyNameIndex := 0
 	serverPubKeyIndex := 1
 	defer func() {
@@ -139,10 +139,10 @@ func parseConfigFile(file **os.File) {
 		tmpSplitString := strings.Split(tmpString, ";")
 		splitStringArray[0] = tmpSplitString[friendlyNameIndex]
 		splitStringArray[1] = tmpSplitString[serverPubKeyIndex]
-		savedServers[i] = splitStringArray
+		_savedServers[i] = splitStringArray
 		i++
 	}
-	SavedServers = savedServers
+	SavedServers = _savedServers
 }
 
 func appendToConfig(friendlyName string, serverPublicKey string) {
