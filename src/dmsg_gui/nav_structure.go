@@ -36,7 +36,7 @@ func assembleFileStructure(serverPublicKey string) {
 	defer file.Close()
 	defer func() {
 		if err := recover(); err != nil {
-			CurrentServerIndex = make(map[int][2]string)
+			currentServerIndexContents = make(map[int][2]string)
 		}
 	}()
 

@@ -13,8 +13,8 @@ var ServerPageCountMax int
 //SavedServers stores server cache - initalized on loadCache
 var SavedServers map[int][2]string
 
-//CurrentServerIndex will store the parsed server index values
-var CurrentServerIndex map[int][2]string
+//currentServerIndexContents will store the parsed server index values
+var currentServerIndexContents map[int][2]string
 
 func ClearScreen() {
 	cmd := exec.Command("clear")

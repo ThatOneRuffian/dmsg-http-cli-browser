@@ -26,7 +26,7 @@ func loadServerIndex(serverPublicKey string) bool {
 	defer file.Close()
 	defer func() {
 		if err := recover(); err != nil {
-			CurrentServerIndex = make(map[int][2]string)
+			currentServerIndexContents = make(map[int][2]string)
 		}
 	}()
 
@@ -58,7 +58,7 @@ func clearServerIndexFile(serverPublicKey string) {
 }
 
 func parseServerIndex(file **os.File) {
-	currentServerIndex := make(map[int][2]string)
+	currentServerIndexContents := make(map[int][2]string)
 
 	defer func() {
 		if err := recover(); err != nil {
@@ -78,12 +78,12 @@ func parseServerIndex(file **os.File) {
 			parsedString := strings.Split(inputRow, ";")
 			swapVar[0] = parsedString[0]
 			swapVar[1] = parsedString[1]
-			currentServerIndex[i] = swapVar
+			currentServerIndexContents[i] = swapVar
 			i++
 		}
 	}
 
-	CurrentServerIndex = currentServerIndex
+	currentServerIndexContents = currentServerIndexContents
 }
 
 func clearCacheConfig() {
