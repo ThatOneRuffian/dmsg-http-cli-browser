@@ -113,23 +113,24 @@ ServerIndexMenu:
 		goto ServerIndexMenu
 
 	default:
-		userInt, err := strconv.Atoi(userChoice)
+		userInputVar, err := strconv.Atoi(userChoice)
 		if err != nil {
 			break
 		}
-		if userInt >= 1 && userInt <= len(directoryMetaData) {
+		if userInputVar >= 1 && userInputVar <= len(directoryMetaData) {
 
 			//determine if the key is a dir or a file
-			for index := range directoryMetaData[userInt] {
-
+			for index := range directoryMetaData[userInputVar] {
+				// navigate up a directory
 				if index == ".." && navPtr.parentDir != nil {
 					navPtr = navPtr.parentDir
 				} else {
-					if directoryMetaData[userInt][index] {
-
+					// if object is a directory then navigate into
+					if directoryMetaData[userInputVar][index] {
 						navPtr = navPtr.subDirs[index]
 					} else {
-						for fileName := range directoryMetaData[userInt] {
+						// runs once
+						for fileName := range directoryMetaData[userInputVar] {
 							// download file
 							fmt.Println("File", getPresentWorkingDirectory()+fileName)
 							ClearScreen()
