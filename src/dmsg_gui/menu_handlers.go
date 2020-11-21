@@ -15,7 +15,7 @@ ServerMenu:
 
 	renderServerBrowser()
 
-	fmt.Print("(Press A to Add server, D to Delete a server, Q to quit): ")
+	fmt.Print("(Press A to Add server, D to Delete a server, G to Goto page, Q to quit): ")
 	userChoice, _ := consoleInput.ReadString('\n')
 	userChoice = strings.ToUpper(removeNewline(userChoice))
 	switch userChoice {
@@ -41,6 +41,18 @@ ServerMenu:
 		}
 	case "D":
 		deleteServerWizard()
+	case "G":
+		fmt.Print("Enter page number:")
+		consoleReader := bufio.NewReader(os.Stdin)
+		userInput, _ := consoleReader.ReadString('\n')
+		userInput = strings.ToUpper(removeNewline(userInput))
+		pageNumber, err := strconv.Atoi(userInput)
+
+		if err != nil {
+
+		} else if pageNumber > 0 && pageNumber-1 < mainMenuPageCountMax {
+			DownloadBrowserIndex = pageNumber - 1
+		}
 	default:
 		userInt, err := strconv.Atoi(userChoice)
 		if err != nil {
