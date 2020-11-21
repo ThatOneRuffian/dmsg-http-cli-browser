@@ -110,6 +110,7 @@ ServerIndexMenu:
 		goto ServerIndexMenu
 	case "R":
 		refreshServerIndex(serverPublicKey, true)
+		assembleFileStructure(serverPublicKey)
 		goto ServerIndexMenu
 
 	default:
