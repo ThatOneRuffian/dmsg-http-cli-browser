@@ -124,6 +124,7 @@ ServerIndexMenu:
 				// navigate up a directory
 				if index == ".." && navPtr.parentDir != nil {
 					navPtr = navPtr.parentDir
+					DownloadBrowserIndex = 0
 				} else {
 					// if object is a directory then navigate into
 					if directoryMetaData[userInputVar][index] {
