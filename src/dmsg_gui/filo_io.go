@@ -11,8 +11,8 @@ import (
 //configFileHomePath stores the path, in the user's home dir, where the server address cache is saved
 var configFileHomePath string = "/.config"
 
-//MainDownloadsLoc is the location where downloads are stored
-var MainDownloadsLoc string
+//mainDownloadsLoc is the location where downloads are stored
+var mainDownloadsLoc string
 
 //DownloadListLength is how many entries are displayed on-screen at a time
 var DownloadListLength int = 10
@@ -184,7 +184,7 @@ func InitDownloadsFolder() {
 	if err != nil {
 		fmt.Println("Error initializing downloads location")
 	}
-	MainDownloadsLoc = tmpString + "/Downloads"
+	mainDownloadsLoc = tmpString + "/Downloads"
 }
 
 func LoadCache() bool {

@@ -135,7 +135,7 @@ ServerIndexMenu:
 						for fileName := range directoryMetaData[userInputVar] {
 							// download file
 							ClearScreen()
-							dmsggetWrapper(serverPublicKey, MainDownloadsLoc, getPresentWorkingDirectory()+fileName, "", true)
+							dmsggetWrapper(serverPublicKey, mainDownloadsLoc, getPresentWorkingDirectory()+fileName, "", true)
 						}
 					}
 				}
