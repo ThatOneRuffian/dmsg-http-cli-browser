@@ -27,9 +27,14 @@ ServerMenu:
 		addServer()
 		LoadCache()
 	case "B":
-		//TODO
+		if DownloadBrowserIndex > 0 {
+			DownloadBrowserIndex--
+		}
 	case "N":
-		//TODO
+		if DownloadBrowserIndex < len(SavedServers)-1 {
+
+			DownloadBrowserIndex++
+		}
 	case "D":
 		deleteServerWizard()
 	default:

@@ -92,24 +92,60 @@ func renderServerBrowser() {
 	fmt.Println(divider)
 	fmt.Println("DMSG HTTP SERVER LIST")
 	fmt.Println(divider)
-	renderHomeMenuServerList(terminalHeightAvailable)
+	renderHomeMenuServerList(terminalHeightAvailable, terminalWidth)
 
 	fmt.Println(divider)
 	fmt.Println(pageStatus)
 	fmt.Println("<<F <B | N> L>>")
 }
 
-func renderHomeMenuServerList(terminalHeightAvailable int) {
+func renderHomeMenuServerList(terminalHeightAvailable int, terminalWidthAvailable int) {
 	verticalHeightBuffer := terminalHeightAvailable
-	for i := 0; i < len(SavedServers); i++ {
-		listEntry := fmt.Sprintf("%d) %s", i+1, SavedServers[i][0])
-		fmt.Println(listEntry)
-		verticalHeightBuffer--
+	var sortedIndex []int
+	for index := range SavedServers {
+		sortedIndex = append(sortedIndex, index)
+	}
+
+	sort.Ints(sortedIndex)
+
+	for index := 1 + DownloadBrowserIndex*terminalHeightAvailable; index <= len(SavedServers); index++ {
+		for index := range sortedIndex {
+
+			tmpLineEntry := fmt.Sprintf("%d) %s ", index+1, SavedServers[index][0])
+			horizontalFill := ""
+			for i := terminalWidthAvailable - len(tmpLineEntry); i > 0; i-- {
+				horizontalFill += "-"
+			}
+			lineEntry := fmt.Sprintf("%d) %s %s", index+1, SavedServers[index][0], horizontalFill)
+
+			fmt.Println(lineEntry)
+
+			verticalHeightBuffer--
+			if verticalHeightBuffer == 0 {
+				goto END
+			}
+
+		}
+
 	}
 	for ; verticalHeightBuffer > 0; verticalHeightBuffer-- {
 		fmt.Println("-")
 	}
-
+END:
+	/*verticalHeightBuffer := terminalHeightAvailable
+		for i := 0; i < len(SavedServers); i++ {
+			listEntry := fmt.Sprintf("%d) %s", i+1, SavedServers[i][0])
+			fmt.Println(listEntry)
+			verticalHeightBuffer--
+			if verticalHeightBuffer == 0 {
+				goto END
+			}
+		}
+		for ; verticalHeightBuffer > 0; verticalHeightBuffer-- {
+			fmt.Println("-")
+			verticalHeightBuffer--
+		}
+	END:*/
 }
 
 func renderServerDownloadList() map[int]map[string]bool {
@@ -180,6 +216,7 @@ func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAva
 
 	for index := 1 + DownloadBrowserIndex*terminalHeightAvailable; index <= len(directoryMetaData); index++ {
 		for key := range directoryMetaData[index] {
+			// if entry is a directory
 			if directoryMetaData[index][key] {
 				tmpLineEntry := fmt.Sprintf("%d) %s / Directory", index, key)
 				horizontalFill := ""
