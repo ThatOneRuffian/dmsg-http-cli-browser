@@ -1,18 +1,18 @@
 package main
 
-import "dmsg_gui"
+import "dmsggui"
 
 func main() {
 
-	dmsg_gui.ClearScreen()
-	dmsg_gui.InitDownloadsFolder()
+	dmsggui.ClearScreen()
+	dmsggui.InitDownloadsFolder()
 	// if config not found then run the first launch wizard
-	if !dmsg_gui.LoadCache() {
-		dmsg_gui.FirstRunWizard()
+	if !dmsggui.LoadCache() {
+		dmsggui.FirstRunWizard()
 	}
 
 	for true {
-		userChoice := dmsg_gui.ServerListMainMenu()
-		dmsg_gui.ServerIndexMenuHandler(userChoice)
+		userChoice := dmsggui.ServerListMainMenu()
+		dmsggui.ServerIndexMenuHandler(userChoice)
 	}
 }

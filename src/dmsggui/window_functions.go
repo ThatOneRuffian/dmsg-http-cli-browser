@@ -1,4 +1,4 @@
-package dmsg_gui
+package dmsggui
 
 import (
 	"fmt"
