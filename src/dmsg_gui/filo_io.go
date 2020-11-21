@@ -14,9 +14,6 @@ var configFileHomePath string = "/.config"
 //mainDownloadsLoc is the location where downloads are stored
 var mainDownloadsLoc string
 
-//DownloadListLength is how many entries are displayed on-screen at a time
-var DownloadListLength int = 10
-
 //indexDownloadLoc is where the active server's index is downloaded
 var indexDownloadLoc string = os.TempDir()
 
