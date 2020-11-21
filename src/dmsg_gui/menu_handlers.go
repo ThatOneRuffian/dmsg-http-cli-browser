@@ -94,15 +94,15 @@ ServerIndexMenu:
 
 		if err != nil {
 
-		} else if pageNumber2 > 0 && pageNumber2-1 < ServerPageCountMax {
+		} else if pageNumber2 > 0 && pageNumber2-1 < serverPageCountMax {
 			DownloadBrowserIndex = pageNumber2 - 1
 		}
 
 	case "L":
-		DownloadBrowserIndex = ServerPageCountMax - 1
+		DownloadBrowserIndex = serverPageCountMax - 1
 
 	case "N":
-		if DownloadBrowserIndex < ServerPageCountMax-1 {
+		if DownloadBrowserIndex < serverPageCountMax-1 {
 
 			DownloadBrowserIndex++
 		}

@@ -7,8 +7,8 @@ import (
 	"sort"
 )
 
-//ServerPageCountMax holds the max page give the current server's index
-var ServerPageCountMax int
+//serverPageCountMax holds the max page give the current server's index
+var serverPageCountMax int
 
 //SavedServers stores server cache - initalized on loadCache
 var SavedServers map[int][2]string
@@ -56,17 +56,17 @@ func renderServerBrowser() {
 		terminalHeightAvailable -= bufferHeight
 	}
 
-	ServerPageCountMax = dirNumberOfItems / terminalHeightAvailable
+	serverPageCountMax = dirNumberOfItems / terminalHeightAvailable
 	pageRemainder := dirNumberOfItems % terminalHeightAvailable
 
 	// add additional page to fit remaining line items
 	if pageRemainder > 0 {
-		ServerPageCountMax++
+		serverPageCountMax++
 	}
 
 	// Avoid 1/0 pages
-	if ServerPageCountMax == 0 {
-		ServerPageCountMax = 1
+	if serverPageCountMax == 0 {
+		serverPageCountMax = 1
 	}
 
 	//Create header divider of appropriate length
@@ -86,11 +86,11 @@ func renderServerBrowser() {
 		titleBuffer = titleBuffer + " "
 	}
 	//menuHeader := fmt.Sprintf("%s%s%s", menuTitle, titleBuffer, currentDir)
-	pageStatus := fmt.Sprintf("page (%d / %d)", DownloadBrowserIndex+1, ServerPageCountMax)
+	pageStatus := fmt.Sprintf("page (%d / %d)", DownloadBrowserIndex+1, serverPageCountMax)
 
 	ClearScreen()
 	fmt.Println(divider)
-	fmt.Println("DMSG HTTP SERVER LIST")
+	fmt.Println("DMSG-HTTP SERVER LIST")
 	fmt.Println(divider)
 	renderHomeMenuServerList(terminalHeightAvailable, terminalWidth)
 
@@ -166,17 +166,17 @@ func renderServerDownloadList() map[int]map[string]bool {
 		terminalHeightAvailable -= bufferHeight
 	}
 
-	ServerPageCountMax = dirNumberOfItems / terminalHeightAvailable
+	serverPageCountMax = dirNumberOfItems / terminalHeightAvailable
 	pageRemainder := dirNumberOfItems % terminalHeightAvailable
 
 	// add additional page to fit remaining line items
 	if pageRemainder > 0 {
-		ServerPageCountMax++
+		serverPageCountMax++
 	}
 
 	// Avoid 1/0 pages
-	if ServerPageCountMax == 0 {
-		ServerPageCountMax = 1
+	if serverPageCountMax == 0 {
+		serverPageCountMax = 1
 	}
 
 	//Create header divider of appropriate length
@@ -196,7 +196,7 @@ func renderServerDownloadList() map[int]map[string]bool {
 		titleBuffer = titleBuffer + " "
 	}
 	menuHeader := fmt.Sprintf("%s%s%s", menuTitle, titleBuffer, currentDir)
-	pageStatus := fmt.Sprintf("page (%d / %d)", DownloadBrowserIndex+1, ServerPageCountMax)
+	pageStatus := fmt.Sprintf("page (%d / %d)", DownloadBrowserIndex+1, serverPageCountMax)
 
 	//Render download menu
 	ClearScreen()
