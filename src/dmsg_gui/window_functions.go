@@ -40,30 +40,66 @@ func refreshServerIndex(serverPublicKey string, clearCache bool) {
 }
 
 func renderServerBrowser() {
-	bufferHeight := 7
-	divider := ""
-	terminalHeightAvailable, err := sttyWrapperGetTerminalHeight()
-	if err != nil {
+	bufferHeight := 7 //lines consumed by menu elemets
+	dirNumberOfItems := len(SavedServers)
+	terminalHeightAvailable, heightError := sttyWrapperGetTerminalHeight()
+	terminalWidth, widthError := sttyWrapperGetTerminalWidth()
+
+	if heightError != nil || widthError != nil {
+		fmt.Println("Error fetching terminal dimensions")
+		fmt.Println(heightError)
+		fmt.Println(widthError)
 		terminalHeightAvailable = 10 //default on error
+		terminalWidth = 20
 
 	} else {
 		terminalHeightAvailable -= bufferHeight
-
-	}
-	terminalWidth, err := sttyWrapperGetTerminalWidth()
-	if err != nil {
-		fmt.Println(err)
 	}
 
-	pageStatus := fmt.Sprintf("page (%d / %d)", 1, 20)
-	for ; terminalWidth > 0; terminalWidth-- {
+	ServerPageCountMax = dirNumberOfItems / terminalHeightAvailable
+	pageRemainder := dirNumberOfItems % terminalHeightAvailable
+
+	// add additional page to fit remaining line items
+	if pageRemainder > 0 {
+		ServerPageCountMax++
+	}
+
+	// Avoid 1/0 pages
+	if ServerPageCountMax == 0 {
+		ServerPageCountMax = 1
+	}
+
+	//Create header divider of appropriate length
+	divider := ""
+	for i := 0; i < terminalWidth; i++ {
 		divider += "="
-
 	}
+
+	//Render variables
+	titleBuffer := ""
+	menuTitle := "SERVER DOWNLOAD INDEX"
+	//dirMetaData := getCurrentDirMetaData()
+	currentDir := getPresentWorkingDirectory()
+	tmpTitle := fmt.Sprintf("%s%s", menuTitle, currentDir)
+	titleBufferLength := terminalWidth - len(tmpTitle)
+	for i := 0; i < titleBufferLength; i++ {
+		titleBuffer = titleBuffer + " "
+	}
+	//menuHeader := fmt.Sprintf("%s%s%s", menuTitle, titleBuffer, currentDir)
+	pageStatus := fmt.Sprintf("page (%d / %d)", DownloadBrowserIndex+1, ServerPageCountMax)
+
 	ClearScreen()
 	fmt.Println(divider)
 	fmt.Println("DMSG HTTP SERVER LIST")
 	fmt.Println(divider)
+	renderHomeMenuServerList(terminalHeightAvailable)
+
+	fmt.Println(divider)
+	fmt.Println(pageStatus)
+	fmt.Println("<<F <B | N> L>>")
+}
+
+func renderHomeMenuServerList(terminalHeightAvailable int) {
 	verticalHeightBuffer := terminalHeightAvailable
 	for i := 0; i < len(SavedServers); i++ {
 		listEntry := fmt.Sprintf("%d) %s", i+1, SavedServers[i][0])
@@ -74,9 +110,6 @@ func renderServerBrowser() {
 		fmt.Println("-")
 	}
 
-	fmt.Println(divider)
-	fmt.Println(pageStatus)
-	fmt.Println("<< B  |  N >>")
 }
 
 func renderServerDownloadList() map[int]map[string]bool {
