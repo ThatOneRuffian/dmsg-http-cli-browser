@@ -8,8 +8,8 @@ import (
 	"strings"
 )
 
-//ConfigFileHomePath stores the path, in the user's home dir, where the server address cache is saved
-var ConfigFileHomePath string = "/.config"
+//configFileHomePath stores the path, in the user's home dir, where the server address cache is saved
+var configFileHomePath string = "/.config"
 
 //MainDownloadsLoc is the location where downloads are stored
 var MainDownloadsLoc string
@@ -109,7 +109,7 @@ func generateConfigAbsDirPath() string {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return homeDir + ConfigFileHomePath
+	return homeDir + configFileHomePath
 }
 
 func generateConfigAbsFilePath() string {
