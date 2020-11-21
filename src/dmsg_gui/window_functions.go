@@ -43,7 +43,7 @@ func refreshServerIndex(serverPublicKey string, clearCache bool) {
 }
 
 func renderServerBrowser() {
-	bufferHeight := 7 //lines consumed by menu elemets
+	bufferHeight := 7 //lines consumed by menu elements
 	dirNumberOfItems := len(SavedServers)
 	terminalHeightAvailable, heightError := sttyWrapperGetTerminalHeight()
 	terminalWidth, widthError := sttyWrapperGetTerminalWidth()
@@ -153,7 +153,7 @@ END:
 
 func renderServerDownloadList() map[int]map[string]bool {
 
-	bufferHeight := 7 //lines consumed by menu elemets
+	bufferHeight := 7 //lines consumed by menu elements
 	dirNumberOfItems := len(navPtr.subDirs) + len(navPtr.files)
 	terminalHeightAvailable, heightError := sttyWrapperGetTerminalHeight()
 	terminalWidth, widthError := sttyWrapperGetTerminalWidth()
