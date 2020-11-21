@@ -111,26 +111,24 @@ func renderHomeMenuServerList(terminalHeightAvailable int, terminalWidthAvailabl
 
 	sort.Ints(sortedIndex)
 
-	for index := 1 + DownloadBrowserIndex*terminalHeightAvailable; index <= len(SavedServers); index++ {
-		for index := range sortedIndex {
+	for index := range sortedIndex {
 
-			tmpLineEntry := fmt.Sprintf("%d) %s ", index+1, SavedServers[index][0])
-			horizontalFill := ""
-			for i := terminalWidthAvailable - len(tmpLineEntry); i > 0; i-- {
-				horizontalFill += "-"
-			}
-			lineEntry := fmt.Sprintf("%d) %s %s", index+1, SavedServers[index][0], horizontalFill)
+		tmpLineEntry := fmt.Sprintf("%d) %s ", index+1, SavedServers[index][0])
+		horizontalFill := ""
+		for i := terminalWidthAvailable - len(tmpLineEntry); i > 0; i-- {
+			horizontalFill += "-"
+		}
+		lineEntry := fmt.Sprintf("%d) %s %s", index+1, SavedServers[index][0], horizontalFill)
 
-			fmt.Println(lineEntry)
+		fmt.Println(lineEntry)
 
-			verticalHeightBuffer--
-			if verticalHeightBuffer == 0 {
-				goto END
-			}
-
+		verticalHeightBuffer--
+		if verticalHeightBuffer == 0 {
+			goto END
 		}
 
 	}
+
 	for ; verticalHeightBuffer > 0; verticalHeightBuffer-- {
 		fmt.Println("-")
 	}
