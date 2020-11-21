@@ -7,7 +7,10 @@ import (
 	"sort"
 )
 
-//serverPageCountMax holds the max page give the current server's index
+//mainMenuPageCountMax holds the max page of the server list
+var mainMenuPageCountMax int
+
+//serverPageCountMax holds the max page given the current server's index and terminal height
 var serverPageCountMax int
 
 //SavedServers stores server cache - initalized on loadCache
@@ -56,17 +59,17 @@ func renderServerBrowser() {
 		terminalHeightAvailable -= bufferHeight
 	}
 
-	serverPageCountMax = dirNumberOfItems / terminalHeightAvailable
+	mainMenuPageCountMax = dirNumberOfItems / terminalHeightAvailable
 	pageRemainder := dirNumberOfItems % terminalHeightAvailable
 
 	// add additional page to fit remaining line items
 	if pageRemainder > 0 {
-		serverPageCountMax++
+		mainMenuPageCountMax++
 	}
 
 	// Avoid 1/0 pages
-	if serverPageCountMax == 0 {
-		serverPageCountMax = 1
+	if mainMenuPageCountMax == 0 {
+		mainMenuPageCountMax = 1
 	}
 
 	//Create header divider of appropriate length
@@ -86,7 +89,7 @@ func renderServerBrowser() {
 		titleBuffer = titleBuffer + " "
 	}
 	//menuHeader := fmt.Sprintf("%s%s%s", menuTitle, titleBuffer, currentDir)
-	pageStatus := fmt.Sprintf("page (%d / %d)", DownloadBrowserIndex+1, serverPageCountMax)
+	pageStatus := fmt.Sprintf("page (%d / %d)", DownloadBrowserIndex+1, mainMenuPageCountMax)
 
 	ClearScreen()
 	fmt.Println(divider)

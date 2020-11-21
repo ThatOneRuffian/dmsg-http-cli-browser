@@ -31,7 +31,7 @@ ServerMenu:
 			DownloadBrowserIndex--
 		}
 	case "N":
-		if DownloadBrowserIndex < len(SavedServers)-1 {
+		if DownloadBrowserIndex < mainMenuPageCountMax-1 {
 
 			DownloadBrowserIndex++
 		}
