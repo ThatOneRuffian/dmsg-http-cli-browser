@@ -44,7 +44,7 @@ func main() {
 
 		if os.IsNotExist(pathErr) {
 			//if index dir not found attempt to create
-			createDirErr := os.MkdirAll(indexPath, 0644)
+			createDirErr := os.MkdirAll(indexPath, 0744)
 			if createDirErr != nil {
 				fmt.Println("Unable to create directory:", indexPath)
 				panic(createDirErr)
