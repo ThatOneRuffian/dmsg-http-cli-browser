@@ -72,8 +72,6 @@ func main() {
 
 func printUseage() {
 	fmt.Println("Program usage:  indexer [index_interval_in_seconds - (Default=30s)]")
-	fmt.Println("--------------------------------------------------------------------")
-	fmt.Println("Program is meant to be installed as a service. This makes switching the working index directory a lot easier.")
 	fmt.Println()
 }
 
