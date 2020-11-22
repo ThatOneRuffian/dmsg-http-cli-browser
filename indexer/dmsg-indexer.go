@@ -2,6 +2,7 @@ package main
 
 import (
 	"dmsggui"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -11,33 +12,40 @@ import (
 	"time"
 )
 
-func main() {
-	//default interval
-	sleepInterval := time.Duration(30) * time.Second
+var indexPath string
 
-	//parse program arguments
-	programArguments := ""
-	if len(os.Args) > 1 {
-		programArguments = os.Args[1]
-		if strings.Contains(programArguments, "-h") {
-			dmsggui.ClearScreen()
-			printUseage()
-			os.Exit(0)
-		}
-	}
-	intergerValue, err := strconv.Atoi(programArguments)
-	if err != nil && programArguments != "" {
-		fmt.Println("Error interpreting user input", err)
+func main() {
+	//default index interval
+	sleepInterval := time.Second
+	intervalInputString := ""
+
+	flag.StringVar(&indexPath, "d", ".", "Specify directory to be indexed.")
+	flag.StringVar(&intervalInputString, "t", "30", "Specify the index interval in seconds.")
+
+	flag.Parse()
+
+	// set time interval
+	sleepIntervalInput, timeParseErr := strconv.Atoi(intervalInputString)
+	if timeParseErr != nil {
+		dmsggui.ClearScreen()
+		fmt.Println("Error interpreting time interval input. Enter the number of seconds between each index as an integer.")
 		printUseage()
-		os.Exit(1)
-	} else if intergerValue > 0 {
-		sleepInterval = time.Duration(intergerValue) * time.Second
+		os.Exit(0)
+	} else if sleepIntervalInput > 0 {
+		// if time input okay, then assign to interval
+		sleepInterval = time.Duration(sleepIntervalInput) * time.Second
+	}
+
+	//set index path
+	if indexPath != "\n" {
+		indexPath += "/"
+		fmt.Println("Setting index path to: ", indexPath)
 	}
 
 	fmt.Println("Indexing with an interval of:", sleepInterval)
 	// enter main file monitor loop
 	for true {
-		directory, err := filePathWalk(".")
+		directory, err := filePathWalk(indexPath)
 		if err != nil {
 			fmt.Println("An error occured while reading the directory.")
 		}
@@ -82,10 +90,13 @@ func filePathWalk(root string) ([][2]string, error) {
 }
 
 func clearCurrentIndex() {
-	configFile := "./index"
+	configFile := indexPath + "index"
 	file, err := os.Create(configFile)
 
 	if err != nil {
+
+		fmt.Println("Error opening", configFile)
+
 		fmt.Println(err)
 		fmt.Println(file)
 	}
@@ -98,9 +109,12 @@ func appendToIndex(filename [2]string) {
 
 	dataToWrite := []byte(rawData)
 
-	f, err := os.OpenFile("./index", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	f, err := os.OpenFile(indexPath+"/index", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 
 	if err != nil {
+
+		fmt.Println("Damn!", indexPath+"/index")
+
 		log.Fatal(err)
 	}
 
