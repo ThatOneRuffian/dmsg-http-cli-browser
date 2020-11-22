@@ -21,16 +21,14 @@ func main() {
 		programArguments = os.Args[1]
 		if strings.Contains(programArguments, "-h") {
 			dmsggui.ClearScreen()
-			fmt.Println("Program usage:  indexer [index_interval_in_seconds - (Default=30s)]")
-			fmt.Println("--------------------------------------------------------------------")
-			fmt.Println("Program is meant to be installed as a service. This makes switching the working index directory a lot easier.")
-			fmt.Println()
+			printUseage()
 			os.Exit(0)
 		}
 	}
 	intergerValue, err := strconv.Atoi(programArguments)
 	if err != nil {
 		fmt.Println("Error interpreting user input")
+		printUseage()
 		os.Exit(1)
 	} else {
 		sleepInterval = time.Duration(intergerValue) * time.Second
@@ -51,6 +49,13 @@ func main() {
 		}
 		time.Sleep(sleepInterval)
 	}
+}
+
+func printUseage() {
+	fmt.Println("Program usage:  indexer [index_interval_in_seconds - (Default=30s)]")
+	fmt.Println("--------------------------------------------------------------------")
+	fmt.Println("Program is meant to be installed as a service. This makes switching the working index directory a lot easier.")
+	fmt.Println()
 }
 
 // filePathWalk will list all absolute file paths and their sizes
