@@ -37,9 +37,8 @@ func main() {
 	}
 
 	//set index path
-	if indexPath != "\n" {
+	if indexPath != "" {
 		fmt.Println("Setting index path to: ", indexPath)
-		fmt.Println("Provided directory does not exist.")
 
 		pathErr := os.Chdir(indexPath)
 
