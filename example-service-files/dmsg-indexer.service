@@ -1,0 +1,11 @@
+[Unit]
+Description=dmsg-indexing service
+
+[Service]
+User=root
+WorkingDirectory=[same dir that the dmsg-http server is set to serve]
+ExecStart=dmsg-indexer [indexer interval]
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

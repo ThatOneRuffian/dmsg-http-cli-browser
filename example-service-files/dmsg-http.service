@@ -1,0 +1,10 @@
+[Unit]
+Description=dmsg-http service
+
+[Service]
+User=root
+ExecStart=dmsg-http-server --dir [root dir for dmsg-http files] --sk [private key generated goes here]
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
