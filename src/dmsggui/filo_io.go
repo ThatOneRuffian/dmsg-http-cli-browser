@@ -187,7 +187,7 @@ func InitDownloadsFolder() {
 	// If download location is not found...
 	if os.IsNotExist(dirNotFoundErr) {
 		// Attempt to create dir if it does not exist
-		mkdirErr := os.Mkdir(mainDownloadsLoc, 0644)
+		mkdirErr := os.Mkdir(mainDownloadsLoc, 0744)
 
 		if mkdirErr != nil {
 			// could not create downloads location panic
