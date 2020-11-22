@@ -38,8 +38,19 @@ func main() {
 
 	//set index path
 	if indexPath != "\n" {
-		indexPath += "/"
 		fmt.Println("Setting index path to: ", indexPath)
+		fmt.Println("Provided directory does not exist.")
+
+		pathErr := os.Chdir(indexPath)
+
+		if os.IsNotExist(pathErr) {
+			//if index dir not found attempt to create
+			createDirErr := os.MkdirAll(indexPath, 0644)
+			if createDirErr != nil {
+				fmt.Println("Unable to create directory:", indexPath)
+				panic(createDirErr)
+			}
+		}
 	}
 
 	fmt.Println("Indexing with an interval of:", sleepInterval)
