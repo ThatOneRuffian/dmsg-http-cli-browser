@@ -13,7 +13,7 @@ import (
 
 func main() {
 	//default interval
-	sleepInterval := time.Duration(10) * time.Second
+	sleepInterval := time.Duration(30) * time.Second
 
 	//parse program arguments
 	programArguments := ""
