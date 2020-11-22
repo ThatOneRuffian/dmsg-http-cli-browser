@@ -23,7 +23,7 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 		downloadInfo = fmt.Sprintf("Downloading %s to %s", string(alternateFileName), downloadLoc)
 
 	} else {
-		downloadInfo = fmt.Sprintf("Downloading %s to %s", file, downloadLoc)
+		downloadInfo = fmt.Sprintf("Downloading %s.%s to %s", file, publicKey, downloadLoc)
 
 	}
 	if downloadLoc == mainDownloadsLoc {
@@ -31,10 +31,12 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 		clearFile(downloadLoc + "/" + file)
 	}
 
-	fmt.Println(alternateFileName)
 	fetchString := fmt.Sprintf("dmsg://%s:80/%s", publicKey, file)
 	stdOutLoc := os.Stdout
+	fmt.Println()
 	fmt.Println(downloadInfo)
+	fmt.Println()
+
 	if !stdOutput {
 		nullFile, err := os.OpenFile("/dev/null", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
