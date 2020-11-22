@@ -1,7 +1,7 @@
 # Example service files (For systems with systemd based service managers)
 
 
-**Setting up a dmsg-http server**
+**Setting up a dmsg-http server service**
 
 First, you must build the [dmsg-http server](https://github.com/skycoin/dmsg/tree/master/examples/dmsgget/dmsg-example-http-server) from Skycoin's [repo](https://github.com/skycoin/dmsg)
 - run "go get github.com/skycoin/dmsg" to download the repo to your src go dir (e.g. ~/go/src/)
@@ -22,7 +22,7 @@ $ ExecStart=dmsg-http-server --dir [root dir for dmsg-http files] --sk [private 
 $ (e.g. ExecStart=dmsg-http-server --dir /srv/dmsg-http-files/ --sk 1a9f70958b1d6923e7ac1394626e63033f033f65d1476f832e5f16bb79786b73)
 ```
 
-Now copy the modified dmsg-http.service file to your systemd service file location (/etc/systemd/system/). After moving the file to the service location, run 
+Now copy the modified dmsg-http.service file to your systemd service file location (/etc/systemd/system/). After moving the file to the service location, run: 
 
 ```sh
 $ systemctl daemon-reload   # reload service files
@@ -39,4 +39,9 @@ $ systemctl status dmsg-http.service   # see service status
 ```
 The dmsg-http.service should state that it's active and running.
 
+**Setting up a dmsg-indexing service**
 
+Compile the dmsg-indexer by running:
+```sh
+$ go build dmsg-indexer
+```
