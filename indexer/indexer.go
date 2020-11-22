@@ -31,7 +31,7 @@ func main() {
 		if err != nil {
 			fmt.Println("An error occured while reading the directory.")
 		}
-		clearCurrentIndex()
+		clearCurrentIndex() //todo add diff check before rewriting index?
 		for entry := range directory {
 
 			if directory[entry][0] != "index" {
