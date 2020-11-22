@@ -26,13 +26,14 @@ func main() {
 		}
 	}
 	intergerValue, err := strconv.Atoi(programArguments)
-	if err != nil {
-		fmt.Println("Error interpreting user input")
+	if err != nil && programArguments != "" {
+		fmt.Println("Error interpreting user input", err)
 		printUseage()
 		os.Exit(1)
-	} else {
+	} else if intergerValue > 0 {
 		sleepInterval = time.Duration(intergerValue) * time.Second
 	}
+
 	fmt.Println("Indexing with an interval of:", sleepInterval)
 	// enter main file monitor loop
 	for true {
