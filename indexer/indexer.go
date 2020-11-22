@@ -30,6 +30,8 @@ func main() {
 	}
 	intergerValue, err := strconv.Atoi(programArguments)
 	if err != nil {
+		fmt.Println("Error interpreting user input")
+		os.Exit(1)
 	} else {
 		sleepInterval = time.Duration(intergerValue) * time.Second
 	}
