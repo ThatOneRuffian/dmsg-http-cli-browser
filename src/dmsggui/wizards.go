@@ -52,6 +52,7 @@ ExitLoop:
 }
 
 func addServer() string {
+	invalidChar := ";"
 	keyLength := 66
 	consoleInput := bufio.NewReader(os.Stdin)
 	fmt.Print("Please enter the public key for the dmsg-http server you want to add (C to Cancel): ")
@@ -63,15 +64,25 @@ PubKeyInput:
 		publicKey = ""
 		goto Exit
 	}
+	if strings.Contains(publicKey, invalidChar) {
+		fmt.Println("Pulic key cannot contain ';'")
+		fmt.Print("Please enter public key again (C to Cancel): ")
+		goto PubKeyInput
+	}
 	if len(publicKey) == keyLength {
+	FriendlyName:
 		fmt.Print("Add a friendly name to this public key (default: [public_key]): ")
 		friendlyName, _ := consoleInput.ReadString('\n')
 		friendlyName = removeNewline(friendlyName)
-		friendlyName = removeSemiColon(friendlyName)
 		if len(friendlyName) == 0 {
 			appendToConfig(publicKey, publicKey)
+		} else if strings.Contains(friendlyName, invalidChar) {
+			fmt.Println("Friendly name cannot contain", invalidChar)
+			goto FriendlyName
 		} else {
+
 			appendToConfig(friendlyName, publicKey)
+
 		}
 		fmt.Println("Entry cached.")
 
@@ -116,16 +127,4 @@ func browseNow(serverPublicKey string) {
 
 func removeNewline(userInput string) string {
 	return strings.TrimRight(userInput, "\n")
-}
-
-func removeSemiColon(stringToScan string) string {
-	semiColonCode := byte(59)
-	spaceBarCode := byte(32)
-	tmpByteString := []byte(stringToScan)
-	for i, v := range tmpByteString {
-		if v == semiColonCode {
-			tmpByteString[i] = spaceBarCode
-		}
-	}
-	return string(tmpByteString)
 }
