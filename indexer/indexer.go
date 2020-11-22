@@ -33,7 +33,7 @@ func main() {
 	} else {
 		sleepInterval = time.Duration(intergerValue) * time.Second
 	}
-
+	fmt.Println("Indexing with an interval of:", sleepInterval)
 	// enter main file monitor loop
 	for true {
 		directory, err := filePathWalk(".")
