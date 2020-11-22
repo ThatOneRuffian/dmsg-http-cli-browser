@@ -1,6 +1,7 @@
 package main
 
 import (
+	"dmsggui"
 	"fmt"
 	"log"
 	"os"
@@ -18,6 +19,14 @@ func main() {
 	programArguments := ""
 	if len(os.Args) > 1 {
 		programArguments = os.Args[1]
+		if strings.Contains(programArguments, "-h") {
+			dmsggui.ClearScreen()
+			fmt.Println("Program usage:  indexer [index_interval_in_seconds - (Default=30s)]")
+			fmt.Println("--------------------------------------------------------------------")
+			fmt.Println("Program is meant to be installed as a service. This makes switching the working index directory a lot easier.")
+			fmt.Println()
+			os.Exit(0)
+		}
 	}
 	intergerValue, err := strconv.Atoi(programArguments)
 	if err != nil {
