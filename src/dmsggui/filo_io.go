@@ -181,7 +181,20 @@ func InitDownloadsFolder() {
 	if err != nil {
 		fmt.Println("Error initializing downloads location")
 	}
+	//check if download path exist
 	mainDownloadsLoc = tmpString + "/Downloads"
+	dirNotFoundErr := os.Chdir(mainDownloadsLoc)
+	// If download location is not found...
+	if os.IsNotExist(dirNotFoundErr) {
+		// Attempt to create dir if it does not exist
+		mkdirErr := os.Mkdir(mainDownloadsLoc, 0644)
+
+		if mkdirErr != nil {
+			// could not create downloads location panic
+			errorMsg := fmt.Sprintf("Unable to initialize downloads location. Make sure you have permission to write to: %s", mainDownloadsLoc)
+			panic(errorMsg)
+		}
+	}
 }
 
 func LoadCache() bool {
