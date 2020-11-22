@@ -3,8 +3,7 @@ Description=dmsg-indexing service
 
 [Service]
 User=root
-WorkingDirectory=[same dir that the dmsg-http server is set to serve]
-ExecStart=dmsg-indexer [indexer interval]
+ExecStart=dmsg-indexer -t [indexer interval] -d [same dir that the dmsg-http server is set to serve]
 Restart=always
 
 [Install]

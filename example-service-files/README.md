@@ -57,8 +57,7 @@ $ WorkingDirectory=[same dir that the dmsg-http server is set to serve]
 $ ExecStart=dmsg-indexer [indexer interval]
 $
 $ Example:
-$ WorkingDirectory=/srv/dmsg-http-files/
-$ ExecStart=dmsg-indexer 360 # Run every 360s or 6 mins
+$ ExecStart=dmsg-indexer -t 360 -d /srv/dmsg-http-files/ # Run every 360s or 6 mins
 ```
 
 After the edits to the template have been made, move the dmsg-indexer.service to your systemd service location (/etc/systemd/system/).
