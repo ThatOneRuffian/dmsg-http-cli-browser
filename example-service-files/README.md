@@ -1,7 +1,7 @@
 # Example service files (For systems with systemd based service managers)
 
 
-**Setting up a dmsg-http server service**
+## Setting up a dmsg-http server service
 
 First, you must build the [dmsg-http server](https://github.com/skycoin/dmsg/tree/master/examples/dmsgget/dmsg-example-http-server) from Skycoin's [repo](https://github.com/skycoin/dmsg)
 - run "go get github.com/skycoin/dmsg" to download the repo to your src go dir (e.g. ~/go/src/)
@@ -39,9 +39,42 @@ $ systemctl status dmsg-http.service   # see service status
 ```
 The dmsg-http.service should state that it's active and running.
 
-**Setting up a dmsg-indexing service**
+---
+
+## Setting up a dmsg-indexing service
 
 Compile the dmsg-indexer by running:
 ```sh
-$ go build dmsg-indexer
+$ go build dmsg-indexer.go
 ```
+
+Now move the dmsg-indexer binary to a location in your PATH (e.g. /usr/bin/). We're now ready to update the service file for the dmsg-indexer. Open up the dmsg-indexer.service file and change the following lines to match your config:
+
+
+
+```sh
+$ WorkingDirectory=[same dir that the dmsg-http server is set to serve]
+$ ExecStart=dmsg-indexer [indexer interval]
+$
+$ Example:
+$ WorkingDirectory=/srv/dmsg-http-files/
+$ ExecStart=dmsg-indexer 360 # Run every 360s or 6 mins
+```
+
+After the edits to the template have been made, move the dmsg-indexer.service to your systemd service location (/etc/systemd/system/).
+After moving the file to the service location, run: 
+
+```sh
+$ systemctl daemon-reload   # reload service files
+```
+
+Then run:
+```sh
+$ systemctl start dmsg-indexer.service   # start the service
+```
+
+Finally run:
+```sh
+$ systemctl status dmsg-indexer.service   # see service status
+```
+The dmsg-indexer.service should state that it's active and running.
