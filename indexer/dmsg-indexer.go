@@ -122,8 +122,6 @@ func appendToIndex(filename [2]string) {
 
 	if err != nil {
 
-		fmt.Println("Damn!", indexPath+"/index")
-
 		log.Fatal(err)
 	}
 
