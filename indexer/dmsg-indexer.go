@@ -1,7 +1,6 @@
 package main
 
 import (
-	"dmsggui"
 	"flag"
 	"fmt"
 	"log"
@@ -27,9 +26,7 @@ func main() {
 	// set time interval
 	sleepIntervalInput, timeParseErr := strconv.Atoi(intervalInputString)
 	if timeParseErr != nil {
-		dmsggui.ClearScreen()
-		fmt.Println("Error interpreting time interval input. Enter the number of seconds between each index as an integer.")
-		printUseage()
+		fmt.Println("Error interpreting time interval input. Enter the number of seconds between each indexing as an integer.")
 		os.Exit(0)
 	} else if sleepIntervalInput > 0 {
 		// if time input okay, then assign to interval
@@ -79,11 +76,6 @@ func main() {
 		}
 		time.Sleep(sleepInterval)
 	}
-}
-
-func printUseage() {
-	fmt.Println("Program usage:  indexer [index_interval_in_seconds - (Default=30s)]")
-	fmt.Println()
 }
 
 // filePathWalk will list all absolute file paths and their sizes
