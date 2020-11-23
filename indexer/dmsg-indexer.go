@@ -58,6 +58,7 @@ func main() {
 		directory, err := filePathWalk(indexPath)
 		if err != nil {
 			fmt.Println("An error occured while reading the directory.")
+			fmt.Println(err)
 		}
 		clearCurrentIndex() //todo add diff check before rewriting index?
 		for entry := range directory {
