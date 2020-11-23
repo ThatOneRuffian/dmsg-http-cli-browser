@@ -28,3 +28,8 @@ The client operates as a simple bookmark manager for public keys that are runnin
 - Paginated server/file browsing
 - Simple UI
 - UI scales to terminal size (Optional dependency: stty)
+
+---
+### ***If you like what you see and you want to see more please donate. Thanks!***
+
+Skycoin: 2ZtDYzoUBESccvK5mzDBHqKaAPvjwVmzESs
