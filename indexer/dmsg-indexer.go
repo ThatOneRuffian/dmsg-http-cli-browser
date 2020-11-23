@@ -39,6 +39,10 @@ func main() {
 	//set index path
 	if indexPath != "" {
 		fmt.Println("Setting index path to: ", indexPath)
+		currentDir, err := os.Getwd()
+		if err != nil {
+			fmt.Println("Unable to get current working directory.", err)
+		}
 
 		pathErr := os.Chdir(indexPath)
 
@@ -49,6 +53,12 @@ func main() {
 				fmt.Println("Unable to create directory:", indexPath)
 				panic(createDirErr)
 			}
+		}
+
+		cwdError := os.Chdir(currentDir)
+
+		if cwdError != nil {
+			fmt.Println("Error changing directory back.")
 		}
 	}
 
@@ -82,6 +92,7 @@ func filePathWalk(root string) ([][2]string, error) {
 	var appendData [2]string
 
 	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+
 		if !info.IsDir() {
 			fileInfo, err := os.Stat(path)
 			if err != nil {
