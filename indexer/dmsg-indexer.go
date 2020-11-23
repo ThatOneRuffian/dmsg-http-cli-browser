@@ -40,18 +40,18 @@ func main() {
 		if err != nil {
 			fmt.Println("Unable to get current working directory.", err)
 		}
-
+		// try changing directory to test if provided directory exist
 		pathErr := os.Chdir(indexPath)
 
 		if os.IsNotExist(pathErr) {
-			//if index dir not found attempt to create
+			//if provided dir not found, then attempt to create
 			createDirErr := os.MkdirAll(indexPath, 0744)
 			if createDirErr != nil {
 				fmt.Println("Unable to create directory:", indexPath)
 				panic(createDirErr)
 			}
 		}
-
+		//change  directory back to starting dir
 		cwdError := os.Chdir(currentDir)
 
 		if cwdError != nil {
