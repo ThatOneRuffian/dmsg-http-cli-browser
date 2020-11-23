@@ -54,7 +54,7 @@ Now move the dmsg-indexer binary to a location in your PATH (e.g. /usr/bin/). We
 
 ```sh
 $ WorkingDirectory=[same dir that the dmsg-http server is set to serve]
-$ ExecStart=dmsg-indexer [indexer interval]
+$ ExecStart=dmsg-indexer -t [indexer interval in seconds] -d [dir to index]
 $
 $ Example:
 $ ExecStart=dmsg-indexer -t 360 -d /srv/dmsg-http-files/ # Run every 360s or 6 mins
