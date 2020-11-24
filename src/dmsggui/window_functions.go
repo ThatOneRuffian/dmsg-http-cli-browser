@@ -113,12 +113,13 @@ func renderHomeMenuServerList(terminalHeightAvailable int, terminalWidthAvailabl
 
 	for index := range sortedIndex {
 		indexOffset := index + (terminalHeightAvailable * mainMenuBrowserIndex)
-		tmpLineEntry := fmt.Sprintf("%d) %s ", indexOffset+1, SavedServers[indexOffset][0])
+		serverFriendlyName := SavedServers[indexOffset][0]
+		tmpLineEntry := fmt.Sprintf("%d) %s ", indexOffset+1, serverFriendlyName)
 		horizontalFill := ""
 		for i := terminalWidthAvailable - len(tmpLineEntry); i > 0; i-- {
 			horizontalFill += "-"
 		}
-		lineEntry := fmt.Sprintf("%d) %s %s", indexOffset+1, SavedServers[indexOffset][0], horizontalFill)
+		lineEntry := fmt.Sprintf("%d) %s %s", indexOffset+1, serverFriendlyName, horizontalFill)
 
 		fmt.Println(lineEntry)
 
