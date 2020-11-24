@@ -65,8 +65,8 @@ PubKeyInput:
 		goto Exit
 	}
 	if strings.Contains(publicKey, invalidChar) {
-		fmt.Println("Pulic key cannot contain ';'")
-		fmt.Print("Please enter public key again (C to Cancel): ")
+		fmt.Printf("Pulic key cannot contain '%s'.", invalidChar)
+		fmt.Print("\nPlease enter public key again (C to Cancel): ")
 		goto PubKeyInput
 	}
 	if len(publicKey) == keyLength {
@@ -77,18 +77,14 @@ PubKeyInput:
 		if len(friendlyName) == 0 {
 			appendToConfig(publicKey, publicKey)
 		} else if strings.Contains(friendlyName, invalidChar) {
-			fmt.Println("Friendly name cannot contain", invalidChar)
+			fmt.Printf("Friendly name cannot contain '%s'\n", invalidChar)
 			goto FriendlyName
-		} else {
-
-			appendToConfig(friendlyName, publicKey)
-
 		}
+		appendToConfig(friendlyName, publicKey)
 		fmt.Println("Entry cached.")
 
 	} else {
-		errorInfo := fmt.Sprintf("Provided key has length of %d. Expected length of %d.", len(publicKey), keyLength)
-		fmt.Println(errorInfo)
+		fmt.Printf("Provided key has length of %d. Expected length of %d.", len(publicKey), keyLength)
 		fmt.Print("Invalid key length please enter public key again (C to Cancel): ")
 		goto PubKeyInput
 	}
