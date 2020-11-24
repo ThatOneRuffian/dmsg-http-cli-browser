@@ -241,7 +241,6 @@ func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAva
 					fileSize /= 1e3
 					fileSizeUnits = "KB"
 				} else {
-					fileSize /= 1e3
 					fileSizeUnits = "B"
 				}
 
