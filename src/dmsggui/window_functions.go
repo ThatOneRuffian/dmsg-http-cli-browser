@@ -81,20 +81,19 @@ func renderServerBrowser() {
 	//Render variables
 	titleBuffer := ""
 	menuTitle := "SERVER DOWNLOAD INDEX"
-	//dirMetaData := getCurrentDirMetaData()
 	currentDir := getPresentWorkingDirectory()
 	tmpTitle := fmt.Sprintf("%s%s", menuTitle, currentDir)
 	titleBufferLength := terminalWidth - len(tmpTitle)
 	for i := 0; i < titleBufferLength; i++ {
 		titleBuffer = titleBuffer + " "
 	}
-	//menuHeader := fmt.Sprintf("%s%s%s", menuTitle, titleBuffer, currentDir)
 	pageStatus := fmt.Sprintf("page (%d / %d)", mainMenuBrowserIndex+1, mainMenuPageCountMax)
 
 	ClearScreen()
 	fmt.Println(divider)
 	fmt.Println("DMSG-HTTP SERVER LIST")
 	fmt.Println(divider)
+
 	renderHomeMenuServerList(terminalHeightAvailable, terminalWidth)
 
 	fmt.Println(divider)
@@ -214,6 +213,7 @@ func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAva
 
 				fmt.Println(lineEntry)
 			} else {
+				//if entry is a file
 				tmpLineEntry := fmt.Sprintf("%d) %s  %.2f MB", index, key, navPtr.files[key]/1e6)
 				horizontalFill := ""
 				for i := terminalWidthAvailable - len(tmpLineEntry); i > 0; i-- {
@@ -231,6 +231,7 @@ func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAva
 		}
 
 	}
+	//vertical buffer
 	for ; verticalHeightBuffer > 0; verticalHeightBuffer-- {
 		fmt.Println("-")
 	}
@@ -244,17 +245,19 @@ func getCurrentDirMetaData() map[int]map[string]bool {
 	returnValue := make(map[int]map[string]bool)
 	swapDir := make(map[string]bool)
 
-	//dump dir names in current dir
+	//dump dir/file keys in current dir and sort A-Z
 	if navPtr != &rootDir {
+		//add key for directory back
 		subDirKeys = append(subDirKeys, "..")
 	}
 
 	for key := range navPtr.subDirs {
+		//append subdir keys
 		subDirKeys = append(subDirKeys, key)
 	}
 
-	//dump files names in current dir
 	for key := range navPtr.files {
+		//append file keys
 		fileNames = append(fileNames, key)
 	}
 
