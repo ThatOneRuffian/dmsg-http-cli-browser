@@ -214,13 +214,33 @@ func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAva
 				fmt.Println(lineEntry)
 			} else {
 				//if entry is a file
-				tmpLineEntry := fmt.Sprintf("%d) %s  %.2f MB", index, key, navPtr.files[key]/1e6)
+				fileSize := navPtr.files[key]
+				fileSizeUnits := ""
+
+				// format file sizes for human readability
+				if fileSize > 1e9 {
+					fileSize /= 1e9
+					fileSizeUnits = "GB"
+				} else if fileSize > 1e6 {
+					fileSize /= 1e6
+					fileSizeUnits = "MB"
+				} else if fileSize > 1e3 {
+					fileSize /= 1e3
+					fileSizeUnits = "KB"
+				} else {
+					fileSize /= 1e3
+					fileSizeUnits = "B"
+				}
+
+				//determine fill amount required
+				tmpLineEntry := fmt.Sprintf("%d) %s  %.2f %s", index, key, fileSize, fileSizeUnits)
 				horizontalFill := ""
 				for i := terminalWidthAvailable - len(tmpLineEntry); i > 0; i-- {
 					horizontalFill += "-"
 				}
-				lineEntry := fmt.Sprintf("%d) %s %s %.2f MB", index, key, horizontalFill, navPtr.files[key]/1e6)
 
+				//draw line
+				lineEntry := fmt.Sprintf("%d) %s %s %.2f %s", index, key, horizontalFill, fileSize, fileSizeUnits)
 				fmt.Println(lineEntry)
 			}
 			verticalHeightBuffer--
