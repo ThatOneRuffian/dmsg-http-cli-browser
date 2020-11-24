@@ -82,7 +82,6 @@ func parseServerIndex(file **os.File) {
 		}
 	}
 
-	currentServerIndexContents = currentServerIndexContents
 }
 
 func clearCacheConfig() {
