@@ -146,8 +146,8 @@ func parseConfigFile(file **os.File) {
 
 func appendToConfig(friendlyName string, serverPublicKey string) {
 
-	friendlyName = removeNewline(friendlyName)
-	serverPublicKey = removeNewline(serverPublicKey)
+	friendlyName = stripIllegalChars(friendlyName)
+	serverPublicKey = stripIllegalChars(serverPublicKey)
 	rawData := friendlyName + ";" + serverPublicKey + string('\n')
 
 	dataToWrite := []byte(rawData)

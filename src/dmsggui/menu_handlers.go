@@ -17,7 +17,7 @@ ServerMenu:
 
 	fmt.Print("(Press A to Add server, D to Delete a server, G to Goto page, Q to quit): ")
 	userChoice, _ := consoleInput.ReadString('\n')
-	userChoice = strings.ToUpper(removeNewline(userChoice))
+	userChoice = strings.ToUpper(stripIllegalChars(userChoice))
 	switch userChoice {
 	case "Q":
 		ClearScreen()
@@ -45,7 +45,7 @@ ServerMenu:
 		fmt.Print("Enter page number:")
 		consoleReader := bufio.NewReader(os.Stdin)
 		userInput, _ := consoleReader.ReadString('\n')
-		userInput = strings.ToUpper(removeNewline(userInput))
+		userInput = strings.ToUpper(stripIllegalChars(userInput))
 		pageNumber, err := strconv.Atoi(userInput)
 
 		if err != nil {
@@ -80,7 +80,7 @@ ServerIndexMenu:
 	consoleInput := bufio.NewReader(os.Stdin)
 	fmt.Print("(R to Refresh Server Index, E to Exit Server File Browser, G to Goto page, Q to quit): ")
 	userChoice, _ := consoleInput.ReadString('\n')
-	userChoice = strings.ToUpper(removeNewline(userChoice))
+	userChoice = strings.ToUpper(stripIllegalChars(userChoice))
 	switch userChoice {
 	case "Q":
 		ClearScreen()
@@ -105,7 +105,7 @@ ServerIndexMenu:
 		fmt.Print("Enter page number:")
 		consoleReader := bufio.NewReader(os.Stdin)
 		userInput, _ := consoleReader.ReadString('\n')
-		userInput = strings.ToUpper(removeNewline(userInput))
+		userInput = strings.ToUpper(stripIllegalChars(userInput))
 		pageNumber, err := strconv.Atoi(userInput)
 
 		if err != nil {

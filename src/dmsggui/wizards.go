@@ -13,7 +13,7 @@ DeletePrompt:
 	fmt.Print("Which server do you want to delete? (Enter C to Cancel): ")
 	consoleInputWhichServer := bufio.NewReader(os.Stdin)
 	userDelete, _ := consoleInputWhichServer.ReadString('\n')
-	userDelete = strings.ToUpper(removeNewline(userDelete))
+	userDelete = strings.ToUpper(stripIllegalChars(userDelete))
 
 	switch userDelete {
 	case "C":
@@ -30,7 +30,7 @@ DeletePrompt:
 			deleteConfirmInput := bufio.NewReader(os.Stdin)
 
 			deleteConfirm, _ := deleteConfirmInput.ReadString('\n')
-			deleteConfirm = strings.ToUpper(removeNewline(deleteConfirm))
+			deleteConfirm = strings.ToUpper(stripIllegalChars(deleteConfirm))
 			//deleteIndex, err := strconv.Atoi(deleteConfirm)
 
 			switch deleteConfirm {
@@ -59,7 +59,7 @@ func addServer() string {
 
 PubKeyInput:
 	publicKey, _ := consoleInput.ReadString('\n')
-	publicKey = removeNewline(publicKey)
+	publicKey = stripIllegalChars(publicKey)
 	if strings.ToUpper(publicKey) == "C" {
 		publicKey = ""
 		goto Exit
@@ -73,7 +73,7 @@ PubKeyInput:
 	FriendlyName:
 		fmt.Print("Add a friendly name to this public key (default: [public_key]): ")
 		friendlyName, _ := consoleInput.ReadString('\n')
-		friendlyName = removeNewline(friendlyName)
+		friendlyName = stripIllegalChars(friendlyName)
 		if len(friendlyName) == 0 {
 			appendToConfig(publicKey, publicKey)
 		} else if strings.Contains(friendlyName, invalidChar) {
@@ -106,7 +106,7 @@ func browseNow(serverPublicKey string) {
 		fmt.Print("Would you like to browse this server now? (Y/N): ")
 		userAnswer, _ := consoleInput.ReadString('\n')
 
-		switch formattedInput := strings.ToUpper(removeNewline(userAnswer)); formattedInput {
+		switch formattedInput := strings.ToUpper(stripIllegalChars(userAnswer)); formattedInput {
 		case "Y":
 			refreshServerIndex(serverPublicKey, true)
 			ServerIndexMenuHandler(serverPublicKey)
@@ -121,6 +121,20 @@ func browseNow(serverPublicKey string) {
 
 // =========== String formatting functions ===========
 
-func removeNewline(userInput string) string {
-	return strings.TrimRight(userInput, "\n")
+func stripIllegalChars(userInput string) string {
+	InputBytes := []byte(userInput)
+	const byteLowRange byte = 33
+	const byteHighRange byte = 126
+	returnString := ""
+
+	// strip all non-visible chars
+	for charIndex := range InputBytes {
+		byteValue := InputBytes[charIndex]
+		if byteValue >= byteLowRange && byteValue <= byteHighRange {
+			returnString += string(byteValue)
+		}
+
+	}
+
+	return returnString
 }
