@@ -11,8 +11,11 @@ import (
 // navPtr points to the current directory object being browsed
 var navPtr *directory = nil
 
-//downloadBrowserIndex stores the current page number of the server's download list
+//downloadBrowserIndex stores the current page number - 1 of the server's download list
 var downloadBrowserIndex int = 0
+
+//downloadBrowserIndex stores the current page number - 1 of the main menu
+var mainMenuBrowserIndex int = 0
 
 //var rootDir Directory
 var rootDir directory = directory{

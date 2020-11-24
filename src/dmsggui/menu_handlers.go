@@ -27,17 +27,17 @@ ServerMenu:
 		addServer()
 		LoadCache()
 	case "B":
-		if downloadBrowserIndex > 0 {
-			downloadBrowserIndex--
+		if mainMenuBrowserIndex > 0 {
+			mainMenuBrowserIndex--
 		}
 	case "F":
-		downloadBrowserIndex = 0
+		mainMenuBrowserIndex = 0
 	case "L":
-		downloadBrowserIndex = mainMenuPageCountMax - 1
+		mainMenuBrowserIndex = mainMenuPageCountMax - 1
 	case "N":
-		if downloadBrowserIndex < mainMenuPageCountMax-1 {
+		if mainMenuBrowserIndex < mainMenuPageCountMax-1 {
 
-			downloadBrowserIndex++
+			mainMenuBrowserIndex++
 		}
 	case "D":
 		deleteServerWizard()
@@ -51,7 +51,7 @@ ServerMenu:
 		if err != nil {
 
 		} else if pageNumber > 0 && pageNumber-1 < mainMenuPageCountMax {
-			downloadBrowserIndex = pageNumber - 1
+			mainMenuBrowserIndex = pageNumber - 1
 		}
 	default:
 		userInt, err := strconv.Atoi(userChoice)

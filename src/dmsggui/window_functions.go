@@ -89,7 +89,7 @@ func renderServerBrowser() {
 		titleBuffer = titleBuffer + " "
 	}
 	//menuHeader := fmt.Sprintf("%s%s%s", menuTitle, titleBuffer, currentDir)
-	pageStatus := fmt.Sprintf("page (%d / %d)", downloadBrowserIndex+1, mainMenuPageCountMax)
+	pageStatus := fmt.Sprintf("page (%d / %d)", mainMenuBrowserIndex+1, mainMenuPageCountMax)
 
 	ClearScreen()
 	fmt.Println(divider)
@@ -112,7 +112,7 @@ func renderHomeMenuServerList(terminalHeightAvailable int, terminalWidthAvailabl
 	sort.Ints(sortedIndex)
 
 	for index := range sortedIndex {
-		indexOffset := index + (terminalHeightAvailable * downloadBrowserIndex)
+		indexOffset := index + (terminalHeightAvailable * mainMenuBrowserIndex)
 		tmpLineEntry := fmt.Sprintf("%d) %s ", indexOffset+1, SavedServers[indexOffset][0])
 		horizontalFill := ""
 		for i := terminalWidthAvailable - len(tmpLineEntry); i > 0; i-- {
