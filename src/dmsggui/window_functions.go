@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"sort"
+	"strings"
 )
 
 //mainMenuPageCountMax holds the max page of the server list
@@ -233,6 +234,7 @@ func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAva
 				}
 
 				//determine fill amount required
+				key = strings.ReplaceAll(key, "–", "-") //replace em dash with regular dash em dash doesn't render correctly
 				tmpLineEntry := fmt.Sprintf("%d) %s  %.2f %s", index, key, fileSize, fileSizeUnits)
 				horizontalFill := ""
 				for i := terminalWidthAvailable - len(tmpLineEntry); i > 0; i-- {
