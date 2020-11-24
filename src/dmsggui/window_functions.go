@@ -180,10 +180,21 @@ func renderServerDownloadList() map[int]map[string]bool {
 	currentDir := getPresentWorkingDirectory()
 	tmpTitle := fmt.Sprintf("%s%s", menuTitle, currentDir)
 	titleBufferLength := terminalWidth - len(tmpTitle)
-	for i := 0; i < titleBufferLength; i++ {
-		titleBuffer = titleBuffer + " "
+	truncateIndex := 0
+	truncateBuffer := ""
+
+	//check if title overflow
+	if titleBufferLength < 0 {
+		truncateIndex = titleBufferLength * -1
+		truncateBuffer = " ~~~"
+	} else {
+		// fill empty space
+		for i := 0; i < titleBufferLength; i++ {
+			titleBuffer = titleBuffer + " "
+		}
 	}
-	menuHeader := fmt.Sprintf("%s%s%s", menuTitle, titleBuffer, currentDir)
+
+	menuHeader := fmt.Sprintf("%s%s%s", menuTitle, titleBuffer, truncateBuffer+currentDir[truncateIndex+len(truncateBuffer):])
 	pageStatus := fmt.Sprintf("page (%d / %d)", downloadBrowserIndex+1, serverPageCountMax)
 
 	//Render download menu
