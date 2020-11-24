@@ -52,7 +52,7 @@ func clearFile(filename string) {
 func clearServerIndexFile(serverPublicKey string) {
 	serverCacheLoc := "/tmp/index." + serverPublicKey
 	os.Remove(serverCacheLoc)
-	DownloadBrowserIndex = 0
+	downloadBrowserIndex = 0
 	navPtr = &rootDir
 }
 

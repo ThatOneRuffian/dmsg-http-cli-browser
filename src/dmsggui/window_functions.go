@@ -27,7 +27,7 @@ func ClearScreen() {
 
 func refreshServerIndex(serverPublicKey string, clearCache bool) {
 	ClearScreen()
-	DownloadBrowserIndex = 0
+	downloadBrowserIndex = 0
 	if clearCache {
 		clearServerIndexFile(serverPublicKey)
 		dmsggetWrapper(serverPublicKey, indexDownloadLoc, "index", "index."+serverPublicKey, false)
@@ -89,7 +89,7 @@ func renderServerBrowser() {
 		titleBuffer = titleBuffer + " "
 	}
 	//menuHeader := fmt.Sprintf("%s%s%s", menuTitle, titleBuffer, currentDir)
-	pageStatus := fmt.Sprintf("page (%d / %d)", DownloadBrowserIndex+1, mainMenuPageCountMax)
+	pageStatus := fmt.Sprintf("page (%d / %d)", downloadBrowserIndex+1, mainMenuPageCountMax)
 
 	ClearScreen()
 	fmt.Println(divider)
@@ -112,7 +112,7 @@ func renderHomeMenuServerList(terminalHeightAvailable int, terminalWidthAvailabl
 	sort.Ints(sortedIndex)
 
 	for index := range sortedIndex {
-		indexOffset := index + (terminalHeightAvailable * DownloadBrowserIndex)
+		indexOffset := index + (terminalHeightAvailable * downloadBrowserIndex)
 		tmpLineEntry := fmt.Sprintf("%d) %s ", indexOffset+1, SavedServers[indexOffset][0])
 		horizontalFill := ""
 		for i := terminalWidthAvailable - len(tmpLineEntry); i > 0; i-- {
@@ -183,7 +183,7 @@ func renderServerDownloadList() map[int]map[string]bool {
 		titleBuffer = titleBuffer + " "
 	}
 	menuHeader := fmt.Sprintf("%s%s%s", menuTitle, titleBuffer, currentDir)
-	pageStatus := fmt.Sprintf("page (%d / %d)", DownloadBrowserIndex+1, serverPageCountMax)
+	pageStatus := fmt.Sprintf("page (%d / %d)", downloadBrowserIndex+1, serverPageCountMax)
 
 	//Render download menu
 	ClearScreen()
@@ -201,7 +201,7 @@ func renderServerDownloadList() map[int]map[string]bool {
 func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAvailable int, terminalWidthAvailable int) {
 	verticalHeightBuffer := terminalHeightAvailable
 
-	for index := 1 + DownloadBrowserIndex*terminalHeightAvailable; index <= len(directoryMetaData); index++ {
+	for index := 1 + downloadBrowserIndex*terminalHeightAvailable; index <= len(directoryMetaData); index++ {
 		for key := range directoryMetaData[index] {
 			// if entry is a directory
 			if directoryMetaData[index][key] {

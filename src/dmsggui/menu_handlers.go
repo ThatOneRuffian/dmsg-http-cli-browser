@@ -27,17 +27,17 @@ ServerMenu:
 		addServer()
 		LoadCache()
 	case "B":
-		if DownloadBrowserIndex > 0 {
-			DownloadBrowserIndex--
+		if downloadBrowserIndex > 0 {
+			downloadBrowserIndex--
 		}
 	case "F":
-		DownloadBrowserIndex = 0
+		downloadBrowserIndex = 0
 	case "L":
-		DownloadBrowserIndex = mainMenuPageCountMax - 1
+		downloadBrowserIndex = mainMenuPageCountMax - 1
 	case "N":
-		if DownloadBrowserIndex < mainMenuPageCountMax-1 {
+		if downloadBrowserIndex < mainMenuPageCountMax-1 {
 
-			DownloadBrowserIndex++
+			downloadBrowserIndex++
 		}
 	case "D":
 		deleteServerWizard()
@@ -51,7 +51,7 @@ ServerMenu:
 		if err != nil {
 
 		} else if pageNumber > 0 && pageNumber-1 < mainMenuPageCountMax {
-			DownloadBrowserIndex = pageNumber - 1
+			downloadBrowserIndex = pageNumber - 1
 		}
 	default:
 		userInt, err := strconv.Atoi(userChoice)
@@ -95,12 +95,12 @@ ServerIndexMenu:
 		}
 		goto ExitLoop
 	case "B":
-		if DownloadBrowserIndex > 0 {
-			DownloadBrowserIndex--
+		if downloadBrowserIndex > 0 {
+			downloadBrowserIndex--
 		}
 
 	case "F":
-		DownloadBrowserIndex = 0
+		downloadBrowserIndex = 0
 	case "G":
 		fmt.Print("Enter page number:")
 		consoleReader := bufio.NewReader(os.Stdin)
@@ -111,16 +111,16 @@ ServerIndexMenu:
 		if err != nil {
 
 		} else if pageNumber > 0 && pageNumber-1 < serverPageCountMax {
-			DownloadBrowserIndex = pageNumber - 1
+			downloadBrowserIndex = pageNumber - 1
 		}
 
 	case "L":
-		DownloadBrowserIndex = serverPageCountMax - 1
+		downloadBrowserIndex = serverPageCountMax - 1
 
 	case "N":
-		if DownloadBrowserIndex < serverPageCountMax-1 {
+		if downloadBrowserIndex < serverPageCountMax-1 {
 
-			DownloadBrowserIndex++
+			downloadBrowserIndex++
 		}
 
 	case "R":
@@ -139,7 +139,7 @@ ServerIndexMenu:
 				// navigate up a directory
 				if index == ".." && navPtr.parentDir != nil {
 					navPtr = navPtr.parentDir
-					DownloadBrowserIndex = 0
+					downloadBrowserIndex = 0
 				} else {
 					// if object is a directory then navigate into
 					if directoryMetaData[userInputVar][index] {
