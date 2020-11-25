@@ -114,7 +114,7 @@ func clearCurrentIndex() {
 	err := os.Remove(configFile)
 
 	if os.IsNotExist(err) {
-		fmt.Println("index not found cannot remove: ", err)
+		// no index file or empty directory nothing to index
 	} else if err != nil {
 		fmt.Println("Error removing index file; ", err)
 	}
