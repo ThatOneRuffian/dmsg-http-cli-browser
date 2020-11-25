@@ -186,19 +186,29 @@ func renderServerDownloadList() map[int]map[string]bool {
 	titleBufferLength := terminalWidth - len(tmpTitle)
 	truncateIndex := 0
 	truncateBuffer := ""
+	presentWorkingDirTitle := ""
 
-	//check if title overflow
-	if titleBufferLength < 0 {
-		truncateIndex = titleBufferLength * -1
-		truncateBuffer = " ~~~"
+	if titleBufferLength*-1 >= len(currentDir) {
+		//check case if space to be buffered is longer than len(currentDir) (overflow), do not render PWD
+		truncateIndex = 0
+		truncateBuffer = ""
+		presentWorkingDirTitle = ""
 	} else {
-		// fill empty space
-		for i := 0; i < titleBufferLength; i++ {
-			titleBuffer = titleBuffer + " "
+
+		if titleBufferLength < 0 {
+			//check if title overflow
+			truncateIndex = titleBufferLength * -1
+			truncateBuffer = " ~~~"
+		} else {
+			// fill empty space
+			for i := 0; i < titleBufferLength; i++ {
+				titleBuffer = titleBuffer + " "
+			}
 		}
+		presentWorkingDirTitle = truncateBuffer + currentDir[truncateIndex+len(truncateBuffer):]
 	}
 
-	menuHeader := fmt.Sprintf("%s%s%s", menuTitle, titleBuffer, truncateBuffer+currentDir[truncateIndex+len(truncateBuffer):])
+	menuHeader := fmt.Sprintf("%s%s%s", menuTitle, titleBuffer, presentWorkingDirTitle)
 	pageStatus := fmt.Sprintf("page (%d / %d)", downloadBrowserIndex+1, serverPageCountMax)
 
 	//Render download menu
