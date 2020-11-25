@@ -35,6 +35,14 @@ func main() {
 
 	//set index path
 	if indexPath != "" {
+		pathByteArray := []byte(indexPath)
+		lastByteChar := pathByteArray[len(pathByteArray)-1]
+		const forwardSlash byte = 92
+		const backSlash byte = 47
+		//append "/" if missing from provided dir
+		if lastByteChar != forwardSlash && lastByteChar != backSlash {
+			indexPath = indexPath + "/"
+		}
 		fmt.Println("Setting index path to: ", indexPath)
 		currentDir, err := os.Getwd()
 		if err != nil {
@@ -71,7 +79,7 @@ func main() {
 		for entry := range directory {
 
 			if directory[entry][0] != "index" {
-				appendToIndex(directory[entry])
+				writeToIndex(directory[entry])
 			}
 		}
 		time.Sleep(sleepInterval)
@@ -103,22 +111,19 @@ func filePathWalk(root string) ([][2]string, error) {
 
 func clearCurrentIndex() {
 	configFile := indexPath + "index"
-	file, err := os.Create(configFile)
+	err := os.Remove(configFile)
 
-	if err != nil {
-
-		fmt.Println("Error opening", configFile)
-
-		fmt.Println(err)
-		fmt.Println(file)
+	if os.IsNotExist(err) {
+		fmt.Println("index not found cannot remove: ", err)
+	} else if err != nil {
+		fmt.Println("Error removing index file; ", err)
 	}
 
 }
 
-func appendToIndex(filename [2]string) {
+func writeToIndex(filename [2]string) {
 	filename[0] = removeNewline(filename[0])
 	rawData := fmt.Sprintf("%s;%s\n", filename[0], filename[1])
-
 	dataToWrite := []byte(rawData)
 
 	f, err := os.OpenFile(indexPath+"/index", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
