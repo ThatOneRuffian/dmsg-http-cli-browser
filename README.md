@@ -27,7 +27,7 @@ The client operates as a simple bookmark manager for public keys that are runnin
 - Server public key management
 - Paginated server/file browsing
 - Simple UI
-- UI scales to terminal size (Optional dependency: stty)
+- UI scales to terminal size (Optional dependency: tput)
 
 ---
 ### ***If you like what you see and you want to see more please donate. Thanks!***
