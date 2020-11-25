@@ -20,6 +20,10 @@ var SavedServers map[int][2]string
 //currentServerIndexContents will store the parsed server index values
 var currentServerIndexContents map[int][2]string
 
+const defaultTerminalWidth = 85
+
+const defaultTerminalHeight = 30
+
 func ClearScreen() {
 	cmd := exec.Command("clear")
 	cmd.Stdout = os.Stdout
@@ -53,8 +57,8 @@ func renderServerBrowser() {
 		fmt.Println("Error fetching terminal dimensions")
 		fmt.Println(heightError)
 		fmt.Println(widthError)
-		terminalHeightAvailable = 10 //default on error
-		terminalWidth = 20
+		terminalHeightAvailable = defaultTerminalHeight //default on error
+		terminalWidth = defaultTerminalWidth
 
 	} else {
 		terminalHeightAvailable -= bufferHeight
@@ -147,8 +151,8 @@ func renderServerDownloadList() map[int]map[string]bool {
 		fmt.Println("Error fetching terminal dimensions")
 		fmt.Println(heightError)
 		fmt.Println(widthError)
-		terminalHeightAvailable = 10 //default on error
-		terminalWidth = 20
+		terminalHeightAvailable = defaultTerminalHeight //default on error
+		terminalWidth = defaultTerminalWidth
 
 	} else {
 		terminalHeightAvailable -= bufferHeight
