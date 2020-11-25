@@ -92,10 +92,9 @@ func sttyWrapperGetTerminalHeight() (int, error) {
 	if returnValue == 0 {
 		decodeError := errors.New("Error decoding tput output")
 		return returnValue, decodeError
-	} else {
-		return returnValue, nil
 	}
 
+	return returnValue, nil
 }
 
 func sttyWrapperGetTerminalWidth() (int, error) {
@@ -128,8 +127,7 @@ func sttyWrapperGetTerminalWidth() (int, error) {
 	if returnValue == 0 {
 		decodeError := errors.New("Error decoding tput output")
 		return returnValue, decodeError
-	} else {
-		return returnValue, nil
 	}
 
+	return returnValue, nil
 }
