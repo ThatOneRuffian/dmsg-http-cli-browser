@@ -40,7 +40,7 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 	if !stdOutput {
 		nullFile, err := os.OpenFile("/dev/null", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
-			fmt.Printf("Error opening /dev/null for writing")
+			fmt.Println("Error opening /dev/null for writing")
 		}
 		defer nullFile.Close()
 		stdOutLoc = nullFile
