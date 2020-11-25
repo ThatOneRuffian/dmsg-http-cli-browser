@@ -28,7 +28,9 @@ DeletePrompt:
 
 	ConfirmDelete:
 		if userInt >= 1 && userInt <= len(SavedServers) {
-			deleteConfirmPrompt := fmt.Sprintf("Are you sure you want to delete (Y/N)? { %s | %s }", SavedServers[userInt-1][0], SavedServers[userInt-1][1])
+			friendlyName := SavedServers[userInt-1][0]
+			serverPublicKey := SavedServers[userInt-1][1]
+			deleteConfirmPrompt := fmt.Sprintf("Are you sure you want to delete (Y/N)? { %s | %s }", friendlyName, serverPublicKey)
 			fmt.Println(deleteConfirmPrompt)
 			deleteConfirmInput := bufio.NewReader(os.Stdin)
 
