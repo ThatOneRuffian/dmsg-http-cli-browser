@@ -16,13 +16,16 @@ DeletePrompt:
 	userDelete = strings.ToUpper(stripIllegalChars(userDelete))
 
 	switch userDelete {
+
 	case "C":
 		goto ExitLoop
+
 	default:
 		userInt, err := strconv.Atoi(userDelete)
 		if err != nil {
 			break
 		}
+
 	ConfirmDelete:
 		if userInt >= 1 && userInt <= len(SavedServers) {
 			deleteConfirmPrompt := fmt.Sprintf("Are you sure you want to delete (Y/N)? { %s | %s }", SavedServers[userInt-1][0], SavedServers[userInt-1][1])
@@ -31,18 +34,21 @@ DeletePrompt:
 
 			deleteConfirm, _ := deleteConfirmInput.ReadString('\n')
 			deleteConfirm = strings.ToUpper(stripIllegalChars(deleteConfirm))
-			//deleteIndex, err := strconv.Atoi(deleteConfirm)
 
 			switch deleteConfirm {
+
 			case "Y":
 
 				deleteServerIndex(userInt)
 				goto ExitLoop
+
 			case "N":
 				goto ExitLoop
+
 			default:
 				goto ConfirmDelete
 			}
+
 		} else {
 			break
 		}
@@ -71,7 +77,7 @@ PubKeyInput:
 	}
 	if len(publicKey) == keyLength {
 	FriendlyName:
-		fmt.Print("Add a friendly name to this public key (default: [public_key]): ")
+		fmt.Print("Add a friendly name to this public key (default: [public_key] ): ")
 		friendlyName, _ := consoleInput.ReadString('\n')
 		friendlyName = stripIllegalChars(friendlyName)
 		if len(friendlyName) == 0 {
@@ -110,9 +116,8 @@ func browseNow(serverPublicKey string) {
 		case "Y":
 			refreshServerIndex(serverPublicKey, true)
 			ServerIndexMenuHandler(serverPublicKey)
-			//load server index
 		case "N":
-			// continue to main menu
+			// exit loop and continue...
 		default:
 			goto Browse
 		}
@@ -127,13 +132,12 @@ func stripIllegalChars(userInput string) string {
 	const byteHighRange byte = 126
 	returnString := ""
 
-	// strip all non-visible chars
+	// strip all illegal chars
 	for charIndex := range InputBytes {
 		byteValue := InputBytes[charIndex]
 		if byteValue >= byteLowRange && byteValue <= byteHighRange {
 			returnString += string(byteValue)
 		}
-
 	}
 
 	return returnString
