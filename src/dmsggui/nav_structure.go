@@ -51,7 +51,7 @@ func assembleFileStructure(serverPublicKey string) {
 		panic(err.Error())
 	}
 
-	parseServerIndex2(&file)
+	parseServerIndex(&file)
 }
 
 func getPresentWorkingDirectory() string {
@@ -73,7 +73,7 @@ func getPresentWorkingDirectory() string {
 	return workingDir + "/"
 }
 
-func parseServerIndex2(file **os.File) {
+func parseServerIndex(file **os.File) {
 	defer func() {
 		if err := recover(); err != nil {
 			fmt.Println(err)

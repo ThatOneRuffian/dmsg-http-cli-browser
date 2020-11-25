@@ -40,7 +40,7 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 	if !stdOutput {
 		nullFile, err := os.OpenFile("/dev/null", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
-			fmt.Printf("Error opening /dev/null for writing")
+			fmt.Println("Error opening /dev/null for writing")
 		}
 		defer nullFile.Close()
 		stdOutLoc = nullFile
@@ -90,12 +90,11 @@ func sttyWrapperGetTerminalHeight() (int, error) {
 	}
 	cmd.Wait()
 	if returnValue == 0 {
-		docdeError := errors.New("Error decoding tput output")
-		return returnValue, docdeError
-	} else {
-		return returnValue, nil
+		decodeError := errors.New("Error decoding tput output")
+		return returnValue, decodeError
 	}
 
+	return returnValue, nil
 }
 
 func sttyWrapperGetTerminalWidth() (int, error) {
@@ -126,10 +125,9 @@ func sttyWrapperGetTerminalWidth() (int, error) {
 	}
 	cmd.Wait()
 	if returnValue == 0 {
-		docdeError := errors.New("Error decoding tput output")
-		return returnValue, docdeError
-	} else {
-		return returnValue, nil
+		decodeError := errors.New("Error decoding tput output")
+		return returnValue, decodeError
 	}
 
+	return returnValue, nil
 }

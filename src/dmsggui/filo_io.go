@@ -56,34 +56,6 @@ func clearServerIndexFile(serverPublicKey string) {
 	navPtr = &rootDir
 }
 
-func parseServerIndex(file **os.File) {
-	currentServerIndexContents := make(map[int][2]string)
-
-	defer func() {
-		if err := recover(); err != nil {
-			fmt.Println(err)
-			fmt.Println("Error parsing server index file.")
-		}
-	}()
-
-	fileScan := bufio.NewScanner(*file)
-
-	i := 0
-	for fileScan.Scan() {
-		var swapVar [2]string
-		inputRow := fileScan.Text()
-		if sepIndex := strings.Index(inputRow, ";"); sepIndex != -1 {
-			//convert slice back into array
-			parsedString := strings.Split(inputRow, ";")
-			swapVar[0] = parsedString[0]
-			swapVar[1] = parsedString[1]
-			currentServerIndexContents[i] = swapVar
-			i++
-		}
-	}
-
-}
-
 func clearCacheConfig() {
 	configFile := generateConfigAbsFilePath()
 	file, err := os.Create(configFile)
