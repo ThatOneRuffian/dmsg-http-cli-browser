@@ -1,11 +1,9 @@
 package dmsggui
 
 import (
-	"bufio"
 	"fmt"
 	"log"
 	"os"
-	"strings"
 )
 
 //configFileHomePath stores the path, in the user's home dir, where the server address cache is saved
@@ -87,32 +85,6 @@ func generateConfigAbsFilePath() string {
 	configAbsFilePath := fmt.Sprintf("%s/dmsg-http-browser.config", generateConfigAbsDirPath())
 
 	return configAbsFilePath
-}
-
-func parseConfigFile(file **os.File) {
-	_savedServers := make(map[int][2]string)
-	friendlyNameIndex := 0
-	serverPubKeyIndex := 1
-	defer func() {
-		if err := recover(); err != nil {
-			fmt.Println(err)
-			fmt.Println("Error parsing configuration file.")
-		}
-	}()
-
-	fileScan := bufio.NewScanner(*file)
-
-	i := 0
-	for fileScan.Scan() {
-		splitStringArray := [2]string{"", ""}
-		tmpString := fileScan.Text()
-		tmpSplitString := strings.Split(tmpString, ";")
-		splitStringArray[0] = tmpSplitString[friendlyNameIndex]
-		splitStringArray[1] = tmpSplitString[serverPubKeyIndex]
-		_savedServers[i] = splitStringArray
-		i++
-	}
-	SavedServers = _savedServers
 }
 
 func appendToConfig(friendlyName string, serverPublicKey string) {

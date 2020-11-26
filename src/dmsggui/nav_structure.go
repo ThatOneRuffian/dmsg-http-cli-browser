@@ -54,6 +54,28 @@ func assembleFileStructure(serverPublicKey string) {
 	parseServerIndex(&file)
 }
 
+func populateFileSystem(fullFilePath string) {
+	//scraping file name, size, and file structure
+	//passes these items to create the filesystem
+	var fileNameAndSize = make(map[string]int)
+	splitString := strings.Split(fullFilePath, ";")
+	fullPath := splitString[0]
+
+	fileSize, err := strconv.Atoi(splitString[1])
+	if err != nil {
+		fmt.Println("Unable to convert filesize into int while populating directory: ", err)
+	}
+	fileNameSlice := strings.Split(fullPath, "/")[len(strings.Split(fullPath, "/"))-1:]
+	//converting filename from slice into string
+	fileNameString := strings.Join(fileNameSlice, "")
+	fileNameAndSize[fileNameString] = fileSize
+	dirStructure := strings.Split(fullPath, "/")[:len(strings.Split(fullPath, "/"))-1] // strip filename from path
+	//create dir structure
+	createDirPath(dirStructure)
+	//insert file into dir
+	insertFileIntoDir(dirStructure, fileNameString, fileSize)
+}
+
 func getPresentWorkingDirectory() string {
 	var workingDir string
 	var dirs []string
@@ -105,26 +127,30 @@ func parseServerIndex(file **os.File) {
 	}
 }
 
-func populateFileSystem(fullFilePath string) {
-	//scraping file name, size, and file structure
-	//passes these items to create the filesystem
-	var fileNameAndSize = make(map[string]int)
-	splitString := strings.Split(fullFilePath, ";")
-	fullPath := splitString[0]
+func parseConfigFile(file **os.File) {
+	_savedServers := make(map[int][2]string)
+	friendlyNameIndex := 0
+	serverPubKeyIndex := 1
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println(err)
+			fmt.Println("Error parsing configuration file.")
+		}
+	}()
 
-	fileSize, err := strconv.Atoi(splitString[1])
-	if err != nil {
-		fmt.Println("Unable to convert filesize into int while populating directory: ", err)
+	fileScan := bufio.NewScanner(*file)
+
+	i := 0
+	for fileScan.Scan() {
+		splitStringArray := [2]string{"", ""}
+		tmpString := fileScan.Text()
+		tmpSplitString := strings.Split(tmpString, ";")
+		splitStringArray[0] = tmpSplitString[friendlyNameIndex]
+		splitStringArray[1] = tmpSplitString[serverPubKeyIndex]
+		_savedServers[i] = splitStringArray
+		i++
 	}
-	fileNameSlice := strings.Split(fullPath, "/")[len(strings.Split(fullPath, "/"))-1:]
-	//converting filename from slice into string
-	fileNameString := strings.Join(fileNameSlice, "")
-	fileNameAndSize[fileNameString] = fileSize
-	dirStructure := strings.Split(fullPath, "/")[:len(strings.Split(fullPath, "/"))-1] // strip filename from path
-	//create dir structure
-	createDirPath(dirStructure)
-	//insert file into dir
-	insertFileIntoDir(dirStructure, fileNameString, fileSize)
+	SavedServers = _savedServers
 }
 
 func insertFileIntoDir(filePath []string, fileName string, fileSize int) {
