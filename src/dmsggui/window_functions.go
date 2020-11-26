@@ -205,7 +205,13 @@ func renderServerDownloadList() map[int]map[string]bool {
 				titleBuffer = titleBuffer + " "
 			}
 		}
-		presentWorkingDirTitle = truncateBuffer + currentDir[truncateIndex+len(truncateBuffer):]
+
+		if truncateIndex+len(truncateBuffer) < len(currentDir) {
+			presentWorkingDirTitle = truncateBuffer + currentDir[truncateIndex+len(truncateBuffer):]
+
+		} else {
+			presentWorkingDirTitle = ""
+		}
 	}
 
 	menuHeader := fmt.Sprintf("%s%s%s", menuTitle, titleBuffer, presentWorkingDirTitle)
@@ -231,10 +237,35 @@ func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAva
 		for entryName := range directoryMetaData[index] {
 			// if entry is a directory
 			if directoryMetaData[index][entryName] {
-				tmpLineEntry := fmt.Sprintf("%d) %s / Directory", index, entryName)
+				tmpBasicLineEntry := fmt.Sprintf("%d)  / Directory", index)
+				tmpLineEntry := tmpBasicLineEntry + entryName
 				horizontalFill := ""
-				if len(tmpLineEntry) > terminalWidthAvailable {
+				//detect and format dirs with names that will overflow current terminal width
+				overflowAmount := terminalWidthAvailable - len(tmpBasicLineEntry)
+				truncateBuffer := overflowAmount / 2 //amount to keep on beginning and end of string
+				if len(tmpLineEntry) >= terminalWidthAvailable {
+					entryNameLength := len(entryName)
+					if entryNameLength > overflowAmount {
+						tmpEntryNameStart := entryName[0:truncateBuffer]
+						//add fill here
+						stringBuffer := ""
+						tmpEntryNameEnd := entryName[entryNameLength-truncateBuffer:]
 
+						if overflowAmount-truncateBuffer*2 >= 0 {
+							for i := 0; i < overflowAmount-truncateBuffer*2; i++ {
+								stringBuffer += "~"
+							}
+							entryName = fmt.Sprintf("%s%s%s", tmpEntryNameStart, stringBuffer, tmpEntryNameEnd)
+
+						} else {
+							fmt.Println(overflowAmount-truncateBuffer*2, overflowAmount)
+
+							tmpStartString := entryName[:int(len(entryName)/2)-1]
+							tmpEndString := entryName[int(len(entryName)/2):]
+							entryName = tmpStartString + "~" + tmpEndString
+						}
+
+					}
 				} else {
 					for i := terminalWidthAvailable - len(tmpLineEntry); i > 0; i-- {
 						horizontalFill += "-"
