@@ -50,7 +50,7 @@ func clearFile(filename string) {
 }
 
 func clearServerIndexFile(serverPublicKey string) {
-	serverCacheLoc := "/tmp/index." + serverPublicKey
+	serverCacheLoc := os.TempDir() + "/index." + serverPublicKey
 	os.Remove(serverCacheLoc)
 	downloadBrowserIndex = 0
 	navPtr = &rootDir
@@ -68,7 +68,7 @@ func clearCacheConfig() {
 }
 
 func generateServerIndexAbsPath(serverPublicKey string) string {
-	indexPath := "/tmp/index." + serverPublicKey
+	indexPath := os.TempDir() + "/index." + serverPublicKey
 
 	return indexPath
 }
