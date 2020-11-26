@@ -130,7 +130,7 @@ func browseNow(serverPublicKey string) {
 
 func stripIllegalChars(userInput string) string {
 	InputBytes := []byte(userInput)
-	const byteLowRange byte = 33
+	const byteLowRange byte = 32
 	const byteHighRange byte = 126
 	returnString := ""
 
