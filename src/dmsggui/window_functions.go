@@ -228,20 +228,25 @@ func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAva
 	verticalHeightBuffer := terminalHeightAvailable
 
 	for index := 1 + downloadBrowserIndex*terminalHeightAvailable; index <= len(directoryMetaData); index++ {
-		for key := range directoryMetaData[index] {
+		for entryName := range directoryMetaData[index] {
 			// if entry is a directory
-			if directoryMetaData[index][key] {
-				tmpLineEntry := fmt.Sprintf("%d) %s / Directory", index, key)
+			if directoryMetaData[index][entryName] {
+				tmpLineEntry := fmt.Sprintf("%d) %s / Directory", index, entryName)
 				horizontalFill := ""
-				for i := terminalWidthAvailable - len(tmpLineEntry); i > 0; i-- {
-					horizontalFill += "-"
+				if len(tmpLineEntry) > terminalWidthAvailable {
+
+				} else {
+					for i := terminalWidthAvailable - len(tmpLineEntry); i > 0; i-- {
+						horizontalFill += "-"
+					}
 				}
-				lineEntry := fmt.Sprintf("%d) %s/ %s Directory", index, key, horizontalFill)
+
+				lineEntry := fmt.Sprintf("%d) %s/ %s Directory", index, entryName, horizontalFill)
 
 				fmt.Println(lineEntry)
 			} else {
 				//if entry is a file
-				fileSize := navPtr.files[key]
+				fileSize := navPtr.files[entryName]
 				fileSizeUnits := ""
 
 				// format file sizes for human readability
@@ -259,15 +264,15 @@ func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAva
 				}
 
 				//determine fill amount required
-				key = strings.ReplaceAll(key, "–", "-") //replace em dash with regular dash em dash doesn't render correctly
-				tmpLineEntry := fmt.Sprintf("%d) %s  %.2f %s", index, key, fileSize, fileSizeUnits)
+				entryName = strings.ReplaceAll(entryName, "–", "-") //replace em dash with regular dash em dash doesn't render correctly
+				tmpLineEntry := fmt.Sprintf("%d) %s  %.2f %s", index, entryName, fileSize, fileSizeUnits)
 				horizontalFill := ""
 				for i := terminalWidthAvailable - len(tmpLineEntry); i > 0; i-- {
 					horizontalFill += "-"
 				}
 
 				//draw line
-				lineEntry := fmt.Sprintf("%d) %s %s %.2f %s", index, key, horizontalFill, fileSize, fileSizeUnits)
+				lineEntry := fmt.Sprintf("%d) %s %s %.2f %s", index, entryName, horizontalFill, fileSize, fileSizeUnits)
 				fmt.Println(lineEntry)
 			}
 			verticalHeightBuffer--
