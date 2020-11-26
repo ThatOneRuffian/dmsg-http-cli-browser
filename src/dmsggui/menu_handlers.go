@@ -15,7 +15,7 @@ ServerMenu:
 
 	renderServerBrowser()
 
-	fmt.Print("(Press A to Add server, D to Delete a server, G to Goto page, Q to quit): ")
+	fmt.Print("(A to Add server, D to Delete a server, G to Goto page, Q to quit): ")
 	userChoice, _ := consoleInput.ReadString('\n')
 	userChoice = strings.ToUpper(stripIllegalChars(userChoice))
 	switch userChoice {
