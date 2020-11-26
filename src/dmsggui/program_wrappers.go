@@ -14,7 +14,7 @@ import (
 
 func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternateFileName string, stdOutput bool) {
 	downloadInfo := ""
-
+	retryAttempts := 3
 	if strings.Contains(file, "/") {
 		fileName := strings.Split(file, "/")
 
@@ -53,7 +53,7 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 
 	dmsggetCmd := &exec.Cmd{
 		Path:   dmsggetPath,
-		Args:   []string{dmsggetPath, "-O", downloadLoc + "/" + alternateFileName, fetchString},
+		Args:   []string{dmsggetPath, "-t", fmt.Sprint(retryAttempts), "-O", downloadLoc + "/" + alternateFileName, fetchString},
 		Stdout: stdOutLoc,
 		Stderr: os.Stderr,
 	}
