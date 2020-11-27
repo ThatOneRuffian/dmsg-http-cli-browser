@@ -241,35 +241,12 @@ func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAva
 				tmpLineEntry := tmpBasicLineEntry + entryName
 				horizontalFill := ""
 				//detect and format dirs with names that will overflow current terminal width
-				overflowAmount := terminalWidthAvailable - len(tmpBasicLineEntry)
-				truncateBuffer := overflowAmount / 2 //amount to keep on beginning and end of string
+
 				if len(tmpLineEntry) >= terminalWidthAvailable {
-					entryNameLength := len(entryName)
-					if entryNameLength > overflowAmount {
-						tmpEntryNameStart := entryName[0:truncateBuffer]
-						//add fill here
-						stringBuffer := ""
-						tmpEntryNameEnd := entryName[entryNameLength-truncateBuffer:]
-
-						if overflowAmount-truncateBuffer*2 >= 0 {
-							for i := 0; i < overflowAmount-truncateBuffer*2; i++ {
-								stringBuffer += "~"
-							}
-							entryName = fmt.Sprintf("%s%s%s", tmpEntryNameStart, stringBuffer, tmpEntryNameEnd)
-
-						} else {
-							fmt.Println(overflowAmount-truncateBuffer*2, overflowAmount)
-
-							tmpStartString := entryName[:int(len(entryName)/2)-1]
-							tmpEndString := entryName[int(len(entryName)/2):]
-							entryName = tmpStartString + "~" + tmpEndString
-						}
-
-					}
-				} else {
-					for i := terminalWidthAvailable - len(tmpLineEntry); i > 0; i-- {
-						horizontalFill += "-"
-					}
+					entryName = truncateStringTo(entryName, len(tmpBasicLineEntry), terminalWidthAvailable)
+				}
+				for i := terminalWidthAvailable - len(tmpLineEntry); i > 0; i-- {
+					horizontalFill += "-"
 				}
 
 				lineEntry := fmt.Sprintf("%d) %s/ %s Directory", index, entryName, horizontalFill)
@@ -319,6 +296,27 @@ func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAva
 		fmt.Println("-")
 	}
 END:
+}
+
+func truncateStringTo(stringToTruncate string, sizeToFit int, terminalWidthAvailable int) string {
+	overflowAmount := terminalWidthAvailable - sizeToFit
+	truncateBuffer := overflowAmount / 2 //amount to keep on beginning and end of string
+	entryNameLength := len(stringToTruncate)
+	if entryNameLength > overflowAmount {
+		//add fill here
+
+		if overflowAmount-truncateBuffer*2 >= 0 {
+			stringBuffer := "~~~~"
+			tmpEntryNameStart := stringToTruncate[0 : truncateBuffer-len(stringBuffer)/2]
+			tmpEntryNameEnd := stringToTruncate[entryNameLength-truncateBuffer+len(stringBuffer)/2:]
+			stringToTruncate = fmt.Sprintf("%s%s%s", tmpEntryNameStart, stringBuffer, tmpEntryNameEnd)
+		} else {
+			tmpStartString := stringToTruncate[:int(len(stringToTruncate)/2)-3]
+			tmpEndString := stringToTruncate[int(len(stringToTruncate)/2):]
+			stringToTruncate = tmpStartString + "~~~" + tmpEndString
+		}
+	}
+	return stringToTruncate
 }
 
 func getCurrentDirMetaData() map[int]map[string]bool {
