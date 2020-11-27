@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"runtime"
 	"strconv"
 	"strings"
 )
@@ -38,11 +39,18 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 	fmt.Println()
 
 	if !stdOutput {
-		nullFile, err := os.OpenFile("/dev/null", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-		if err != nil {
-			fmt.Println("Error opening /dev/null for writing")
+		nullWriteLocation := ""
+		if runtime.GOOS == "Linux" {
+			nullWriteLocation = "/dev/null"
+		} else if runtime.GOOS == "windows" {
+			nullWriteLocation = "./nul"
 		}
+
+		nullFile, err := os.OpenFile(nullWriteLocation, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		defer nullFile.Close()
+		if err != nil {
+			fmt.Println("Error opening null for writing")
+		}
 		stdOutLoc = nullFile
 	}
 	dmsggetPath, err := exec.LookPath("dmsgget")
