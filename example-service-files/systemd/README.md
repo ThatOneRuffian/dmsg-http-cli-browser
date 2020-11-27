@@ -28,14 +28,17 @@ Now copy the modified dmsg-http.service file to your systemd service file locati
 $ systemctl daemon-reload   # reload service files
 ```
 
-Then run:
+```sh
+$ systemctl enable dmsg-http.service   # enable the service
+```
+
 ```sh
 $ systemctl start dmsg-http.service   # start the service
 ```
 
 Finally run:
 ```sh
-$ systemctl status dmsg-http.service   # see service status
+$ systemctl status dmsg-http.service   # see service's status
 ```
 The dmsg-http.service should state that it's active and running.
 
