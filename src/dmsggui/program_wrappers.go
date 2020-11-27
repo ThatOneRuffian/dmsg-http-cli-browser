@@ -40,7 +40,7 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 
 	if !stdOutput {
 		nullWriteLocation := ""
-		if runtime.GOOS == "Linux" || runtime.GOOS == "darwin" {
+		if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
 			nullWriteLocation = "/dev/null"
 		} else if runtime.GOOS == "windows" {
 			nullWriteLocation = "./nul"
