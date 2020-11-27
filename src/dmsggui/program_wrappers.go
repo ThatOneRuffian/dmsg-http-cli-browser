@@ -163,6 +163,7 @@ func getTerminalDims(bufferHeight int) (int, int) {
 			terminalWidthAvailable = terminalWidth
 		}
 	} else if runtime.GOOS == "windows" {
+		//todo auto sizing of output
 		terminalHeightAvailable = defaultTerminalHeight //default on error
 		terminalWidthAvailable = defaultTerminalWidth
 	}
