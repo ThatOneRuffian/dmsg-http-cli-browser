@@ -26,9 +26,16 @@ const defaultTerminalWidth = 85
 const defaultTerminalHeight = 30
 
 func ClearScreen() {
-	cmd := exec.Command("clear")
-	cmd.Stdout = os.Stdout
-	cmd.Run()
+	cmd := exec.Command("")
+	if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
+		cmd = exec.Command("clear")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+	} else {
+		cmd = exec.Command("cmd", "/c", "cls")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+	}
 }
 
 func refreshServerIndex(serverPublicKey string, clearCache bool) {
