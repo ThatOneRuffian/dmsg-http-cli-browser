@@ -21,10 +21,6 @@ var SavedServers map[int][2]string
 //currentServerIndexContents will store the parsed server index values
 var currentServerIndexContents map[int][2]string
 
-const defaultTerminalWidth = 85
-
-const defaultTerminalHeight = 30
-
 func ClearScreen() {
 	cmd := exec.Command("")
 	if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
@@ -58,28 +54,7 @@ func refreshServerIndex(serverPublicKey string, clearCache bool) {
 func renderServerBrowser() {
 	bufferHeight := 7 //lines consumed by menu elements
 	dirNumberOfItems := len(SavedServers)
-	terminalHeightAvailable := 1
-	terminalWidthAvailable := 1
-	if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
-		terminalHeight, heightError := sttyWrapperGetTerminalHeight()
-		terminalWidth, widthError := sttyWrapperGetTerminalWidth()
-		if heightError != nil || widthError != nil {
-			fmt.Println("Error fetching terminal dimensions")
-			fmt.Println(heightError)
-			fmt.Println(widthError)
-			terminalHeightAvailable = defaultTerminalHeight //default on error
-			terminalWidthAvailable = defaultTerminalWidth
-
-		} else {
-			terminalHeight -= bufferHeight
-			terminalHeightAvailable = terminalHeight
-			terminalWidthAvailable = terminalWidth
-		}
-	} else if runtime.GOOS == "windows" {
-		terminalHeightAvailable = defaultTerminalHeight //default on error
-		terminalWidthAvailable = defaultTerminalWidth
-	}
-
+	terminalHeightAvailable, terminalWidthAvailable := getTerminalDims(bufferHeight)
 	mainMenuPageCountMax = dirNumberOfItems / terminalHeightAvailable
 	pageRemainder := dirNumberOfItems % terminalHeightAvailable
 
@@ -160,27 +135,7 @@ func renderServerDownloadList() map[int]map[string]bool {
 
 	bufferHeight := 7 //lines consumed by menu elements
 	dirNumberOfItems := len(navPtr.subDirs) + len(navPtr.files)
-	terminalHeightAvailable := 1
-	terminalWidthAvailable := 1
-	if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
-		terminalHeight, heightError := sttyWrapperGetTerminalHeight()
-		terminalWidth, widthError := sttyWrapperGetTerminalWidth()
-		if heightError != nil || widthError != nil {
-			fmt.Println("Error fetching terminal dimensions")
-			fmt.Println(heightError)
-			fmt.Println(widthError)
-			terminalHeightAvailable = defaultTerminalHeight //default on error
-			terminalWidthAvailable = defaultTerminalWidth
-
-		} else {
-			terminalHeight -= bufferHeight
-			terminalHeightAvailable = terminalHeight
-			terminalWidthAvailable = terminalWidth
-		}
-	} else if runtime.GOOS == "windows" {
-		terminalHeightAvailable = defaultTerminalHeight //default on error
-		terminalWidthAvailable = defaultTerminalWidth
-	}
+	terminalHeightAvailable, terminalWidthAvailable := getTerminalDims(bufferHeight)
 
 	serverPageCountMax = dirNumberOfItems / terminalHeightAvailable
 	pageRemainder := dirNumberOfItems % terminalHeightAvailable

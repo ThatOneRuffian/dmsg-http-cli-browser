@@ -13,6 +13,10 @@ import (
 	"strings"
 )
 
+const defaultTerminalWidth = 85
+
+const defaultTerminalHeight = 30
+
 func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternateFileName string, stdOutput bool) {
 	downloadInfo := ""
 	retryAttempts := 3
@@ -138,4 +142,29 @@ func sttyWrapperGetTerminalWidth() (int, error) {
 	}
 
 	return returnValue, nil
+}
+
+func getTerminalDims(bufferHeight int) (int, int) {
+	terminalHeightAvailable := 1
+	terminalWidthAvailable := 1
+	if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
+		terminalHeight, heightError := sttyWrapperGetTerminalHeight()
+		terminalWidth, widthError := sttyWrapperGetTerminalWidth()
+		if heightError != nil || widthError != nil {
+			fmt.Println("Error fetching terminal dimensions")
+			fmt.Println(heightError)
+			fmt.Println(widthError)
+			terminalHeightAvailable = defaultTerminalHeight //default on error
+			terminalWidthAvailable = defaultTerminalWidth
+
+		} else {
+			terminalHeight -= bufferHeight
+			terminalHeightAvailable = terminalHeight
+			terminalWidthAvailable = terminalWidth
+		}
+	} else if runtime.GOOS == "windows" {
+		terminalHeightAvailable = defaultTerminalHeight //default on error
+		terminalWidthAvailable = defaultTerminalWidth
+	}
+	return terminalHeightAvailable, terminalWidthAvailable
 }
