@@ -273,9 +273,14 @@ func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAva
 
 				//determine fill amount required
 				entryName = strings.ReplaceAll(entryName, "–", "-") //replace em dash with regular dash em dash doesn't render correctly
-				tmpLineEntry := fmt.Sprintf("%d) %s  %.2f %s", index, entryName, fileSize, fileSizeUnits)
+				tmpBasicLineEntry := fmt.Sprintf("%d)   %.2f %s", index, fileSize, fileSizeUnits)
 				horizontalFill := ""
-				for i := terminalWidthAvailable - len(tmpLineEntry); i > 0; i-- {
+
+				if len(tmpBasicLineEntry)+len(entryName) >= terminalWidthAvailable {
+					entryName = truncateStringTo(entryName, len(tmpBasicLineEntry), terminalWidthAvailable)
+				}
+
+				for i := terminalWidthAvailable - len(entryName+tmpBasicLineEntry); i > 0; i-- {
 					horizontalFill += "-"
 				}
 
@@ -298,14 +303,14 @@ func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAva
 END:
 }
 
-func truncateStringTo(stringToTruncate string, sizeToFit int, terminalWidthAvailable int) string {
-	overflowAmount := terminalWidthAvailable - sizeToFit
-	truncateBuffer := overflowAmount / 2 //amount to keep on beginning and end of string
+func truncateStringTo(stringToTruncate string, rawMenuLength int, terminalWidthAvailable int) string {
+	screenWidthLeft := terminalWidthAvailable - rawMenuLength
+	truncateBuffer := screenWidthLeft / 2 //amount to keep on beginning and end of string
 	entryNameLength := len(stringToTruncate)
-	if entryNameLength > overflowAmount {
-		//add fill here
+	if entryNameLength > screenWidthLeft {
+		//truncate string here
 
-		if overflowAmount-truncateBuffer*2 >= 0 {
+		if screenWidthLeft-truncateBuffer*2 >= 0 {
 			stringBuffer := "~~~~"
 			tmpEntryNameStart := stringToTruncate[0 : truncateBuffer-len(stringBuffer)/2]
 			tmpEntryNameEnd := stringToTruncate[entryNameLength-truncateBuffer+len(stringBuffer)/2:]
