@@ -13,9 +13,9 @@ import (
 	"strings"
 )
 
-const defaultTerminalWidth = 85
+const defaultTerminalWidth = 100
 
-const defaultTerminalHeight = 30
+const defaultTerminalHeight = 35
 
 func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternateFileName string, stdOutput bool) {
 	downloadInfo := ""
