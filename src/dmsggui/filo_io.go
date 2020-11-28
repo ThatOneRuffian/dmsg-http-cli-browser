@@ -43,10 +43,6 @@ func loadServerIndex(serverPublicKey string) bool {
 	return returnBool
 }
 
-func clearFile(filename string) {
-	os.Remove(filename)
-}
-
 func clearServerIndexFile(serverPublicKey string) {
 	serverCacheLoc := indexDownloadLoc + "/index." + serverPublicKey
 	os.Remove(serverCacheLoc)
@@ -55,13 +51,11 @@ func clearServerIndexFile(serverPublicKey string) {
 
 func clearCacheConfig() {
 	configFile := generateConfigAbsFilePath()
-	file, err := os.Create(configFile)
+	_, err := os.Create(configFile)
 
 	if err != nil {
 		fmt.Println(err)
-		fmt.Println(file)
 	}
-
 }
 
 func generateServerIndexAbsPath(serverPublicKey string) string {

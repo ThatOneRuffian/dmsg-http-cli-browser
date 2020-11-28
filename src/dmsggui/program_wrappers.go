@@ -32,8 +32,8 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 
 	}
 	if downloadLoc == MainDownloadsLoc {
-		clearFile(downloadLoc + "/" + alternateFileName)
-		clearFile(downloadLoc + "/" + file)
+		os.Remove(downloadLoc + "/" + alternateFileName)
+		os.Remove(downloadLoc + "/" + file)
 	}
 
 	fetchString := fmt.Sprintf("dmsg://%s:80/%s", publicKey, file)
