@@ -205,7 +205,7 @@ func renderServerDownloadList() map[int]map[string]bool {
 		pageStatus = fmt.Sprintf("page (%d / %d)", downloadBrowserIndex+1, serverPageCountMax)
 		currentFilterStringStatus = divider
 	} else {
-		serverPageCountMax = len(dirMetaData) / terminalHeightAvailable
+		serverPageCountMax = (len(dirMetaData) - 1) / terminalHeightAvailable
 		pageRemainder := dirNumberOfItems % terminalHeightAvailable
 
 		// add additional page to fit remaining line items
@@ -272,18 +272,23 @@ func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAva
 			}
 			sort.Ints(metaKeys)
 			for index := range metaKeys {
-				indexOffset := metaKeys[index+downloadBrowserIndex]
-				for fileName, isDir := range directoryMetaData[indexOffset] {
-					if isDir {
-						drawDirEntry(fileName, terminalWidthAvailable, indexOffset)
-					} else {
-						drawFileEntry(fileName, terminalWidthAvailable, indexOffset)
-					}
-					verticalHeightBuffer--
-					if verticalHeightBuffer == 0 {
-						goto END
+				indexOffset := index + downloadBrowserIndex*terminalHeightAvailable
+
+				if indexOffset < len(metaKeys) {
+					filteredIndexValue := metaKeys[indexOffset]
+					for fileName, isDir := range directoryMetaData[filteredIndexValue] {
+						if isDir {
+							drawDirEntry(fileName, terminalWidthAvailable, filteredIndexValue)
+						} else {
+							drawFileEntry(fileName, terminalWidthAvailable, filteredIndexValue)
+						}
+						verticalHeightBuffer--
+						if verticalHeightBuffer == 0 {
+							goto END
+						}
 					}
 				}
+
 			}
 
 		}

@@ -134,6 +134,7 @@ SearchLoop:
 		goto SearchLoop
 	case "X":
 		currentDirFilter = ""
+		downloadBrowserIndex = 0
 
 	default:
 		userInputVar, err := strconv.Atoi(userChoice)
