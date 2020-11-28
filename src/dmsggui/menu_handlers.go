@@ -87,12 +87,7 @@ ServerIndexMenu:
 		os.Exit(1)
 	case "E":
 		//clear server root dir
-		rootDir = directory{
-			files:     make(map[string]float64),
-			parentDir: nil,
-			dirName:   "/",
-			subDirs:   make(map[string]*directory),
-		}
+		initRootDir()
 		goto ExitLoop
 	case "B":
 		if downloadBrowserIndex > 0 {
@@ -124,8 +119,8 @@ ServerIndexMenu:
 		}
 
 	case "R":
+		initRootDir()
 		refreshServerIndex(serverPublicKey, true)
-		assembleFileStructure(serverPublicKey)
 
 	default:
 		userInputVar, err := strconv.Atoi(userChoice)

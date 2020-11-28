@@ -38,6 +38,7 @@ func refreshServerIndex(serverPublicKey string, clearCache bool) {
 	ClearScreen()
 	downloadBrowserIndex = 0
 	if clearCache {
+		fmt.Println("Downloading Server Index...")
 		clearServerIndexFile(serverPublicKey)
 		dmsggetWrapper(serverPublicKey, indexDownloadLoc, "index", "index."+serverPublicKey, false)
 	}
@@ -49,6 +50,7 @@ func refreshServerIndex(serverPublicKey string, clearCache bool) {
 		clearServerIndexFile(serverPublicKey)
 		dmsggetWrapper(serverPublicKey, indexDownloadLoc, "index", "index."+serverPublicKey, false)
 	}
+	assembleFileStructure(serverPublicKey)
 }
 
 func renderServerBrowser() {

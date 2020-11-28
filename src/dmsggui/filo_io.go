@@ -51,7 +51,6 @@ func clearServerIndexFile(serverPublicKey string) {
 	serverCacheLoc := indexDownloadLoc + "/index." + serverPublicKey
 	os.Remove(serverCacheLoc)
 	downloadBrowserIndex = 0
-	navPtr = &rootDir
 }
 
 func clearCacheConfig() {

@@ -17,13 +17,7 @@ var downloadBrowserIndex int = 0
 //downloadBrowserIndex stores the current page number - 1 of the main menu
 var mainMenuBrowserIndex int = 0
 
-//var rootDir Directory
-var rootDir directory = directory{
-	files:     make(map[string]float64),
-	parentDir: nil,
-	dirName:   "/",
-	subDirs:   make(map[string]*directory),
-}
+var rootDir directory
 
 var subDir directory
 
@@ -50,8 +44,17 @@ func assembleFileStructure(serverPublicKey string) {
 	if err != nil {
 		panic(err.Error())
 	}
-
 	parseServerIndex(&file)
+}
+
+func initRootDir() {
+	// reinitialize root dir
+	rootDir = directory{
+		files:     make(map[string]float64),
+		parentDir: nil,
+		dirName:   "/",
+		subDirs:   make(map[string]*directory),
+	}
 }
 
 func populateFileSystem(fullFilePath string) {
@@ -96,6 +99,8 @@ func getPresentWorkingDirectory() string {
 }
 
 func parseServerIndex(file **os.File) {
+	initRootDir()
+	navPtr = &rootDir
 	defer func() {
 		if err := recover(); err != nil {
 			fmt.Println(err)
@@ -175,6 +180,7 @@ func insertFileIntoDir(filePath []string, fileName string, fileSize int) {
 func createDirPath(fullDirPath []string) {
 	//create the dir path for the passed string
 	currentDirPtr := &rootDir
+	navPtr = &rootDir
 	for _, currentPathName := range fullDirPath {
 		_, ok := currentDirPtr.subDirs[currentPathName]
 		if ok {
