@@ -237,7 +237,26 @@ func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAva
 				}
 			}
 		} else { // if the meta data is unsorted
-			fmt.Println(directoryMetaData)
+			metaKeys := []int{}
+			for key := range directoryMetaData {
+				metaKeys = append(metaKeys, key)
+			}
+			sort.Ints(metaKeys)
+			for index := range metaKeys {
+
+				for fileName, isDir := range directoryMetaData[metaKeys[index]] {
+					if isDir {
+						drawDirEntry(fileName, terminalWidthAvailable, metaKeys[index])
+					} else {
+						drawFileEntry(fileName, terminalWidthAvailable, metaKeys[index])
+					}
+					verticalHeightBuffer--
+					if verticalHeightBuffer == 0 {
+						goto END
+					}
+				}
+			}
+
 		}
 
 	}
