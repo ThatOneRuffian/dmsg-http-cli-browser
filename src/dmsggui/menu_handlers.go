@@ -148,14 +148,17 @@ SearchLoop:
 				if index == ".." && navPtr.parentDir != nil {
 					navPtr = navPtr.parentDir
 					downloadBrowserIndex = 0
+					currentDirFilter = ""
 				} else {
 					// if object is a directory then navigate into
 					if directoryMetaData[userInputVar][index] {
+						currentDirFilter = ""
 						navPtr = navPtr.subDirs[index]
 					} else {
 						// runs once
 						for fileName := range directoryMetaData[userInputVar] {
 							// download file
+							currentDirFilter = ""
 							ClearScreen()
 							dmsggetWrapper(serverPublicKey, mainDownloadsLoc, getPresentWorkingDirectory()+fileName, "", true)
 						}
