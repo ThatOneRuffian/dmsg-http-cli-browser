@@ -211,70 +211,74 @@ func renderServerDownloadList() map[int]map[string]bool {
 
 func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAvailable int, terminalWidthAvailable int) {
 	verticalHeightBuffer := terminalHeightAvailable
+	if len(directoryMetaData) == 0 {
+		fmt.Println("[EMPTY SERVER DMSG-HTTP-SERVER RESPONSE OR NO INDEX FILE FOUND]")
+	} else {
+		for index := 1 + downloadBrowserIndex*terminalHeightAvailable; index <= len(directoryMetaData); index++ {
+			for entryName := range directoryMetaData[index] {
+				// if entry is a directory
+				if directoryMetaData[index][entryName] {
+					tmpBasicLineEntry := fmt.Sprintf("%d)  / Directory", index)
+					tmpLineEntry := tmpBasicLineEntry + entryName
+					horizontalFill := ""
+					//detect and format dirs with names that will overflow current terminal width
 
-	for index := 1 + downloadBrowserIndex*terminalHeightAvailable; index <= len(directoryMetaData); index++ {
-		for entryName := range directoryMetaData[index] {
-			// if entry is a directory
-			if directoryMetaData[index][entryName] {
-				tmpBasicLineEntry := fmt.Sprintf("%d)  / Directory", index)
-				tmpLineEntry := tmpBasicLineEntry + entryName
-				horizontalFill := ""
-				//detect and format dirs with names that will overflow current terminal width
+					if len(tmpLineEntry) >= terminalWidthAvailable {
+						entryName = truncateStringTo(entryName, len(tmpBasicLineEntry), terminalWidthAvailable)
+					}
+					for i := terminalWidthAvailable - len(tmpLineEntry); i > 0; i-- {
+						horizontalFill += "-"
+					}
 
-				if len(tmpLineEntry) >= terminalWidthAvailable {
-					entryName = truncateStringTo(entryName, len(tmpBasicLineEntry), terminalWidthAvailable)
-				}
-				for i := terminalWidthAvailable - len(tmpLineEntry); i > 0; i-- {
-					horizontalFill += "-"
-				}
+					lineEntry := fmt.Sprintf("%d) %s/ %s Directory", index, entryName, horizontalFill)
 
-				lineEntry := fmt.Sprintf("%d) %s/ %s Directory", index, entryName, horizontalFill)
-
-				fmt.Println(lineEntry)
-			} else {
-				//if entry is a file
-				fileSize := navPtr.files[entryName]
-				fileSizeUnits := ""
-
-				// format file sizes for human readability
-				if fileSize > 1e9 {
-					fileSize /= 1e9
-					fileSizeUnits = "GB"
-				} else if fileSize > 1e6 {
-					fileSize /= 1e6
-					fileSizeUnits = "MB"
-				} else if fileSize > 1e3 {
-					fileSize /= 1e3
-					fileSizeUnits = "KB"
+					fmt.Println(lineEntry)
 				} else {
-					fileSizeUnits = "B"
+					//if entry is a file
+					fileSize := navPtr.files[entryName]
+					fileSizeUnits := ""
+
+					// format file sizes for human readability
+					if fileSize > 1e9 {
+						fileSize /= 1e9
+						fileSizeUnits = "GB"
+					} else if fileSize > 1e6 {
+						fileSize /= 1e6
+						fileSizeUnits = "MB"
+					} else if fileSize > 1e3 {
+						fileSize /= 1e3
+						fileSizeUnits = "KB"
+					} else {
+						fileSizeUnits = "B"
+					}
+
+					//determine fill amount required
+					entryName = strings.ReplaceAll(entryName, "–", "-") //replace em dash with regular dash em dash doesn't render correctly
+					tmpBasicLineEntry := fmt.Sprintf("%d)   %.2f %s", index, fileSize, fileSizeUnits)
+					horizontalFill := ""
+
+					if len(tmpBasicLineEntry)+len(entryName) >= terminalWidthAvailable {
+						entryName = truncateStringTo(entryName, len(tmpBasicLineEntry), terminalWidthAvailable)
+					}
+
+					for i := terminalWidthAvailable - len(entryName+tmpBasicLineEntry); i > 0; i-- {
+						horizontalFill += "-"
+					}
+
+					//draw line
+					lineEntry := fmt.Sprintf("%d) %s %s %.2f %s", index, entryName, horizontalFill, fileSize, fileSizeUnits)
+					fmt.Println(lineEntry)
 				}
 
-				//determine fill amount required
-				entryName = strings.ReplaceAll(entryName, "–", "-") //replace em dash with regular dash em dash doesn't render correctly
-				tmpBasicLineEntry := fmt.Sprintf("%d)   %.2f %s", index, fileSize, fileSizeUnits)
-				horizontalFill := ""
-
-				if len(tmpBasicLineEntry)+len(entryName) >= terminalWidthAvailable {
-					entryName = truncateStringTo(entryName, len(tmpBasicLineEntry), terminalWidthAvailable)
+				verticalHeightBuffer--
+				if verticalHeightBuffer == 0 {
+					goto END
 				}
 
-				for i := terminalWidthAvailable - len(entryName+tmpBasicLineEntry); i > 0; i-- {
-					horizontalFill += "-"
-				}
-
-				//draw line
-				lineEntry := fmt.Sprintf("%d) %s %s %.2f %s", index, entryName, horizontalFill, fileSize, fileSizeUnits)
-				fmt.Println(lineEntry)
 			}
-			verticalHeightBuffer--
-			if verticalHeightBuffer == 0 {
-				goto END
-			}
-
 		}
-
 	}
+
 	//vertical buffer
 	for ; verticalHeightBuffer > 0; verticalHeightBuffer-- {
 		fmt.Println("-")
