@@ -17,9 +17,6 @@ var downloadBrowserIndex int = 0
 //downloadBrowserIndex stores the current page number - 1 of the main menu
 var mainMenuBrowserIndex int = 0
 
-//current nav filter for search function
-var currentDirFilter string
-
 var rootDir directory
 
 var subDir directory

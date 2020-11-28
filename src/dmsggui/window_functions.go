@@ -21,6 +21,9 @@ var SavedServers map[int][2]string
 //currentServerIndexContents will store the parsed server index values
 var currentServerIndexContents map[int][2]string
 
+//current nav filter for search function
+var currentDirFilter string
+
 func ClearScreen() {
 	cmd := exec.Command("")
 	if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
@@ -216,7 +219,7 @@ func renderServerDownloadList() map[int]map[string]bool {
 		}
 
 		pageStatus = fmt.Sprintf("page (%d / %d)", downloadBrowserIndex+1, serverPageCountMax)
-		currentFilterInfo := fmt.Sprintf(" Current Filter (X to clear):\"%s\" ", currentDirFilter)
+		currentFilterInfo := fmt.Sprintf(" Current Filter (X to clear):\"%s\" | (%d results) ", currentDirFilter, len(dirMetaData))
 		divider := ""
 		for i := 0; i < (terminalWidthAvailable-len(currentFilterInfo))/2; i++ {
 			divider += "="
@@ -269,12 +272,12 @@ func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAva
 			}
 			sort.Ints(metaKeys)
 			for index := range metaKeys {
-
-				for fileName, isDir := range directoryMetaData[metaKeys[index]] {
+				indexOffset := metaKeys[index+downloadBrowserIndex]
+				for fileName, isDir := range directoryMetaData[indexOffset] {
 					if isDir {
-						drawDirEntry(fileName, terminalWidthAvailable, metaKeys[index])
+						drawDirEntry(fileName, terminalWidthAvailable, indexOffset)
 					} else {
-						drawFileEntry(fileName, terminalWidthAvailable, metaKeys[index])
+						drawFileEntry(fileName, terminalWidthAvailable, indexOffset)
 					}
 					verticalHeightBuffer--
 					if verticalHeightBuffer == 0 {
