@@ -83,7 +83,7 @@ ServerIndexMenu:
 	directoryMetaData := renderServerDownloadList()
 SearchLoop:
 	consoleInput := bufio.NewReader(os.Stdin)
-	fmt.Print("(R to Refresh Server Index, E to Exit Server File Browser, G to Goto page, Q to quit): ")
+	fmt.Print("(R to Refresh Server Index, E to Exit Server File Browser, G to Goto page, S to Search Dir, Q to quit): ")
 	userChoice, _ := consoleInput.ReadString('\n')
 	userChoice = strings.ToUpper(stripIllegalChars(userChoice))
 	switch userChoice {
