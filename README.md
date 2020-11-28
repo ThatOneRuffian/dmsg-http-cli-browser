@@ -11,7 +11,7 @@ The client requests the index file from the server in the following root locatio
 
 
 **Indexer features**
-- Indexer will scan the root working directory in set intervals (default 30 seconds). This interval can be set manually by providing an integer number in seconds as an argument
+- Indexer will scan the root working directory in set intervals (default 30 seconds). This interval can be set manually by providing an integer number in seconds as an argument.
 - Does not index empty directories or the index file itself.
 
 
@@ -29,7 +29,8 @@ The client operates as a simple bookmark manager for public keys that are runnin
 - Simple UI
 - UI scales to terminal size (Optional dependency: tput)
 
+#### ***Windows users looking for skycoin dmsgget, dmsg-server, and gen-key binaries, please check out this forked [skycoin/dmsg](https://github.com/ThatOneRuffian/dmsg/releases) repo for windows compatible binaries.***
 ---
 ### ***If you like what you see and you want to see more please donate. Thanks!***
 
-Skycoin: 2ZtDYzoUBESccvK5mzDBHqKaAPvjwVmzESs
+***Skycoin:*** 2ZtDYzoUBESccvK5mzDBHqKaAPvjwVmzESs
