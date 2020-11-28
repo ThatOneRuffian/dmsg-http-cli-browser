@@ -219,7 +219,12 @@ func renderServerDownloadList() map[int]map[string]bool {
 		}
 
 		pageStatus = fmt.Sprintf("page (%d / %d)", downloadBrowserIndex+1, serverPageCountMax)
-		currentFilterInfo := fmt.Sprintf(" Current Filter (X to clear): \"%s\" | (%d results) ", currentDirFilter, len(dirMetaData)-1)
+		results := "result"
+		resultCount := len(dirMetaData) - 1
+		if resultCount > 1 {
+			results += "s"
+		}
+		currentFilterInfo := fmt.Sprintf(" Current Filter (X to clear): \"%s\" | (%d %s) ", currentDirFilter, resultCount, results)
 		divider := ""
 		for i := 0; i < (terminalWidthAvailable-len(currentFilterInfo))/2; i++ {
 			divider += "="
