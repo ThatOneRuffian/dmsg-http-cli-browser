@@ -216,24 +216,30 @@ func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAva
 	if len(directoryMetaData) == 0 {
 		fmt.Println("[EMPTY SERVER DMSG-HTTP-SERVER RESPONSE OR NO INDEX FILE FOUND]")
 	} else {
-		for index := 1 + downloadBrowserIndex*terminalHeightAvailable; index <= len(directoryMetaData); index++ {
 
-			for entryName := range directoryMetaData[index] {
-				// if entry is a directory
-				if directoryMetaData[index][entryName] {
-					drawDirEntry(entryName, terminalWidthAvailable, index)
+		if isMetaDataSorted(directoryMetaData) { // if the meta data is sorted
+			for index := 1 + downloadBrowserIndex*terminalHeightAvailable; index <= len(directoryMetaData); index++ {
 
-				} else {
-					drawFileEntry(entryName, terminalWidthAvailable, index)
+				for entryName := range directoryMetaData[index] {
+					// if entry is a directory
+					if directoryMetaData[index][entryName] {
+						drawDirEntry(entryName, terminalWidthAvailable, index)
+
+					} else {
+						drawFileEntry(entryName, terminalWidthAvailable, index)
+					}
+
+					verticalHeightBuffer--
+					if verticalHeightBuffer == 0 {
+						goto END
+					}
+
 				}
-
-				verticalHeightBuffer--
-				if verticalHeightBuffer == 0 {
-					goto END
-				}
-
 			}
+		} else { // if the meta data is unsorted
+			fmt.Println(directoryMetaData)
 		}
+
 	}
 
 	//vertical buffer
@@ -242,6 +248,18 @@ func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAva
 	}
 END:
 }
+
+func isMetaDataSorted(directoryMetaData map[int]map[string]bool) bool {
+	metaDataLength := len(directoryMetaData)
+	isSorted := true
+	for index := range directoryMetaData {
+		if index > metaDataLength {
+			isSorted = false
+		}
+	}
+	return isSorted
+}
+
 func drawDirEntry(entryName string, terminalWidthAvailable int, index int) {
 	tmpBasicLineEntry := fmt.Sprintf("%d)  / Directory", index)
 	tmpLineEntry := tmpBasicLineEntry + entryName
