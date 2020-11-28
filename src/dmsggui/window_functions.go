@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"runtime"
 	"sort"
 	"strings"
 )
@@ -20,14 +21,17 @@ var SavedServers map[int][2]string
 //currentServerIndexContents will store the parsed server index values
 var currentServerIndexContents map[int][2]string
 
-const defaultTerminalWidth = 85
-
-const defaultTerminalHeight = 30
-
 func ClearScreen() {
-	cmd := exec.Command("clear")
-	cmd.Stdout = os.Stdout
-	cmd.Run()
+	cmd := exec.Command("")
+	if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
+		cmd = exec.Command("clear")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+	} else {
+		cmd = exec.Command("cmd", "/c", "cls")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+	}
 }
 
 func refreshServerIndex(serverPublicKey string, clearCache bool) {
@@ -50,20 +54,7 @@ func refreshServerIndex(serverPublicKey string, clearCache bool) {
 func renderServerBrowser() {
 	bufferHeight := 7 //lines consumed by menu elements
 	dirNumberOfItems := len(SavedServers)
-	terminalHeightAvailable, heightError := sttyWrapperGetTerminalHeight()
-	terminalWidth, widthError := sttyWrapperGetTerminalWidth()
-
-	if heightError != nil || widthError != nil {
-		fmt.Println("Error fetching terminal dimensions")
-		fmt.Println(heightError)
-		fmt.Println(widthError)
-		terminalHeightAvailable = defaultTerminalHeight //default on error
-		terminalWidth = defaultTerminalWidth
-
-	} else {
-		terminalHeightAvailable -= bufferHeight
-	}
-
+	terminalHeightAvailable, terminalWidthAvailable := getTerminalDims(bufferHeight)
 	mainMenuPageCountMax = dirNumberOfItems / terminalHeightAvailable
 	pageRemainder := dirNumberOfItems % terminalHeightAvailable
 
@@ -79,7 +70,7 @@ func renderServerBrowser() {
 
 	//Create header divider of appropriate length
 	divider := ""
-	for i := 0; i < terminalWidth; i++ {
+	for i := 0; i < terminalWidthAvailable; i++ {
 		divider += "="
 	}
 
@@ -88,7 +79,7 @@ func renderServerBrowser() {
 	menuTitle := "SERVER DOWNLOAD INDEX"
 	currentDir := getPresentWorkingDirectory()
 	tmpTitle := fmt.Sprintf("%s%s", menuTitle, currentDir)
-	titleBufferLength := terminalWidth - len(tmpTitle)
+	titleBufferLength := terminalWidthAvailable - len(tmpTitle)
 	for i := 0; i < titleBufferLength; i++ {
 		titleBuffer = titleBuffer + " "
 	}
@@ -99,7 +90,7 @@ func renderServerBrowser() {
 	fmt.Println("DMSG-HTTP SERVER LIST")
 	fmt.Println(divider)
 
-	renderHomeMenuServerList(terminalHeightAvailable, terminalWidth)
+	renderHomeMenuServerList(terminalHeightAvailable, terminalWidthAvailable)
 
 	fmt.Println(divider)
 	fmt.Println(pageStatus)
@@ -144,19 +135,7 @@ func renderServerDownloadList() map[int]map[string]bool {
 
 	bufferHeight := 7 //lines consumed by menu elements
 	dirNumberOfItems := len(navPtr.subDirs) + len(navPtr.files)
-	terminalHeightAvailable, heightError := sttyWrapperGetTerminalHeight()
-	terminalWidth, widthError := sttyWrapperGetTerminalWidth()
-
-	if heightError != nil || widthError != nil {
-		fmt.Println("Error fetching terminal dimensions")
-		fmt.Println(heightError)
-		fmt.Println(widthError)
-		terminalHeightAvailable = defaultTerminalHeight //default on error
-		terminalWidth = defaultTerminalWidth
-
-	} else {
-		terminalHeightAvailable -= bufferHeight
-	}
+	terminalHeightAvailable, terminalWidthAvailable := getTerminalDims(bufferHeight)
 
 	serverPageCountMax = dirNumberOfItems / terminalHeightAvailable
 	pageRemainder := dirNumberOfItems % terminalHeightAvailable
@@ -173,7 +152,7 @@ func renderServerDownloadList() map[int]map[string]bool {
 
 	//Create header divider of appropriate length
 	divider := ""
-	for i := 0; i < terminalWidth; i++ {
+	for i := 0; i < terminalWidthAvailable; i++ {
 		divider += "="
 	}
 
@@ -183,7 +162,7 @@ func renderServerDownloadList() map[int]map[string]bool {
 	dirMetaData := getCurrentDirMetaData()
 	currentDir := getPresentWorkingDirectory()
 	tmpTitle := fmt.Sprintf("%s%s", menuTitle, currentDir)
-	titleBufferLength := terminalWidth - len(tmpTitle)
+	titleBufferLength := terminalWidthAvailable - len(tmpTitle)
 	truncateIndex := 0
 	truncateBuffer := ""
 	presentWorkingDirTitle := ""
@@ -222,7 +201,7 @@ func renderServerDownloadList() map[int]map[string]bool {
 	fmt.Println(divider)
 	fmt.Println(menuHeader)
 	fmt.Println(divider)
-	renderMetaData(dirMetaData, terminalHeightAvailable, terminalWidth)
+	renderMetaData(dirMetaData, terminalHeightAvailable, terminalWidthAvailable)
 	fmt.Println(divider)
 	fmt.Println(pageStatus)
 	fmt.Println("<<F <B | N> L>>")
