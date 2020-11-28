@@ -120,6 +120,7 @@ ServerIndexMenu:
 
 	case "R":
 		initRootDir()
+		navPtr = &rootDir
 		refreshServerIndex(serverPublicKey, true)
 
 	default:
