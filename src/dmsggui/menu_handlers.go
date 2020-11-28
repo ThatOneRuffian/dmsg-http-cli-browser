@@ -12,7 +12,7 @@ func ServerListMainMenu() string {
 	serverPublicKey := ""
 	consoleInput := bufio.NewReader(os.Stdin)
 ServerMenu:
-
+	currentDirFilter = ""
 	renderServerBrowser()
 
 	fmt.Print("(A to Add server, D to Delete a server, G to Goto page, Q to quit): ")
@@ -76,7 +76,7 @@ func ServerIndexMenuHandler(serverPublicKey string) {
 	assembleFileStructure(serverPublicKey)
 
 ServerIndexMenu:
-	directoryMetaData := renderServerDownloadList("")
+	directoryMetaData := renderServerDownloadList()
 SearchLoop:
 	consoleInput := bufio.NewReader(os.Stdin)
 	fmt.Print("(R to Refresh Server Index, E to Exit Server File Browser, G to Goto page, Q to quit): ")
@@ -124,13 +124,17 @@ SearchLoop:
 		navPtr = &rootDir
 		refreshServerIndex(serverPublicKey, true)
 	case "S":
-		fmt.Print("Search directory for the following substring: ")
+		fmt.Print("Search directory for the following substring (X to clear current filter): ")
 		consoleInput := bufio.NewReader(os.Stdin)
 		inputQuery, _ := consoleInput.ReadString('\n')
 		inputQuery = strings.ToUpper(stripIllegalChars(inputQuery))
 		fmt.Println("input: ", inputQuery)
-		renderServerDownloadList(inputQuery)
+		currentDirFilter = inputQuery
+		renderServerDownloadList()
 		goto SearchLoop
+	case "X":
+		currentDirFilter = ""
+
 	default:
 		userInputVar, err := strconv.Atoi(userChoice)
 		if err != nil {

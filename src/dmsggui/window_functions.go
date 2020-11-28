@@ -133,7 +133,7 @@ func renderHomeMenuServerList(terminalHeightAvailable int, terminalWidthAvailabl
 END:
 }
 
-func renderServerDownloadList(filter string) map[int]map[string]bool {
+func renderServerDownloadList() map[int]map[string]bool {
 
 	bufferHeight := 7 //lines consumed by menu elements
 	dirNumberOfItems := len(navPtr.subDirs) + len(navPtr.files)
@@ -160,8 +160,10 @@ func renderServerDownloadList(filter string) map[int]map[string]bool {
 
 	//Render variables
 	titleBuffer := ""
+	pageStatus := ""
+	currentFilterStringStatus := ""
 	menuTitle := "SERVER DOWNLOAD INDEX"
-	dirMetaData := getCurrentDirMetaData(filter)
+	dirMetaData := getCurrentDirMetaData()
 	currentDir := getPresentWorkingDirectory()
 	tmpTitle := fmt.Sprintf("%s%s", menuTitle, currentDir)
 	titleBufferLength := terminalWidthAvailable - len(tmpTitle)
@@ -196,7 +198,31 @@ func renderServerDownloadList(filter string) map[int]map[string]bool {
 	}
 
 	menuHeader := fmt.Sprintf("%s%s%s", menuTitle, titleBuffer, presentWorkingDirTitle)
-	pageStatus := fmt.Sprintf("page (%d / %d)", downloadBrowserIndex+1, serverPageCountMax)
+	if len(currentDirFilter) == 0 {
+		pageStatus = fmt.Sprintf("page (%d / %d)", downloadBrowserIndex+1, serverPageCountMax)
+		currentFilterStringStatus = divider
+	} else {
+		serverPageCountMax = len(dirMetaData) / terminalHeightAvailable
+		pageRemainder := dirNumberOfItems % terminalHeightAvailable
+
+		// add additional page to fit remaining line items
+		if pageRemainder > 0 {
+			serverPageCountMax++
+		}
+
+		// Avoid 1/0 pages
+		if serverPageCountMax == 0 {
+			serverPageCountMax = 1
+		}
+
+		pageStatus = fmt.Sprintf("page (%d / %d)", downloadBrowserIndex+1, serverPageCountMax)
+		currentFilterInfo := fmt.Sprintf(" Current Filter (X to clear):\"%s\" ", currentDirFilter)
+		divider := ""
+		for i := 0; i < (terminalWidthAvailable-len(currentFilterInfo))/2; i++ {
+			divider += "="
+		}
+		currentFilterStringStatus = divider + currentFilterInfo + divider
+	}
 
 	//Render download menu
 	ClearScreen()
@@ -204,7 +230,7 @@ func renderServerDownloadList(filter string) map[int]map[string]bool {
 	fmt.Println(menuHeader)
 	fmt.Println(divider)
 	renderMetaData(dirMetaData, terminalHeightAvailable, terminalWidthAvailable)
-	fmt.Println(divider)
+	fmt.Println(currentFilterStringStatus)
 	fmt.Println(pageStatus)
 	fmt.Println("<<F <B | N> L>>")
 
@@ -214,7 +240,7 @@ func renderServerDownloadList(filter string) map[int]map[string]bool {
 func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAvailable int, terminalWidthAvailable int) {
 	verticalHeightBuffer := terminalHeightAvailable
 	if len(directoryMetaData) == 0 {
-		fmt.Println("[EMPTY SERVER DMSG-HTTP-SERVER RESPONSE OR NO INDEX FILE FOUND]")
+		fmt.Println("[EMPTY SERVER DMSG-HTTP-SERVER RESPONSE OR NO INDEX FILE FOUND OR NO SEARCH RESULTS IN ROOT DIR]")
 	} else {
 
 		if isMetaDataSorted(directoryMetaData) { // if the meta data is sorted
@@ -355,12 +381,12 @@ func truncateStringTo(stringToTruncate string, rawMenuLength int, terminalWidthA
 	return stringToTruncate
 }
 
-func getCurrentDirMetaData(filter string) map[int]map[string]bool {
+func getCurrentDirMetaData() map[int]map[string]bool {
 	var subDirKeys []string
 	var fileNames []string
 	returnValue := make(map[int]map[string]bool)
 	swapDir := make(map[string]bool)
-	lengthOfFilterList := len(filter)
+	lengthOfFilterList := len(currentDirFilter)
 	//dump dir/file keys in current dir and sort A-Z
 	if navPtr != &rootDir {
 		//add key for directory back
@@ -383,7 +409,7 @@ func getCurrentDirMetaData(filter string) map[int]map[string]bool {
 	//merge metadata
 	for key, value := range subDirKeys {
 		if lengthOfFilterList > 0 {
-			if strings.Contains(strings.ToUpper(value), string(filter)) || strings.Contains(strings.ToUpper(value), "..") {
+			if strings.Contains(strings.ToUpper(value), string(currentDirFilter)) || strings.Contains(strings.ToUpper(value), "..") {
 				swapDir[value] = true
 				returnValue[key+1] = swapDir
 				swapDir = make(map[string]bool)
@@ -397,7 +423,7 @@ func getCurrentDirMetaData(filter string) map[int]map[string]bool {
 	}
 
 	for key, value := range fileNames {
-		if strings.Contains(strings.ToUpper(value), string(filter)) {
+		if strings.Contains(strings.ToUpper(value), string(currentDirFilter)) {
 			swapDir[value] = false
 			returnValue[key+1+len(subDirKeys)] = swapDir
 			swapDir = make(map[string]bool)
