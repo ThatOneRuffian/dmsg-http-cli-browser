@@ -221,6 +221,9 @@ func renderServerDownloadList() map[int]map[string]bool {
 		pageStatus = fmt.Sprintf("page (%d / %d)", downloadBrowserIndex+1, serverPageCountMax)
 		results := "result"
 		resultCount := len(dirMetaData) - 1
+		if navPtr == &rootDir {
+			resultCount++
+		}
 		if resultCount > 1 {
 			results += "s"
 		}
