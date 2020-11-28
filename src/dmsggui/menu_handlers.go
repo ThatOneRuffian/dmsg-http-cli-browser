@@ -126,6 +126,8 @@ SearchLoop:
 	case "R":
 		initRootDir()
 		navPtr = &rootDir
+		currentDirFilter = ""
+		downloadBrowserIndex = 0
 		refreshServerIndex(serverPublicKey, true)
 	case "S":
 		fmt.Print("Search directory for the following substring (X to clear current filter): ")
