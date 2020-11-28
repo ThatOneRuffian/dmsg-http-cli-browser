@@ -409,7 +409,7 @@ func getCurrentDirMetaData() map[int]map[string]bool {
 	//merge metadata
 	for key, value := range subDirKeys {
 		if lengthOfFilterList > 0 {
-			if strings.Contains(strings.ToUpper(value), string(currentDirFilter)) || strings.Contains(strings.ToUpper(value), "..") {
+			if strings.Contains(strings.ToUpper(value), strings.ToUpper(string(currentDirFilter))) || strings.Contains(strings.ToUpper(value), "..") {
 				swapDir[value] = true
 				returnValue[key+1] = swapDir
 				swapDir = make(map[string]bool)
@@ -423,7 +423,7 @@ func getCurrentDirMetaData() map[int]map[string]bool {
 	}
 
 	for key, value := range fileNames {
-		if strings.Contains(strings.ToUpper(value), string(currentDirFilter)) {
+		if strings.Contains(strings.ToUpper(value), strings.ToUpper(string(currentDirFilter))) {
 			swapDir[value] = false
 			returnValue[key+1+len(subDirKeys)] = swapDir
 			swapDir = make(map[string]bool)

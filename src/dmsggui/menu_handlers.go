@@ -127,9 +127,9 @@ SearchLoop:
 		fmt.Print("Search directory for the following substring (X to clear current filter): ")
 		consoleInput := bufio.NewReader(os.Stdin)
 		inputQuery, _ := consoleInput.ReadString('\n')
-		inputQuery = strings.ToUpper(stripIllegalChars(inputQuery))
+		currentDirFilter = stripIllegalChars(inputQuery)
+		inputQuery = strings.ToUpper(currentDirFilter)
 		fmt.Println("input: ", inputQuery)
-		currentDirFilter = inputQuery
 		renderServerDownloadList()
 		goto SearchLoop
 	case "X":
