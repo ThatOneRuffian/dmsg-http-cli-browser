@@ -8,6 +8,10 @@ import (
 	"strings"
 )
 
+var RetryAttemptsUserInput string
+
+var DownloadLocationUserInput string
+
 func ServerListMainMenu() string {
 	serverPublicKey := ""
 	consoleInput := bufio.NewReader(os.Stdin)

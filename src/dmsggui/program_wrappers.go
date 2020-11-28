@@ -19,7 +19,7 @@ const defaultTerminalHeight = 35
 
 func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternateFileName string, stdOutput bool) {
 	downloadInfo := ""
-	retryAttempts := 3
+	retryAttempts := RetryAttemptsUserInput
 	if strings.Contains(file, "/") {
 		fileName := strings.Split(file, "/")
 

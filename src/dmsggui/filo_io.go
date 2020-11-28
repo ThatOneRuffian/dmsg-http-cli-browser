@@ -120,7 +120,7 @@ func appendToConfig(friendlyName string, serverPublicKey string) {
 	}
 }
 
-func InitDownloadsFolder() {
+func InitDownloadsFolder() string {
 	tmpString, err := os.UserHomeDir()
 	if err != nil {
 		fmt.Println("Error initializing downloads location")
@@ -139,6 +139,7 @@ func InitDownloadsFolder() {
 			panic(errorMsg)
 		}
 	}
+	return mainDownloadsLoc
 }
 
 func LoadCache() bool {
