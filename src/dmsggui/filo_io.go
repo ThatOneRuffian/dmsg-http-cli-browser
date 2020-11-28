@@ -9,8 +9,8 @@ import (
 //configFileHomePath stores the path, in the user's home dir, where the server address cache is saved
 var configFileHomePath string = "/.config"
 
-//mainDownloadsLoc is the location where downloads are stored
-var mainDownloadsLoc string
+//MainDownloadsLoc is the location where downloads are stored
+var MainDownloadsLoc string
 
 //indexDownloadLoc is where the active server's index is downloaded
 var indexDownloadLoc string = os.TempDir()
@@ -120,26 +120,31 @@ func appendToConfig(friendlyName string, serverPublicKey string) {
 	}
 }
 
-func InitDownloadsFolder() string {
-	tmpString, err := os.UserHomeDir()
-	if err != nil {
-		fmt.Println("Error initializing downloads location")
+func InitDownloadsFolder(customDir string) string {
+	if len(customDir) == 0 {
+		tmpString, err := os.UserHomeDir()
+		if err != nil {
+			fmt.Println("Error initializing downloads location")
+		}
+		//check if download path exist
+		MainDownloadsLoc = tmpString + "/Downloads"
+
+	} else {
+		MainDownloadsLoc = customDir
 	}
-	//check if download path exist
-	mainDownloadsLoc = tmpString + "/Downloads"
-	dirNotFoundErr := os.Chdir(mainDownloadsLoc)
+	dirNotFoundErr := os.Chdir(MainDownloadsLoc)
 	// If download location is not found...
 	if os.IsNotExist(dirNotFoundErr) {
 		// Attempt to create dir if it does not exist
-		mkdirErr := os.Mkdir(mainDownloadsLoc, 0744)
+		mkdirErr := os.Mkdir(MainDownloadsLoc, 0744)
 
 		if mkdirErr != nil {
 			// could not create downloads location panic
-			errorMsg := fmt.Sprintf("Unable to initialize downloads location. Make sure you have permission to write to: %s", mainDownloadsLoc)
+			errorMsg := fmt.Sprintf("Unable to initialize downloads location. Make sure you have permission to write to: %s", MainDownloadsLoc)
 			panic(errorMsg)
 		}
 	}
-	return mainDownloadsLoc
+	return MainDownloadsLoc
 }
 
 func LoadCache() bool {

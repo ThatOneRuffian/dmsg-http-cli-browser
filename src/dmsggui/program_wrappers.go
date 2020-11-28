@@ -31,7 +31,7 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 		downloadInfo = fmt.Sprintf("Downloading %s.%s to %s", file, publicKey, downloadLoc)
 
 	}
-	if downloadLoc == mainDownloadsLoc {
+	if downloadLoc == MainDownloadsLoc {
 		clearFile(downloadLoc + "/" + alternateFileName)
 		clearFile(downloadLoc + "/" + file)
 	}

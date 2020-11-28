@@ -165,7 +165,7 @@ SearchLoop:
 							// download file
 							currentDirFilter = ""
 							ClearScreen()
-							dmsggetWrapper(serverPublicKey, mainDownloadsLoc, getPresentWorkingDirectory()+fileName, "", true)
+							dmsggetWrapper(serverPublicKey, MainDownloadsLoc, getPresentWorkingDirectory()+fileName, "", true)
 						}
 					}
 				}
