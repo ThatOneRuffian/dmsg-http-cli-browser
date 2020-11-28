@@ -76,7 +76,8 @@ func ServerIndexMenuHandler(serverPublicKey string) {
 	assembleFileStructure(serverPublicKey)
 
 ServerIndexMenu:
-	directoryMetaData := renderServerDownloadList()
+	directoryMetaData := renderServerDownloadList("")
+SearchLoop:
 	consoleInput := bufio.NewReader(os.Stdin)
 	fmt.Print("(R to Refresh Server Index, E to Exit Server File Browser, G to Goto page, Q to quit): ")
 	userChoice, _ := consoleInput.ReadString('\n')
@@ -122,7 +123,14 @@ ServerIndexMenu:
 		initRootDir()
 		navPtr = &rootDir
 		refreshServerIndex(serverPublicKey, true)
-
+	case "S":
+		fmt.Print("Search directory for the following substring: ")
+		consoleInput := bufio.NewReader(os.Stdin)
+		inputQuery, _ := consoleInput.ReadString('\n')
+		inputQuery = strings.ToUpper(stripIllegalChars(inputQuery))
+		fmt.Println("input: ", inputQuery)
+		renderServerDownloadList(inputQuery)
+		goto SearchLoop
 	default:
 		userInputVar, err := strconv.Atoi(userChoice)
 		if err != nil {

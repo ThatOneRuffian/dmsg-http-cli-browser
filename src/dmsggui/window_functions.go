@@ -133,7 +133,7 @@ func renderHomeMenuServerList(terminalHeightAvailable int, terminalWidthAvailabl
 END:
 }
 
-func renderServerDownloadList() map[int]map[string]bool {
+func renderServerDownloadList(filter string) map[int]map[string]bool {
 
 	bufferHeight := 7 //lines consumed by menu elements
 	dirNumberOfItems := len(navPtr.subDirs) + len(navPtr.files)
@@ -161,7 +161,7 @@ func renderServerDownloadList() map[int]map[string]bool {
 	//Render variables
 	titleBuffer := ""
 	menuTitle := "SERVER DOWNLOAD INDEX"
-	dirMetaData := getCurrentDirMetaData()
+	dirMetaData := getCurrentDirMetaData(filter)
 	currentDir := getPresentWorkingDirectory()
 	tmpTitle := fmt.Sprintf("%s%s", menuTitle, currentDir)
 	titleBufferLength := terminalWidthAvailable - len(tmpTitle)
@@ -217,6 +217,7 @@ func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAva
 		fmt.Println("[EMPTY SERVER DMSG-HTTP-SERVER RESPONSE OR NO INDEX FILE FOUND]")
 	} else {
 		for index := 1 + downloadBrowserIndex*terminalHeightAvailable; index <= len(directoryMetaData); index++ {
+
 			for entryName := range directoryMetaData[index] {
 				// if entry is a directory
 				if directoryMetaData[index][entryName] {
@@ -309,13 +310,12 @@ func truncateStringTo(stringToTruncate string, rawMenuLength int, terminalWidthA
 	return stringToTruncate
 }
 
-func getCurrentDirMetaData() map[int]map[string]bool {
+func getCurrentDirMetaData(filter string) map[int]map[string]bool {
 	var subDirKeys []string
 	var fileNames []string
-
 	returnValue := make(map[int]map[string]bool)
 	swapDir := make(map[string]bool)
-
+	lengthOfFilterList := len(filter)
 	//dump dir/file keys in current dir and sort A-Z
 	if navPtr != &rootDir {
 		//add key for directory back
@@ -337,14 +337,32 @@ func getCurrentDirMetaData() map[int]map[string]bool {
 
 	//merge metadata
 	for key, value := range subDirKeys {
-		swapDir[value] = true
-		returnValue[key+1] = swapDir
-		swapDir = make(map[string]bool)
+		if lengthOfFilterList > 0 {
+			if strings.Contains(strings.ToUpper(value), string(filter)) || strings.Contains(strings.ToUpper(value), "..") {
+				swapDir[value] = true
+				returnValue[key+1] = swapDir
+				swapDir = make(map[string]bool)
+				fmt.Println("filtered dir:", value)
+			}
+		} else if lengthOfFilterList == 0 {
+			swapDir[value] = true
+			returnValue[key+1] = swapDir
+			swapDir = make(map[string]bool)
+		}
 	}
+
 	for key, value := range fileNames {
-		swapDir[value] = false
-		returnValue[key+1+len(subDirKeys)] = swapDir
-		swapDir = make(map[string]bool)
+		if strings.Contains(strings.ToUpper(value), string(filter)) {
+			swapDir[value] = false
+			returnValue[key+1+len(subDirKeys)] = swapDir
+			swapDir = make(map[string]bool)
+			fmt.Println("filtered file:", value)
+
+		} else if lengthOfFilterList == 0 {
+			swapDir[value] = false
+			returnValue[key+1+len(subDirKeys)] = swapDir
+			swapDir = make(map[string]bool)
+		}
 	}
 	return returnValue
 }
