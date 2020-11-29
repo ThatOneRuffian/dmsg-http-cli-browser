@@ -112,7 +112,6 @@ func parseConfigFile(file **os.File) {
 		tmpString := fileScan.Text()
 		fileFilters = append(fileFilters, tmpString)
 	}
-	fmt.Println(fileFilters)
 }
 
 func parseIndexPathInput(indexPath *string) {
