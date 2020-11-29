@@ -158,7 +158,7 @@ func filePathWalk(root string) ([][2]string, error) {
 		if !info.IsDir() {
 			fileInfo, err := os.Stat(path)
 			if err != nil {
-				fmt.Println(err)
+				fmt.Println("Error walking dir", err)
 			}
 			fileSize := fmt.Sprint(fileInfo.Size())
 			appendData[0] = path
