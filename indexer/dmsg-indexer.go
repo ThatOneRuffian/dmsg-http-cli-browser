@@ -72,6 +72,7 @@ func parseFilterFile(filterFileLocation *string) {
 	}
 
 	*filterFileLocation = normalizePath(*filterFileLocation)
+	fmt.Printf("Filter file loaded: %s\n", *filterFileLocation)
 	if strings.Contains(*filterFileLocation, "/") {
 		//add the rest of the filters from file
 		parseConfigFile(&file)
