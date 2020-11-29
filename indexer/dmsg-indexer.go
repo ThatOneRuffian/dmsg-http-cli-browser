@@ -165,13 +165,17 @@ func filePathWalk(root string) ([][2]string, error) {
 			//filter file
 			if len(fileFilters) > 0 {
 				tmpPath := normalizePath(path)
-				tmpFileName := strings.Split(tmpPath, "/")
+				tmpFileInfo := strings.Split(tmpPath, "/")
 
 				for _, filter := range fileFilters {
-					if strings.Contains(tmpFileName[len(tmpFileName)-1], filter) {
-						goto SkipFile
+					for _, dirsAndFiles := range tmpFileInfo {
+						if strings.Contains(dirsAndFiles, filter) {
+							goto SkipFile
+						}
 					}
+
 				}
+
 			}
 			files = append(files, appendData)
 
