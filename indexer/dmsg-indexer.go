@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	"log"
@@ -12,15 +13,16 @@ import (
 )
 
 var indexPath string
+var fileFilters []string
 
 func main() {
 	//default index interval
 	sleepInterval := time.Second
 	intervalInputString := ""
-	ignoreFile := ""
+	filterFile := ""
 	flag.StringVar(&indexPath, "d", ".", "Specify directory to be indexed.")
 	flag.StringVar(&intervalInputString, "t", "30", "Specify the index interval in seconds.")
-	flag.StringVar(&ignoreFile, "f", "", "Specify a txt file where each line item is a keyword filter to keep files containing those keywords from being indexed.")
+	flag.StringVar(&filterFile, "f", "", "Specify a txt file where each line item is a keyword filter to keep files containing those keywords from being indexed.")
 
 	flag.Parse()
 
@@ -38,6 +40,10 @@ func main() {
 	if indexPath != "" {
 		parseIndexPathInput(&indexPath)
 	}
+	//Init filter file
+	if filterFile != "" {
+		parseFilterFile(&filterFile)
+	}
 
 	fmt.Println("Indexing with an interval of:", sleepInterval)
 	// enter main file monitor loop
@@ -50,12 +56,63 @@ func main() {
 		clearCurrentIndex() //todo add diff check before rewriting index?
 		for entry := range directory {
 
-			if directory[entry][0] != "index" {
-				writeToIndex(directory[entry])
-			}
+			writeToIndex(directory[entry])
+
 		}
 		time.Sleep(sleepInterval)
 	}
+}
+
+func parseFilterFile(filterFileLocation *string) {
+	file, err := os.Open(*filterFileLocation)
+
+	if os.IsNotExist(err) {
+		fmt.Println(err.Error())
+		log.Fatal("Unable to open filter file")
+	}
+
+	*filterFileLocation = normalizePath(*filterFileLocation)
+	if strings.Contains(*filterFileLocation, "/") {
+		//add index file to filter
+		fileFilters = append(fileFilters, "index")
+
+		//add the rest of the filters from file
+		parseConfigFile(&file)
+	}
+
+}
+
+func normalizePath(filePath string) string {
+	tmpByteString := []byte(filePath)
+	tmpString := ""
+	var forwardSlashChar byte = 47
+	var backSlashChar byte = 92
+	for _, value := range tmpByteString {
+		byteChar := value
+		if byteChar == backSlashChar {
+			byteChar = forwardSlashChar
+		}
+		tmpString += string(byteChar)
+	}
+	return tmpString
+}
+
+func parseConfigFile(file **os.File) {
+
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println(err)
+			fmt.Println("Error parsing filter file.")
+		}
+	}()
+
+	fileScan := bufio.NewScanner(*file)
+
+	for fileScan.Scan() {
+		tmpString := fileScan.Text()
+		fileFilters = append(fileFilters, tmpString)
+	}
+	fmt.Println(fileFilters)
 }
 
 func parseIndexPathInput(indexPath *string) {
@@ -108,7 +165,20 @@ func filePathWalk(root string) ([][2]string, error) {
 			appendData[0] = path
 			appendData[1] = string(fileSize)
 
+			//filter file
+			if len(fileFilters) > 0 {
+				tmpPath := normalizePath(path)
+				tmpFileName := strings.Split(tmpPath, "/")
+
+				for _, filter := range fileFilters {
+					if strings.Contains(tmpFileName[len(tmpFileName)-1], filter) {
+						goto SkipFile
+					}
+				}
+			}
 			files = append(files, appendData)
+
+		SkipFile:
 		}
 		return nil
 	})
