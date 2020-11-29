@@ -60,12 +60,15 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 	dmsggetPath, err := exec.LookPath("dmsgget")
 	if err != nil {
 		// if not found in path then search current dir for dmsgget
-		ClearScreen()
 
 		localDmsgget := fmt.Sprintf(programCurrentWorkingDir + "/dmsgget")
+		if runtime.GOOS == "windows" {
+			localDmsgget += ".exe"
+		}
 		dmsggetPath, err = exec.LookPath(localDmsgget)
 		if err != nil {
-			fmt.Println(fmt.Sprintf(" Unable to find dmsgget in current dir or PATH."))
+			fmt.Println(fmt.Sprintf("Unable to find dmsgget in PATH or current dir: %s", localDmsgget))
+			os.Exit(1)
 		}
 	}
 
