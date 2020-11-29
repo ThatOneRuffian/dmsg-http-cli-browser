@@ -196,9 +196,9 @@ func clearCurrentIndex() {
 
 func writeToIndex(fileInfo [2]string) {
 	fileInfo[0] = normalizePath(removeNewline(fileInfo[0]))
-
-	if len(fileInfo[0]) > 0 {
-		if strings.Split(fileInfo[0], "/")[len(fileInfo)-1] != "index" {
+	splitString := strings.Split(fileInfo[0], "/")
+	if len(splitString) > 0 {
+		if splitString[len(splitString)-1] != "index" {
 			rawData := fmt.Sprintf("%s;%s\n", fileInfo[0], fileInfo[1])
 			dataToWrite := []byte(rawData)
 
