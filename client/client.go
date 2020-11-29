@@ -8,6 +8,7 @@ import (
 func main() {
 
 	dmsggui.ClearScreen()
+	dmsggui.InitProgramWorkingDir()
 	dmsggui.DownloadLocationUserInput = dmsggui.InitDownloadsFolder("")
 	dmsggui.RetryAttemptsUserInput = "3"
 	//if config not found then run the first launch wizard

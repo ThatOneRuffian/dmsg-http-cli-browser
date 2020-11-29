@@ -15,6 +15,8 @@ var MainDownloadsLoc string
 //indexDownloadLoc is where the active server's index is downloaded
 var indexDownloadLoc string = os.TempDir()
 
+var programCurrentWorkingDir string = ""
+
 func loadServerIndex(serverPublicKey string) bool {
 	returnBool := true
 	file, err := os.Open(generateServerIndexAbsPath(serverPublicKey))
@@ -112,6 +114,15 @@ func appendToConfig(friendlyName string, serverPublicKey string) {
 	if err := f.Close(); err != nil {
 		log.Fatal(err)
 	}
+}
+func InitProgramWorkingDir() string {
+	_programCurrentWorkingDir, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Error obtaining program's working dir.")
+	}
+	fmt.Println("Working dir is:", _programCurrentWorkingDir)
+	programCurrentWorkingDir = _programCurrentWorkingDir
+	return programCurrentWorkingDir
 }
 
 func InitDownloadsFolder(customDir string) string {
