@@ -73,9 +73,6 @@ func parseFilterFile(filterFileLocation *string) {
 
 	*filterFileLocation = normalizePath(*filterFileLocation)
 	if strings.Contains(*filterFileLocation, "/") {
-		//add index file to filter
-		fileFilters = append(fileFilters, "index")
-
 		//add the rest of the filters from file
 		parseConfigFile(&file)
 	}
@@ -196,24 +193,29 @@ func clearCurrentIndex() {
 
 }
 
-func writeToIndex(filename [2]string) {
-	filename[0] = removeNewline(filename[0])
-	rawData := fmt.Sprintf("%s;%s\n", filename[0], filename[1])
-	dataToWrite := []byte(rawData)
+func writeToIndex(fileInfo [2]string) {
+	fileInfo[0] = normalizePath(removeNewline(fileInfo[0]))
 
-	f, err := os.OpenFile(indexPath+"/index", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if len(fileInfo[0]) > 0 {
+		if strings.Split(fileInfo[0], "/")[len(fileInfo)-1] != "index" {
+			rawData := fmt.Sprintf("%s;%s\n", fileInfo[0], fileInfo[1])
+			dataToWrite := []byte(rawData)
 
-	if err != nil {
+			f, err := os.OpenFile(indexPath+"/index", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 
-		log.Fatal(err)
-	}
+			if err != nil {
 
-	if _, err := f.Write(dataToWrite); err != nil {
-		log.Fatal(err)
-	}
+				log.Fatal(err)
+			}
 
-	if err := f.Close(); err != nil {
-		log.Fatal(err)
+			if _, err := f.Write(dataToWrite); err != nil {
+				log.Fatal(err)
+			}
+
+			if err := f.Close(); err != nil {
+				log.Fatal(err)
+			}
+		}
 	}
 }
 
