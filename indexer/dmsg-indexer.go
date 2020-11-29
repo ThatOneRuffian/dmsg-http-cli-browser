@@ -17,9 +17,10 @@ func main() {
 	//default index interval
 	sleepInterval := time.Second
 	intervalInputString := ""
-
+	ignoreFile := ""
 	flag.StringVar(&indexPath, "d", ".", "Specify directory to be indexed.")
 	flag.StringVar(&intervalInputString, "t", "30", "Specify the index interval in seconds.")
+	flag.StringVar(&ignoreFile, "f", "", "Specify a txt file where each line item is a keyword filter to keep files containing those keywords from being indexed.")
 
 	flag.Parse()
 
@@ -35,36 +36,7 @@ func main() {
 
 	//set index path
 	if indexPath != "" {
-		pathByteArray := []byte(indexPath)
-		lastByteChar := pathByteArray[len(pathByteArray)-1]
-		const forwardSlash byte = 92
-		const backSlash byte = 47
-		//append "/" if missing from provided dir
-		if lastByteChar != forwardSlash && lastByteChar != backSlash {
-			indexPath = indexPath + "/"
-		}
-		fmt.Println("Setting index path to: ", indexPath)
-		currentDir, err := os.Getwd()
-		if err != nil {
-			fmt.Println("Unable to get current working directory.", err)
-		}
-		// try changing directory to test if provided directory exist
-		pathErr := os.Chdir(indexPath)
-
-		if os.IsNotExist(pathErr) {
-			//if provided dir not found, then attempt to create
-			createDirErr := os.MkdirAll(indexPath, 0744)
-			if createDirErr != nil {
-				fmt.Println("Unable to create directory:", indexPath)
-				panic(createDirErr)
-			}
-		}
-		//change  directory back to starting dir
-		cwdError := os.Chdir(currentDir)
-
-		if cwdError != nil {
-			fmt.Println("Error changing directory back.")
-		}
+		parseIndexPathInput(&indexPath)
 	}
 
 	fmt.Println("Indexing with an interval of:", sleepInterval)
@@ -83,6 +55,40 @@ func main() {
 			}
 		}
 		time.Sleep(sleepInterval)
+	}
+}
+
+func parseIndexPathInput(indexPath *string) {
+
+	pathByteArray := []byte(*indexPath)
+	lastByteChar := pathByteArray[len(pathByteArray)-1]
+	const forwardSlash byte = 92
+	const backSlash byte = 47
+	//append "/" if missing from provided dir
+	if lastByteChar != forwardSlash && lastByteChar != backSlash {
+		*indexPath = *indexPath + "/"
+	}
+	fmt.Println("Setting index path to: ", *indexPath)
+	currentDir, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Unable to get current working directory.", err)
+	}
+	// try changing directory to test if provided directory exist
+	pathErr := os.Chdir(*indexPath)
+
+	if os.IsNotExist(pathErr) {
+		//if provided dir not found, then attempt to create
+		createDirErr := os.MkdirAll(*indexPath, 0744)
+		if createDirErr != nil {
+			fmt.Println("Unable to create directory:", indexPath)
+			panic(createDirErr)
+		}
+	}
+	//change  directory back to starting dir
+	cwdError := os.Chdir(currentDir)
+
+	if cwdError != nil {
+		fmt.Println("Error changing directory back.")
 	}
 }
 
