@@ -22,7 +22,7 @@ func main() {
 	filterFile := ""
 	flag.StringVar(&indexPath, "d", ".", "Specify directory to be indexed.")
 	flag.StringVar(&intervalInputString, "t", "30", "Specify the index interval in seconds.")
-	flag.StringVar(&filterFile, "f", "", "Specify a txt file where each line item is a keyword filter to keep files containing those keywords from being indexed.")
+	flag.StringVar(&filterFile, "f", "", "Specify a txt file where each line item is a keyword filter to keep files and paths containing those keywords from being indexed.")
 
 	flag.Parse()
 
