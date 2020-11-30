@@ -3,11 +3,16 @@
 
 ## Setting up a dmsg-http server service
 
-First, you must build the [dmsg-http server](https://github.com/skycoin/dmsg/tree/master/examples/dmsgget/dmsg-example-http-server) from Skycoin's [repo](https://github.com/skycoin/dmsg)
+If you already have the gen-key executable then skip the build step.
+
+Build the [dmsg-http server](https://github.com/skycoin/dmsg/tree/master/examples/dmsgget/dmsg-example-http-server) from Skycoin's [repo](https://github.com/skycoin/dmsg)
 - run "go get github.com/skycoin/dmsg" to download the repo to your src go dir (e.g. ~/go/src/)
-- Run navagate to your skycoin src dir (e.g. ~/go/src/github.com/skycoin/dmsg/)  "make build"
-- Navigate to the ./bin folder and move the dmsg-server binary to a PATH location (e.g. /usr/bin/)
-- Generate a keypair for your dmsg-http server by going to ~/go/src/github.com/skycoin/dmsg/examples/dmsgget/gen-keys
+- Navagate to your skycoin http src dir (e.g. ~/go/src/github.com/skycoin/dmsg/examples/dmsgget/dmsg-example-http-server)
+- Run "make build"
+
+Copy the dmsg-http-server binary to a PATH location (e.g. /usr/bin/)
+
+Generate a keypair for your dmsg-http server by going to ~/go/src/github.com/skycoin/dmsg/examples/dmsgget/gen-keys
     - Run "go run gen-keys.go"
         - **Example:**
         - PK: 02bf0e6c944bed0c08f9567196cddcab52c2c04d4d822e5dc1020f5e6f949c2016
