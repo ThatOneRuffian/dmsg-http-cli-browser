@@ -16,7 +16,7 @@ The client requests the index file from the server in the following root locatio
 
 
 
-# Client (Has dmsgget installed into a PATH location)
+# Client
 The client operates as a simple bookmark manager for public keys that are running dmsg-http services and as a file downloader (dmsgget wrapper). Server public keys are saved locally and can be given a friendly name. After a successfully fetch of the index from the server, the client is able browse the directory structure of the server using a simple interface:
 
 
