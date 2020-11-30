@@ -150,8 +150,16 @@ func parseIndexPathInput(indexPath *string) {
 func filePathWalk(root string) ([][2]string, error) {
 	var files [][2]string
 	var appendData [2]string
-
-	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+	cwd, cwdErr := os.Getwd()
+	if cwdErr != nil {
+		fmt.Println("Error obtaining current working directory:", cwdErr)
+		os.Exit(1)
+	}
+	chdirErr := os.Chdir(root)
+	if chdirErr != nil {
+		fmt.Println("Could not find root dir: ", chdirErr.Error())
+	}
+	err := filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
 
 		if !info.IsDir() {
 			fileInfo, err := os.Stat(path)
@@ -183,6 +191,11 @@ func filePathWalk(root string) ([][2]string, error) {
 		}
 		return nil
 	})
+	if chdirErr := os.Chdir(cwd); chdirErr != nil {
+		fmt.Println("Error changing directory:", chdirErr)
+		os.Exit(1)
+	}
+
 	return files, err
 }
 
