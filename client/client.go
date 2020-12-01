@@ -19,9 +19,14 @@ func main() {
 
 	//format user provided dir path
 	pathByteArray := []byte(dmsggui.DownloadLocationUserInput)
-	lastByteChar := pathByteArray[len(pathByteArray)-1]
 	const forwardSlash byte = 92
 	const backSlash byte = 47
+	var lastByteChar byte
+
+	if len(dmsggui.DownloadLocationUserInput) > 0 {
+		pathByteArray = []byte(dmsggui.DownloadLocationUserInput)
+		lastByteChar = pathByteArray[len(pathByteArray)-1]
+	}
 
 	if lastByteChar == forwardSlash || lastByteChar == backSlash {
 		pathByteArray := []byte(dmsggui.DownloadLocationUserInput)
