@@ -20,6 +20,11 @@ const defaultTerminalHeight = 20
 func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternateFileName string, stdOutput bool) {
 	downloadInfo := ""
 	retryAttempts := RetryAttemptsUserInput
+	// change dir back to program working dir for relative paths
+	if err := os.Chdir(programCurrentWorkingDir); err != nil {
+		fmt.Println("Error navigating program root directory.")
+		os.Exit(1)
+	}
 	if strings.Contains(file, "/") {
 		fileName := strings.Split(file, "/")
 
