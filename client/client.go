@@ -10,7 +10,6 @@ func main() {
 	dmsggui.ClearScreen()
 	dmsggui.InitProgramWorkingDir()
 	dmsggui.RetryAttemptsUserInput = "3"
-	dmsggui.DownloadLocationUserInput = dmsggui.InitDownloadsFolder("")
 
 	//parse user arguments
 	flag.StringVar(&dmsggui.DownloadLocationUserInput, "d", dmsggui.DownloadLocationUserInput, "Specify directory to download files to.")
