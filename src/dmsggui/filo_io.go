@@ -137,6 +137,13 @@ func InitDownloadsFolder(customDir string) string {
 	} else {
 		MainDownloadsLoc = customDir
 	}
+
+	// change dir back to program working dir for relative paths
+	if err := os.Chdir(programCurrentWorkingDir); err != nil {
+		fmt.Println("Error navigating program root directory.")
+		os.Exit(1)
+	}
+
 	dirNotFoundErr := os.Chdir(MainDownloadsLoc)
 	// If download location is not found...
 	if os.IsNotExist(dirNotFoundErr) {
