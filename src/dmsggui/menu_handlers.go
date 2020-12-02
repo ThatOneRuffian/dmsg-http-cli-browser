@@ -132,7 +132,7 @@ SearchLoop:
 		resetDownLoadPageIndex()
 		refreshServerIndex(serverPublicKey, true)
 	case "S":
-		fmt.Print("Search directory for the following substring (X to clear current filter): ")
+		fmt.Print("Search current directory for the following substring (X to clear current filter): ")
 		consoleInput := bufio.NewReader(os.Stdin)
 		inputQuery, _ := consoleInput.ReadString('\n')
 		inputQuery = stripIllegalChars(inputQuery)
