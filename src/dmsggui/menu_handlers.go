@@ -100,7 +100,7 @@ SearchLoop:
 		}
 
 	case "F":
-		downloadBrowserIndex = 0
+		resetDownLoadPageIndex()
 	case "G":
 		fmt.Print("Enter page number:")
 		consoleReader := bufio.NewReader(os.Stdin)
@@ -127,7 +127,7 @@ SearchLoop:
 		initRootDir()
 		navPtr = &rootDir
 		currentDirFilter = ""
-		downloadBrowserIndex = 0
+		resetDownLoadPageIndex()
 		refreshServerIndex(serverPublicKey, true)
 	case "S":
 		fmt.Print("Search directory for the following substring (X to clear current filter): ")
@@ -137,13 +137,13 @@ SearchLoop:
 		//do not reset page number when there is no input
 		if len(inputQuery) > 0 {
 			currentDirFilter = inputQuery
-			downloadBrowserIndex = 0
+			resetDownLoadPageIndex()
 		}
 		renderServerDownloadList()
 		goto SearchLoop
 	case "X":
 		currentDirFilter = ""
-		downloadBrowserIndex = 0
+		resetDownLoadPageIndex()
 
 	default:
 		userInputVar, err := strconv.Atoi(userChoice)
@@ -157,7 +157,7 @@ SearchLoop:
 				// navigate up a directory
 				if index == ".." && navPtr.parentDir != nil {
 					navPtr = navPtr.parentDir
-					downloadBrowserIndex = 0
+					resetDownLoadPageIndex()
 					currentDirFilter = ""
 				} else {
 					// if object is a directory then navigate into

@@ -48,7 +48,7 @@ func loadServerIndex(serverPublicKey string) bool {
 func clearServerIndexFile(serverPublicKey string) {
 	serverCacheLoc := indexDownloadLoc + "/index." + serverPublicKey
 	os.Remove(serverCacheLoc)
-	downloadBrowserIndex = 0
+	resetDownLoadPageIndex()
 }
 
 func clearCacheConfig() {

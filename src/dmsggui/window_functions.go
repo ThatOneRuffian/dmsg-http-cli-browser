@@ -39,7 +39,7 @@ func ClearScreen() {
 
 func refreshServerIndex(serverPublicKey string, clearCache bool) {
 	ClearScreen()
-	downloadBrowserIndex = 0
+	resetDownLoadPageIndex()
 	if clearCache {
 		fmt.Println("Downloading Server Index...")
 		clearServerIndexFile(serverPublicKey)

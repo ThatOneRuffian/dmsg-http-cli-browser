@@ -11,8 +11,10 @@ import (
 // navPtr points to the current directory object being browsed
 var navPtr *directory = nil
 
+const downloadBrowserStartIndex = 0
+
 //downloadBrowserIndex stores the current page number - 1 of the server's download list
-var downloadBrowserIndex int = 0
+var downloadBrowserIndex int = downloadBrowserStartIndex
 
 //downloadBrowserIndex stores the current page number - 1 of the main menu
 var mainMenuBrowserIndex int = 0
@@ -201,4 +203,8 @@ func createDirPath(fullDirPath []string) {
 		}
 
 	}
+}
+
+func resetDownLoadPageIndex() {
+	downloadBrowserIndex = downloadBrowserStartIndex
 }
