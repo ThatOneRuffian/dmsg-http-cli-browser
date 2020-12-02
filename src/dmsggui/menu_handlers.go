@@ -12,6 +12,7 @@ var RetryAttemptsUserInput string
 
 var DownloadLocationUserInput string
 
+// Handler for the server picker, main menu
 func ServerListMainMenu() string {
 	serverPublicKey := ""
 	consoleInput := bufio.NewReader(os.Stdin)
@@ -75,6 +76,7 @@ ExitLoop:
 	return serverPublicKey
 }
 
+// Handler for the server download page
 func ServerIndexMenuHandler(serverPublicKey string) {
 	navPtr = &rootDir
 	assembleFileStructure(serverPublicKey)

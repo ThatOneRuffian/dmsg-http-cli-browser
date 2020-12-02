@@ -117,9 +117,11 @@ func parseServerIndex(file **os.File) {
 		inputRow := fileScan.Text()
 		if sepIndex := strings.Index(inputRow, ";"); sepIndex != -1 {
 			if len(strings.Split(inputRow, "/")) > 1 {
+				//if the entry is a directory
 				populateFileSystem(inputRow)
 
 			} else {
+				//if the entry is a file
 				fileInfo := strings.Split(inputRow, ";")
 				fileSize, err := strconv.Atoi(fileInfo[1])
 				if err != nil {
@@ -198,7 +200,7 @@ func createDirPath(fullDirPath []string) {
 				dirName:   currentPathName,
 			}
 			currentDirPtr.subDirs[currentPathName] = &newDirectory
-
+			//set newly created dir as current dir
 			currentDirPtr = &newDirectory
 		}
 

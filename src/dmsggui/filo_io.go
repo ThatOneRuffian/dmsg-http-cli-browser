@@ -189,7 +189,7 @@ func LoadCache() bool {
 
 func deleteServerIndex(indexToDelete int) {
 	clearCacheConfig()
-
+	//filter out entry and rewrite to file
 	for index := 0; index < len(SavedServers); index++ {
 		if index == indexToDelete-1 {
 			continue
