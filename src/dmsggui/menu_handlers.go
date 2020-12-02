@@ -133,9 +133,12 @@ SearchLoop:
 		fmt.Print("Search directory for the following substring (X to clear current filter): ")
 		consoleInput := bufio.NewReader(os.Stdin)
 		inputQuery, _ := consoleInput.ReadString('\n')
-		currentDirFilter = stripIllegalChars(inputQuery)
-		inputQuery = strings.ToUpper(currentDirFilter)
-		fmt.Println("input: ", inputQuery)
+		inputQuery = stripIllegalChars(inputQuery)
+		//do not reset page number when there is no input
+		if len(inputQuery) > 0 {
+			currentDirFilter = inputQuery
+			downloadBrowserIndex = 0
+		}
 		renderServerDownloadList()
 		goto SearchLoop
 	case "X":
