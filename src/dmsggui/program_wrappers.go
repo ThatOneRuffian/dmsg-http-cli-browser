@@ -13,13 +13,19 @@ import (
 	"strings"
 )
 
+var DiscoveryServer string = ""
+
 const defaultTerminalWidth = 100
 
 const defaultTerminalHeight = 20
 
 func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternateFileName string, stdOutput bool) {
+	var programArgs []string
 	downloadInfo := ""
 	retryAttempts := RetryAttemptsUserInput
+	dmsgDiscFlag := "-dmsg-disc" //work around - dmsgget doesn't default when "" is passed
+	DiscoveryServer = stripIllegalChars(DiscoveryServer)
+
 	// change dir back to program working dir for relative paths
 	if err := os.Chdir(programCurrentWorkingDir); err != nil {
 		fmt.Println("Error navigating program root directory.")
@@ -76,10 +82,16 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 			os.Exit(1)
 		}
 	}
+	dmsggetCmd := &exec.Cmd{}
+	if len(DiscoveryServer) > 0 {
+		programArgs = []string{dmsggetPath, "-t", fmt.Sprint(retryAttempts), "-O", downloadLoc + "/" + alternateFileName, dmsgDiscFlag, DiscoveryServer, fetchString}
+	} else {
+		programArgs = []string{dmsggetPath, "-t", fmt.Sprint(retryAttempts), "-O", downloadLoc + "/" + alternateFileName, fetchString}
+	}
 
-	dmsggetCmd := &exec.Cmd{
+	dmsggetCmd = &exec.Cmd{
 		Path:   dmsggetPath,
-		Args:   []string{dmsggetPath, "-t", fmt.Sprint(retryAttempts), "-O", downloadLoc + "/" + alternateFileName, fetchString},
+		Args:   programArgs,
 		Stdout: stdOutLoc,
 		Stderr: os.Stderr,
 	}
