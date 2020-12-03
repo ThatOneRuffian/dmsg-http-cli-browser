@@ -31,17 +31,22 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 		fmt.Println("Error navigating program root directory.")
 		os.Exit(1)
 	}
+	//if file contains dirs
 	if strings.Contains(file, "/") {
+		//extract file name
 		fileName := strings.Split(file, "/")
-
 		fileName[0] = fileName[len(fileName)-1]
 		alternateFileName = fileName[0]
+
 		downloadInfo = fmt.Sprintf("Downloading %s to %s", string(alternateFileName), downloadLoc)
 
 	} else {
+		//if index - better check?
 		downloadInfo = fmt.Sprintf("Downloading %s.%s to %s", file, publicKey, downloadLoc)
 
 	}
+
+	//if file exist then overwrite
 	if downloadLoc == MainDownloadsLoc {
 		os.Remove(downloadLoc + "/" + alternateFileName)
 		os.Remove(downloadLoc + "/" + file)
@@ -52,7 +57,7 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 	fmt.Println()
 	fmt.Println(downloadInfo)
 	fmt.Println()
-
+	//open up null to send dmsgget stdout into null for cleaner view
 	if !stdOutput {
 		nullWriteLocation := ""
 		if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
