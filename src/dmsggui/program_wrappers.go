@@ -15,6 +15,8 @@ import (
 
 var DiscoveryServer string = ""
 
+var DiscoveryServerPort string = ""
+
 const defaultTerminalWidth = 100
 
 const defaultTerminalHeight = 20
@@ -22,9 +24,12 @@ const defaultTerminalHeight = 20
 func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternateFileName string, stdOutput bool) {
 	var programArgs []string
 	downloadInfo := ""
+	fetchString := ""
 	retryAttempts := RetryAttemptsUserInput
 	dmsgDiscFlag := "-dmsg-disc" //work around - dmsgget doesn't default when "" is passed
+
 	DiscoveryServer = stripIllegalChars(DiscoveryServer)
+	DiscoveryServerPort = stripIllegalChars(DiscoveryServerPort)
 
 	// change dir back to program working dir for relative paths
 	if err := os.Chdir(programCurrentWorkingDir); err != nil {
@@ -52,7 +57,6 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 		os.Remove(downloadLoc + "/" + file)
 	}
 
-	fetchString := fmt.Sprintf("dmsg://%s:80/%s", publicKey, file)
 	stdOutLoc := os.Stdout
 	fmt.Println()
 	fmt.Println(downloadInfo)
@@ -92,9 +96,13 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 
 	if len(DiscoveryServer) > 0 {
 		programArgs = append(programArgs, dmsgDiscFlag)
-		programArgs = append(programArgs, DiscoveryServer)
+		programArgs = append(programArgs, DiscoveryServer+":"+DiscoveryServerPort)
 	}
 
+	// append custom port or set default
+	fetchString = fmt.Sprintf("dmsg://%s:80/%s", publicKey, file)
+
+	// append the fetch string the final argument
 	programArgs = append(programArgs, fetchString)
 
 	dmsggetCmd := &exec.Cmd{
