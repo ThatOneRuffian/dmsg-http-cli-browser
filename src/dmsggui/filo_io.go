@@ -120,7 +120,6 @@ func InitProgramWorkingDir() string {
 	if err != nil {
 		fmt.Println("Error obtaining program's working dir.")
 	}
-	fmt.Println("Working dir is:", _programCurrentWorkingDir)
 	programCurrentWorkingDir = _programCurrentWorkingDir
 	return programCurrentWorkingDir
 }

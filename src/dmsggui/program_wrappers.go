@@ -109,7 +109,6 @@ func sttyWrapperGetTerminalHeight() (int, error) {
 	returnValue := 0
 
 	cmd := exec.Command("tput", "lines")
-	fmt.Println(cmd.Args)
 	cmd.Stderr = os.Stderr
 
 	stdOut, err := cmd.StdoutPipe()
@@ -144,7 +143,6 @@ func sttyWrapperGetTerminalWidth() (int, error) {
 	returnValue := 0
 
 	cmd := exec.Command("tput", "cols")
-	fmt.Println(cmd.Args)
 	cmd.Stderr = os.Stderr
 
 	stdOut, err := cmd.StdoutPipe()

@@ -68,7 +68,7 @@ func populateFileSystem(fullFilePath string) {
 
 	fileSize, err := strconv.Atoi(splitString[1])
 	if err != nil {
-		fmt.Println("Unable to convert filesize into int while populating directory: ", err)
+		//fmt.Println("Unable to convert filesize into int while populating directory: ", err) //save for logs?
 	}
 	fileNameSlice := strings.Split(fullPath, "/")[len(strings.Split(fullPath, "/"))-1:]
 	//converting filename from slice into string

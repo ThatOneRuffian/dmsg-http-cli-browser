@@ -429,7 +429,6 @@ func getCurrentDirMetaData() map[int]map[string]bool {
 				swapDir[value] = true
 				returnValue[key+1] = swapDir
 				swapDir = make(map[string]bool)
-				fmt.Println("filtered dir:", value)
 			}
 		} else if lengthOfFilterList == 0 {
 			swapDir[value] = true
@@ -443,8 +442,6 @@ func getCurrentDirMetaData() map[int]map[string]bool {
 			swapDir[value] = false
 			returnValue[key+1+len(subDirKeys)] = swapDir
 			swapDir = make(map[string]bool)
-			fmt.Println("filtered file:", value)
-
 		} else if lengthOfFilterList == 0 {
 			swapDir[value] = false
 			returnValue[key+1+len(subDirKeys)] = swapDir
