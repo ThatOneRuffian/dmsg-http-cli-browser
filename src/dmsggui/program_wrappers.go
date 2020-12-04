@@ -87,14 +87,17 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 			os.Exit(1)
 		}
 	}
-	dmsggetCmd := &exec.Cmd{}
+
+	programArgs = []string{dmsggetPath, "-t", fmt.Sprint(retryAttempts), "-O", downloadLoc + "/" + alternateFileName}
+
 	if len(DiscoveryServer) > 0 {
-		programArgs = []string{dmsggetPath, "-t", fmt.Sprint(retryAttempts), "-O", downloadLoc + "/" + alternateFileName, dmsgDiscFlag, DiscoveryServer, fetchString}
-	} else {
-		programArgs = []string{dmsggetPath, "-t", fmt.Sprint(retryAttempts), "-O", downloadLoc + "/" + alternateFileName, fetchString}
+		programArgs = append(programArgs, dmsgDiscFlag)
+		programArgs = append(programArgs, DiscoveryServer)
 	}
 
-	dmsggetCmd = &exec.Cmd{
+	programArgs = append(programArgs, fetchString)
+
+	dmsggetCmd := &exec.Cmd{
 		Path:   dmsggetPath,
 		Args:   programArgs,
 		Stdout: stdOutLoc,
