@@ -23,23 +23,20 @@ func main() {
 	pathByteArray := []byte(dmsggui.DownloadLocationUserInput)
 	const forwardSlash byte = 92
 	const backSlash byte = 47
-	var lastByteChar byte
+	var lastCharByte byte
 
 	if len(dmsggui.DownloadLocationUserInput) > 0 {
-		pathByteArray = []byte(dmsggui.DownloadLocationUserInput)
-		lastByteChar = pathByteArray[len(pathByteArray)-1]
-	}
-
-	if lastByteChar == forwardSlash || lastByteChar == backSlash {
-		pathByteArray := []byte(dmsggui.DownloadLocationUserInput)
-		lastCharDropped := pathByteArray[:len(pathByteArray)-1]
-		dmsggui.MainDownloadsLoc = string(lastCharDropped)
+		lastCharByte = pathByteArray[len(pathByteArray)-1]
+		if lastCharByte == forwardSlash || lastCharByte == backSlash {
+			downloadPathRemovedDirSymbol := pathByteArray[:len(pathByteArray)-1]
+			dmsggui.MainDownloadsLoc = string(downloadPathRemovedDirSymbol)
+		}
 	}
 
 	dmsggui.InitDownloadsFolder(dmsggui.DownloadLocationUserInput)
 
 	//attempt to load server cache
-	//if config not found then run the first launch wizard
+	//if cache not found then run the first launch wizard
 	if !dmsggui.LoadCache() {
 		dmsggui.FirstRunWizard()
 	}
