@@ -17,6 +17,8 @@ var DiscoveryServer string = ""
 
 var DiscoveryServerPort string = ""
 
+var DmsgHttpPort string = ""
+
 const defaultTerminalWidth = 100
 
 const defaultTerminalHeight = 20
@@ -100,7 +102,7 @@ func dmsggetWrapper(publicKey string, downloadLoc string, file string, alternate
 	}
 
 	// append custom port or set default
-	fetchString = fmt.Sprintf("dmsg://%s:80/%s", publicKey, file)
+	fetchString = fmt.Sprintf("dmsg://%s:%s/%s", publicKey, DmsgHttpPort, file)
 
 	// append the fetch string the final argument
 	programArgs = append(programArgs, fetchString)
