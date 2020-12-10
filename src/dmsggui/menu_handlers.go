@@ -174,7 +174,6 @@ SearchLoop:
 						// runs once
 						for fileName := range directoryMetaData[userInputVar] {
 							// download file
-							currentDirFilter = ""
 							ClearScreen()
 							initMuxDownload(serverPublicKey, MainDownloadsLoc, fileName)
 						}
