@@ -173,10 +173,11 @@ SearchLoop:
 					} else {
 						// runs once
 						for fileName := range directoryMetaData[userInputVar] {
+							fmt.Println(directoryMetaData)
 							// download file
 							currentDirFilter = ""
 							ClearScreen()
-							dmsggetWrapper(serverPublicKey, MainDownloadsLoc, getPresentWorkingDirectory()+fileName, "", true)
+							initMuxDownload(serverPublicKey, MainDownloadsLoc, fileName)
 						}
 					}
 				}
