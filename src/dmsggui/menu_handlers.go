@@ -173,7 +173,6 @@ SearchLoop:
 					} else {
 						// runs once
 						for fileName := range directoryMetaData[userInputVar] {
-							fmt.Println(directoryMetaData)
 							// download file
 							currentDirFilter = ""
 							ClearScreen()
@@ -195,6 +194,7 @@ ExitLoop:
 
 // Handler for download queue page
 func downloadQueuePageHandler() {
+DownloadQueueMenu:
 	renderDownloadQueuePage()
 SearchLoop:
 	consoleInput := bufio.NewReader(os.Stdin)
@@ -239,7 +239,7 @@ SearchLoop:
 			currentDirFilter = inputQuery
 			//reset download queue page number
 		}
-		renderServerDownloadList()
+		//renderServerDownloadList()
 		goto SearchLoop
 
 	case "X":
@@ -256,5 +256,6 @@ SearchLoop:
 		}
 
 	}
+	goto DownloadQueueMenu
 ExitLoop:
 }

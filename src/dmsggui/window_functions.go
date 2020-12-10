@@ -278,26 +278,19 @@ func renderDownloadQueuePage() {
 	pageStatus := ""
 	currentFilterStringStatus := ""
 	menuTitle := "DOWNLOAD QUEUE"
-	currentDir := getPresentWorkingDirectory()
-	tmpTitle := fmt.Sprintf("%s Status", menuTitle)
+	tmpTitle := fmt.Sprintf("%s Progress", menuTitle)
 	titleBufferLength := terminalWidthAvailable - len(tmpTitle)
 
-	if titleBufferLength*-1 >= len(currentDir) {
-		//check case if space to be buffered is longer than len(currentDir) (overflow), do not render PWD
+	if titleBufferLength < 0 {
 
 	} else {
-
-		if titleBufferLength < 0 {
-
-		} else {
-			// fill empty space
-			for i := 0; i < titleBufferLength; i++ {
-				titleBuffer = titleBuffer + " "
-			}
+		// fill empty space
+		for i := 0; i < titleBufferLength; i++ {
+			titleBuffer = titleBuffer + " "
 		}
 	}
 
-	menuHeader := fmt.Sprintf("%s%s Status", menuTitle, titleBuffer)
+	menuHeader := fmt.Sprintf("%s%s Progress", menuTitle, titleBuffer)
 
 	if len(currentDirFilter) == 0 {
 		pageStatus = fmt.Sprintf("page (%d / %d)", downloadBrowserIndex+1, serverPageCountMax)
@@ -309,17 +302,33 @@ func renderDownloadQueuePage() {
 	fmt.Println(menuHeader)
 	fmt.Println(divider)
 	//renderMetaData(dirMetaData, terminalHeightAvailable, terminalWidthAvailable)
-	renderDownloadQueueMetaData(terminalHeightAvailable)
+	renderDownloadQueueMetaData(terminalHeightAvailable, terminalWidthAvailable)
 	fmt.Println(currentFilterStringStatus)
 	fmt.Println(pageStatus)
 	fmt.Println("<<F <B | N> L>>")
 }
 
-func renderDownloadQueueMetaData(terminalHeightAvailable int) {
+func renderDownloadQueueMetaData(terminalHeightAvailable int, terminalWidthAvailable int) {
 	verticalHeightBuffer := terminalHeightAvailable
+	horizontalFill := ""
+	// sort index
+	indexes := []int{}
+	for index := range downloadQueue {
+		indexes = append(indexes, index)
+	}
+	sort.Ints(indexes)
+	for index := range indexes {
+		tmpLineEntry := fmt.Sprintf("%d) %v ", index+1, downloadQueue[index].fileName)
+		spaceToFill := terminalWidthAvailable - len(tmpLineEntry)
+		for i := 0; i < spaceToFill; i++ {
+			horizontalFill += "-"
+		}
+		lineEntry := fmt.Sprintf("%d) %v %s", index+1, downloadQueue[index].fileName, horizontalFill)
+		fmt.Println(lineEntry)
+		horizontalFill = ""
+		verticalHeightBuffer--
+	}
 
-	fmt.Println("****")
-	verticalHeightBuffer--
 	//vertical buffer
 	for ; verticalHeightBuffer > 0; verticalHeightBuffer-- {
 		fmt.Println("-")
