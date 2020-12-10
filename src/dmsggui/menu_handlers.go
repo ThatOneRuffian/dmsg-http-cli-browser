@@ -58,6 +58,8 @@ ServerMenu:
 		} else if pageNumber > 0 && pageNumber-1 < mainMenuPageCountMax {
 			mainMenuBrowserIndex = pageNumber - 1
 		}
+	case "V":
+		downloadQueuePageHandler()
 	default:
 		userInt, err := strconv.Atoi(userChoice)
 		if err != nil {
@@ -143,6 +145,8 @@ SearchLoop:
 		}
 		renderServerDownloadList()
 		goto SearchLoop
+	case "V":
+		downloadQueuePageHandler()
 	case "X":
 		currentDirFilter = ""
 		resetDownLoadPageIndex()
@@ -185,5 +189,71 @@ SearchLoop:
 	}
 	goto ServerIndexMenu
 
+ExitLoop:
+}
+
+// Handler for download queue page
+func downloadQueuePageHandler() {
+	renderDownloadQueuePage()
+SearchLoop:
+	consoleInput := bufio.NewReader(os.Stdin)
+	fmt.Print("(E to Exit download queue, G to Goto page, S to Search download queue, Q to quit): ")
+	userChoice, _ := consoleInput.ReadString('\n')
+	userChoice = strings.ToUpper(stripIllegalChars(userChoice))
+	switch userChoice {
+	case "Q":
+		ClearScreen()
+		os.Exit(1)
+	case "E":
+		goto ExitLoop
+
+	case "B":
+
+	case "F":
+		resetDownLoadPageIndex()
+	case "G":
+		fmt.Print("Enter page number:")
+		consoleReader := bufio.NewReader(os.Stdin)
+		userInput, _ := consoleReader.ReadString('\n')
+		userInput = strings.ToUpper(stripIllegalChars(userInput))
+		pageNumber, err := strconv.Atoi(userInput)
+
+		if err != nil {
+
+		} else if pageNumber > 0 && pageNumber-1 < serverPageCountMax {
+			downloadBrowserIndex = pageNumber - 1
+		}
+
+	case "L":
+
+	case "N":
+
+	case "S":
+		fmt.Print("Search current directory for the following substring (X to clear current filter): ")
+		consoleInput := bufio.NewReader(os.Stdin)
+		inputQuery, _ := consoleInput.ReadString('\n')
+		inputQuery = stripIllegalChars(inputQuery)
+		//do not reset page number when there is no input
+		if len(inputQuery) > 0 {
+			currentDirFilter = inputQuery
+			//reset download queue page number
+		}
+		renderServerDownloadList()
+		goto SearchLoop
+
+	case "X":
+		currentDirFilter = ""
+		//reset download queue page number
+
+	default:
+		userInputVar, err := strconv.Atoi(userChoice)
+		if err != nil {
+			break
+		}
+		if userInputVar >= 1 && userInputVar <= len("test") {
+			// attach to stdout?
+		}
+
+	}
 ExitLoop:
 }

@@ -248,6 +248,84 @@ func renderServerDownloadList() map[int]map[string]bool {
 	return dirMetaData
 }
 
+func renderDownloadQueuePage() {
+	ClearScreen()
+	bufferHeight := 7 //lines consumed by menu elements
+	numberOfQueueItems := len("Test length of")
+	terminalHeightAvailable, terminalWidthAvailable := getTerminalDims(bufferHeight)
+
+	serverPageCountMax = numberOfQueueItems / terminalHeightAvailable
+	pageRemainder := numberOfQueueItems % terminalHeightAvailable
+
+	// add additional page to fit remaining line items
+	if pageRemainder > 0 {
+		serverPageCountMax++
+	}
+
+	// Avoid 1/0 pages
+	if serverPageCountMax == 0 {
+		serverPageCountMax = 1
+	}
+
+	//Create header divider of appropriate length
+	divider := ""
+	for i := 0; i < terminalWidthAvailable; i++ {
+		divider += "="
+	}
+
+	//Render variables
+	titleBuffer := ""
+	pageStatus := ""
+	currentFilterStringStatus := ""
+	menuTitle := "DOWNLOAD QUEUE"
+	currentDir := getPresentWorkingDirectory()
+	tmpTitle := fmt.Sprintf("%s Status", menuTitle)
+	titleBufferLength := terminalWidthAvailable - len(tmpTitle)
+
+	if titleBufferLength*-1 >= len(currentDir) {
+		//check case if space to be buffered is longer than len(currentDir) (overflow), do not render PWD
+
+	} else {
+
+		if titleBufferLength < 0 {
+
+		} else {
+			// fill empty space
+			for i := 0; i < titleBufferLength; i++ {
+				titleBuffer = titleBuffer + " "
+			}
+		}
+	}
+
+	menuHeader := fmt.Sprintf("%s%s Status", menuTitle, titleBuffer)
+
+	if len(currentDirFilter) == 0 {
+		pageStatus = fmt.Sprintf("page (%d / %d)", downloadBrowserIndex+1, serverPageCountMax)
+		currentFilterStringStatus = divider
+	}
+
+	//Render download queue
+	fmt.Println(divider)
+	fmt.Println(menuHeader)
+	fmt.Println(divider)
+	//renderMetaData(dirMetaData, terminalHeightAvailable, terminalWidthAvailable)
+	renderDownloadQueueMetaData(terminalHeightAvailable)
+	fmt.Println(currentFilterStringStatus)
+	fmt.Println(pageStatus)
+	fmt.Println("<<F <B | N> L>>")
+}
+
+func renderDownloadQueueMetaData(terminalHeightAvailable int) {
+	verticalHeightBuffer := terminalHeightAvailable
+
+	fmt.Println("****")
+	verticalHeightBuffer--
+	//vertical buffer
+	for ; verticalHeightBuffer > 0; verticalHeightBuffer-- {
+		fmt.Println("-")
+	}
+}
+
 func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAvailable int, terminalWidthAvailable int) {
 	verticalHeightBuffer := terminalHeightAvailable
 	if len(directoryMetaData) == 0 {
