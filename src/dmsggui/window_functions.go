@@ -37,24 +37,7 @@ func ClearScreen() {
 	}
 }
 
-func refreshServerIndex(serverPublicKey string, clearCache bool) {
-	ClearScreen()
-	resetDownLoadPageIndex()
-	if clearCache {
-		fmt.Println("Downloading Server Index...")
-		clearServerIndexFile(serverPublicKey)
-		dmsggetWrapper(serverPublicKey, indexDownloadLoc, "index", "index."+serverPublicKey, false)
-	}
-	if loadServerIndex(serverPublicKey) {
-
-	} else {
-		ClearScreen()
-		fmt.Println("Downloading Server Index...")
-		clearServerIndexFile(serverPublicKey)
-		dmsggetWrapper(serverPublicKey, indexDownloadLoc, "index", "index."+serverPublicKey, false)
-	}
-	assembleFileStructure(serverPublicKey)
-}
+// main server list
 
 func renderServerBrowser() {
 	bufferHeight := 7 //lines consumed by menu elements
@@ -248,10 +231,33 @@ func renderServerDownloadList() map[int]map[string]bool {
 	return dirMetaData
 }
 
+func truncateStringTo(stringToTruncate string, rawMenuLength int, terminalWidthAvailable int) string {
+	screenWidthLeft := terminalWidthAvailable - rawMenuLength
+	truncateBuffer := screenWidthLeft / 2 //amount to keep on beginning and end of string
+	entryNameLength := len(stringToTruncate)
+	if entryNameLength > screenWidthLeft {
+		//truncate string here
+
+		if screenWidthLeft-truncateBuffer*2 >= 0 {
+			stringBuffer := "~~~~"
+			tmpEntryNameStart := stringToTruncate[0 : truncateBuffer-len(stringBuffer)/2]
+			tmpEntryNameEnd := stringToTruncate[entryNameLength-truncateBuffer+len(stringBuffer)/2:]
+			stringToTruncate = fmt.Sprintf("%s%s%s", tmpEntryNameStart, stringBuffer, tmpEntryNameEnd)
+		} else {
+			tmpStartString := stringToTruncate[:int(len(stringToTruncate)/2)-3]
+			tmpEndString := stringToTruncate[int(len(stringToTruncate)/2):]
+			stringToTruncate = tmpStartString + "~~~" + tmpEndString
+		}
+	}
+	return stringToTruncate
+}
+
+// download queue
+
 func renderDownloadQueuePage() {
 	ClearScreen()
 	bufferHeight := 7 //lines consumed by menu elements
-	numberOfQueueItems := len("Test length of")
+	numberOfQueueItems := len(downloadQueue)
 	terminalHeightAvailable, terminalWidthAvailable := getTerminalDims(bufferHeight)
 
 	serverPageCountMax = numberOfQueueItems / terminalHeightAvailable
@@ -318,12 +324,13 @@ func renderDownloadQueueMetaData(terminalHeightAvailable int, terminalWidthAvail
 	}
 	sort.Ints(indexes)
 	for index := range indexes {
-		tmpLineEntry := fmt.Sprintf("%d) %v ", index+1, downloadQueue[index].fileName)
+		downloadPercentage := getDownloadFileSize(downloadQueue[index].fileName) / downloadQueue[index].fileSize
+		tmpLineEntry := fmt.Sprintf("%d) %v  %.0f%%", index+1, downloadQueue[index].fileName, downloadPercentage)
 		spaceToFill := terminalWidthAvailable - len(tmpLineEntry)
 		for i := 0; i < spaceToFill; i++ {
 			horizontalFill += "-"
 		}
-		lineEntry := fmt.Sprintf("%d) %v %s", index+1, downloadQueue[index].fileName, horizontalFill)
+		lineEntry := fmt.Sprintf("%d) %v %s %.0f%%", index+1, downloadQueue[index].fileName, horizontalFill, downloadPercentage)
 		fmt.Println(lineEntry)
 		horizontalFill = ""
 		verticalHeightBuffer--
@@ -333,6 +340,61 @@ func renderDownloadQueueMetaData(terminalHeightAvailable int, terminalWidthAvail
 	for ; verticalHeightBuffer > 0; verticalHeightBuffer-- {
 		fmt.Println("-")
 	}
+}
+
+// file navigation
+func getCurrentDirMetaData() map[int]map[string]bool {
+	var subDirKeys []string
+	var fileNames []string
+	returnValue := make(map[int]map[string]bool)
+	swapDir := make(map[string]bool)
+	lengthOfFilterList := len(currentDirFilter)
+	//dump dir/file keys in current dir and sort A-Z
+	if navPtr != &rootDir {
+		//add key for directory back
+		subDirKeys = append(subDirKeys, "..")
+	}
+
+	for key := range navPtr.subDirs {
+		//append subdir keys
+		subDirKeys = append(subDirKeys, key)
+	}
+
+	for key := range navPtr.files {
+		//append file keys
+		fileNames = append(fileNames, key)
+	}
+
+	sort.Strings(fileNames)
+	sort.Strings(subDirKeys)
+
+	//merge metadata
+	for key, value := range subDirKeys {
+		if lengthOfFilterList > 0 {
+			if strings.Contains(strings.ToUpper(value), strings.ToUpper(string(currentDirFilter))) || strings.Contains(strings.ToUpper(value), "..") {
+				swapDir[value] = true
+				returnValue[key+1] = swapDir
+				swapDir = make(map[string]bool)
+			}
+		} else if lengthOfFilterList == 0 {
+			swapDir[value] = true
+			returnValue[key+1] = swapDir
+			swapDir = make(map[string]bool)
+		}
+	}
+
+	for key, value := range fileNames {
+		if strings.Contains(strings.ToUpper(value), strings.ToUpper(string(currentDirFilter))) {
+			swapDir[value] = false
+			returnValue[key+1+len(subDirKeys)] = swapDir
+			swapDir = make(map[string]bool)
+		} else if lengthOfFilterList == 0 {
+			swapDir[value] = false
+			returnValue[key+1+len(subDirKeys)] = swapDir
+			swapDir = make(map[string]bool)
+		}
+	}
+	return returnValue
 }
 
 func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAvailable int, terminalWidthAvailable int) {
@@ -461,79 +523,4 @@ func drawFileEntry(entryName string, terminalWidthAvailable int, index int) {
 	//draw line
 	lineEntry := fmt.Sprintf("%d) %s %s %.2f %s", index, entryName, horizontalFill, fileSize, fileSizeUnits)
 	fmt.Println(lineEntry)
-}
-
-func truncateStringTo(stringToTruncate string, rawMenuLength int, terminalWidthAvailable int) string {
-	screenWidthLeft := terminalWidthAvailable - rawMenuLength
-	truncateBuffer := screenWidthLeft / 2 //amount to keep on beginning and end of string
-	entryNameLength := len(stringToTruncate)
-	if entryNameLength > screenWidthLeft {
-		//truncate string here
-
-		if screenWidthLeft-truncateBuffer*2 >= 0 {
-			stringBuffer := "~~~~"
-			tmpEntryNameStart := stringToTruncate[0 : truncateBuffer-len(stringBuffer)/2]
-			tmpEntryNameEnd := stringToTruncate[entryNameLength-truncateBuffer+len(stringBuffer)/2:]
-			stringToTruncate = fmt.Sprintf("%s%s%s", tmpEntryNameStart, stringBuffer, tmpEntryNameEnd)
-		} else {
-			tmpStartString := stringToTruncate[:int(len(stringToTruncate)/2)-3]
-			tmpEndString := stringToTruncate[int(len(stringToTruncate)/2):]
-			stringToTruncate = tmpStartString + "~~~" + tmpEndString
-		}
-	}
-	return stringToTruncate
-}
-
-func getCurrentDirMetaData() map[int]map[string]bool {
-	var subDirKeys []string
-	var fileNames []string
-	returnValue := make(map[int]map[string]bool)
-	swapDir := make(map[string]bool)
-	lengthOfFilterList := len(currentDirFilter)
-	//dump dir/file keys in current dir and sort A-Z
-	if navPtr != &rootDir {
-		//add key for directory back
-		subDirKeys = append(subDirKeys, "..")
-	}
-
-	for key := range navPtr.subDirs {
-		//append subdir keys
-		subDirKeys = append(subDirKeys, key)
-	}
-
-	for key := range navPtr.files {
-		//append file keys
-		fileNames = append(fileNames, key)
-	}
-
-	sort.Strings(fileNames)
-	sort.Strings(subDirKeys)
-
-	//merge metadata
-	for key, value := range subDirKeys {
-		if lengthOfFilterList > 0 {
-			if strings.Contains(strings.ToUpper(value), strings.ToUpper(string(currentDirFilter))) || strings.Contains(strings.ToUpper(value), "..") {
-				swapDir[value] = true
-				returnValue[key+1] = swapDir
-				swapDir = make(map[string]bool)
-			}
-		} else if lengthOfFilterList == 0 {
-			swapDir[value] = true
-			returnValue[key+1] = swapDir
-			swapDir = make(map[string]bool)
-		}
-	}
-
-	for key, value := range fileNames {
-		if strings.Contains(strings.ToUpper(value), strings.ToUpper(string(currentDirFilter))) {
-			swapDir[value] = false
-			returnValue[key+1+len(subDirKeys)] = swapDir
-			swapDir = make(map[string]bool)
-		} else if lengthOfFilterList == 0 {
-			swapDir[value] = false
-			returnValue[key+1+len(subDirKeys)] = swapDir
-			swapDir = make(map[string]bool)
-		}
-	}
-	return returnValue
 }

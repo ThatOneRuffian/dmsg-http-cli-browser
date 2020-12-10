@@ -19,6 +19,8 @@ var downloadBrowserIndex int = downloadBrowserStartIndex
 //downloadBrowserIndex stores the current page number - 1 of the main menu
 var mainMenuBrowserIndex int = 0
 
+var downloadQueueIndex int = 0
+
 var rootDir directory
 
 var subDir directory

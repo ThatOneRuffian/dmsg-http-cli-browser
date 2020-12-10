@@ -17,104 +17,6 @@ var indexDownloadLoc string = os.TempDir()
 
 var programCurrentWorkingDir string = ""
 
-func loadServerIndex(serverPublicKey string) bool {
-	returnBool := true
-	file, err := os.Open(generateServerIndexAbsPath(serverPublicKey))
-	defer file.Close()
-	defer func() {
-		if err := recover(); err != nil {
-			currentServerIndexContents = make(map[int][2]string)
-		}
-	}()
-
-	if err != nil {
-		panic(err.Error())
-	}
-
-	fileStats, err := file.Stat()
-
-	if err != nil {
-		panic(err.Error())
-	}
-
-	if fileStats.Size() == 0 {
-		returnBool = false
-	}
-
-	parseServerIndex(&file)
-	return returnBool
-}
-
-func clearServerIndexFile(serverPublicKey string) {
-	serverCacheLoc := indexDownloadLoc + "/index." + serverPublicKey
-	os.Remove(serverCacheLoc)
-	resetDownLoadPageIndex()
-}
-
-func clearCacheConfig() {
-	configFile := generateConfigAbsFilePath()
-	_, err := os.Create(configFile)
-
-	if err != nil {
-		fmt.Println(err)
-	}
-}
-
-func generateServerIndexAbsPath(serverPublicKey string) string {
-	indexPath := indexDownloadLoc + "/index." + serverPublicKey
-
-	return indexPath
-}
-
-func generateConfigAbsDirPath() string {
-	homeDir, err := os.UserHomeDir()
-
-	if err != nil {
-		log.Fatal(err)
-	}
-	return homeDir + configFileHomePath
-}
-
-func generateConfigAbsFilePath() string {
-
-	configAbsFilePath := fmt.Sprintf("%s/dmsg-http-browser.config", generateConfigAbsDirPath())
-
-	return configAbsFilePath
-}
-
-func appendToConfig(friendlyName string, serverPublicKey string) {
-
-	friendlyName = stripIllegalChars(friendlyName)
-	serverPublicKey = stripIllegalChars(serverPublicKey)
-	rawData := friendlyName + ";" + serverPublicKey + string('\n')
-
-	dataToWrite := []byte(rawData)
-
-	configDirPath := generateConfigAbsDirPath()
-	err := os.Chdir(configDirPath)
-
-	if os.IsNotExist(err) {
-		dirErr := os.MkdirAll(configDirPath, 0700)
-		if dirErr != nil {
-			errorInfo := fmt.Sprintf("There was an error writng the config file to: %s\n%s", configDirPath, dirErr)
-			log.Fatal(errorInfo)
-		}
-	}
-
-	f, err := os.OpenFile(generateConfigAbsFilePath(), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	if _, err := f.Write(dataToWrite); err != nil {
-		log.Fatal(err)
-	}
-
-	if err := f.Close(); err != nil {
-		log.Fatal(err)
-	}
-}
 func InitProgramWorkingDir() string {
 	_programCurrentWorkingDir, err := os.Getwd()
 	if err != nil {
@@ -158,6 +60,64 @@ func InitDownloadsFolder(customDir string) string {
 	return MainDownloadsLoc
 }
 
+// server index
+func loadServerIndex(serverPublicKey string) bool {
+	returnBool := true
+	file, err := os.Open(generateServerIndexAbsPath(serverPublicKey))
+	defer file.Close()
+	defer func() {
+		if err := recover(); err != nil {
+			currentServerIndexContents = make(map[int][2]string)
+		}
+	}()
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	fileStats, err := file.Stat()
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	if fileStats.Size() == 0 {
+		returnBool = false
+	}
+
+	parseServerIndex(&file)
+	return returnBool
+}
+
+func clearServerIndexFile(serverPublicKey string) {
+	serverCacheLoc := indexDownloadLoc + "/index." + serverPublicKey
+	os.Remove(serverCacheLoc)
+	resetDownLoadPageIndex()
+}
+
+func generateServerIndexAbsPath(serverPublicKey string) string {
+	indexPath := indexDownloadLoc + "/index." + serverPublicKey
+
+	return indexPath
+}
+
+// server list cache/config
+func generateConfigAbsDirPath() string {
+	homeDir, err := os.UserHomeDir()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	return homeDir + configFileHomePath
+}
+
+func generateConfigAbsFilePath() string {
+
+	configAbsFilePath := fmt.Sprintf("%s/dmsg-http-browser.config", generateConfigAbsDirPath())
+
+	return configAbsFilePath
+}
+
 func LoadCache() bool {
 	returnBool := true
 	file, err := os.Open(generateConfigAbsFilePath())
@@ -186,6 +146,40 @@ func LoadCache() bool {
 	return returnBool
 }
 
+func appendToConfig(friendlyName string, serverPublicKey string) {
+
+	friendlyName = stripIllegalChars(friendlyName)
+	serverPublicKey = stripIllegalChars(serverPublicKey)
+	rawData := friendlyName + ";" + serverPublicKey + string('\n')
+
+	dataToWrite := []byte(rawData)
+
+	configDirPath := generateConfigAbsDirPath()
+	err := os.Chdir(configDirPath)
+
+	if os.IsNotExist(err) {
+		dirErr := os.MkdirAll(configDirPath, 0700)
+		if dirErr != nil {
+			errorInfo := fmt.Sprintf("There was an error writng the config file to: %s\n%s", configDirPath, dirErr)
+			log.Fatal(errorInfo)
+		}
+	}
+
+	f, err := os.OpenFile(generateConfigAbsFilePath(), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if _, err := f.Write(dataToWrite); err != nil {
+		log.Fatal(err)
+	}
+
+	if err := f.Close(); err != nil {
+		log.Fatal(err)
+	}
+}
+
 func deleteServerIndex(indexToDelete int) {
 	clearCacheConfig()
 	//filter out entry and rewrite to file
@@ -198,4 +192,45 @@ func deleteServerIndex(indexToDelete int) {
 	}
 
 	LoadCache()
+}
+
+func refreshServerIndex(serverPublicKey string, clearCache bool) {
+	ClearScreen()
+	resetDownLoadPageIndex()
+	if clearCache {
+		fmt.Println("Downloading Server Index...")
+		clearServerIndexFile(serverPublicKey)
+		dmsggetWrapper(serverPublicKey, indexDownloadLoc, "index", "index."+serverPublicKey, false)
+	}
+	if loadServerIndex(serverPublicKey) {
+
+	} else {
+		ClearScreen()
+		fmt.Println("Downloading Server Index...")
+		clearServerIndexFile(serverPublicKey)
+		dmsggetWrapper(serverPublicKey, indexDownloadLoc, "index", "index."+serverPublicKey, false)
+	}
+	assembleFileStructure(serverPublicKey)
+}
+
+func clearCacheConfig() {
+	configFile := generateConfigAbsFilePath()
+	_, err := os.Create(configFile)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func getDownloadFileSize(fileName string) float64 {
+	var returnValue float64
+	fileInfo, err := os.Stat(MainDownloadsLoc + "/" + fileName)
+
+	if err != nil {
+		fmt.Println("Error:", err)
+		returnValue = 0.0
+	} else {
+		returnValue = float64(fileInfo.Size())
+	}
+	return returnValue
 }
