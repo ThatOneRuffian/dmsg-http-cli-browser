@@ -194,12 +194,16 @@ ExitLoop:
 // Handler for download queue page
 func downloadQueuePageHandler() {
 	runQueueRefresh := true
+
 DownloadQueueMenu:
 	go downloadQueueRefreshScren(&runQueueRefresh)
+
+SearchLoop:
+
 	consoleInput := bufio.NewReader(os.Stdin)
 	userChoice, _ := consoleInput.ReadString('\n')
-SearchLoop:
 	userChoice = strings.ToUpper(stripIllegalChars(userChoice))
+
 	switch userChoice {
 	case "C":
 		clearFinishedDownloadsFromQueue()
@@ -231,13 +235,13 @@ SearchLoop:
 	case "N":
 
 	case "S":
-		fmt.Print("Search current directory for the following substring (X to clear current filter): ")
+		fmt.Print("Search current download queue for the following substring (X to clear current filter): ")
 		consoleInput := bufio.NewReader(os.Stdin)
 		inputQuery, _ := consoleInput.ReadString('\n')
 		inputQuery = stripIllegalChars(inputQuery)
 		//do not reset page number when there is no input
 		if len(inputQuery) > 0 {
-			currentDirFilter = inputQuery
+			//currentDirFilter = inputQuery
 			//reset download queue page number
 		}
 		//renderServerDownloadList()
