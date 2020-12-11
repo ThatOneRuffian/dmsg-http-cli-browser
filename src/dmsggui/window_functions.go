@@ -357,7 +357,6 @@ func renderServerDownloadList() map[int]map[string]bool {
 
 	//Render download menu
 	ClearScreen()
-	fmt.Println(terminalWidthAvailable, len(notificationBar), terminalWidthAvailable-len(notificationBar))
 	fmt.Println(divider)
 	fmt.Println(menuHeader)
 	fmt.Println(notificationBar)
