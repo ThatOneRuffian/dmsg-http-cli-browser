@@ -119,118 +119,6 @@ func renderHomeMenuServerList(terminalHeightAvailable int, terminalWidthAvailabl
 END:
 }
 
-func renderServerDownloadList() map[int]map[string]bool {
-
-	bufferHeight := 7 //lines consumed by menu elements
-	dirNumberOfItems := len(navPtr.subDirs) + len(navPtr.files)
-	terminalHeightAvailable, terminalWidthAvailable := getTerminalDims(bufferHeight)
-
-	serverPageCountMax = dirNumberOfItems / terminalHeightAvailable
-	pageRemainder := dirNumberOfItems % terminalHeightAvailable
-
-	// add additional page to fit remaining line items
-	if pageRemainder > 0 {
-		serverPageCountMax++
-	}
-
-	// Avoid 1/0 pages
-	if serverPageCountMax == 0 {
-		serverPageCountMax = 1
-	}
-
-	//Create header divider of appropriate length
-	divider := ""
-	for i := 0; i < terminalWidthAvailable; i++ {
-		divider += "="
-	}
-
-	//Render variables
-	titleBuffer := ""
-	pageStatus := ""
-	currentFilterStringStatus := ""
-	menuTitle := "SERVER DOWNLOAD INDEX"
-	dirMetaData := getCurrentDirMetaData()
-	currentDir := getPresentWorkingDirectory()
-	tmpTitle := fmt.Sprintf("%s%s", menuTitle, currentDir)
-	titleBufferLength := terminalWidthAvailable - len(tmpTitle)
-	truncateIndex := 0
-	truncateBuffer := ""
-	presentWorkingDirTitle := ""
-
-	if titleBufferLength*-1 >= len(currentDir) {
-		//check case if space to be buffered is longer than len(currentDir) (overflow), do not render PWD
-		truncateIndex = 0
-		truncateBuffer = ""
-		presentWorkingDirTitle = ""
-	} else {
-
-		if titleBufferLength < 0 {
-			//check if title overflow
-			truncateIndex = titleBufferLength * -1
-			truncateBuffer = " ~~~"
-		} else {
-			// fill empty space
-			for i := 0; i < titleBufferLength; i++ {
-				titleBuffer = titleBuffer + " "
-			}
-		}
-
-		if truncateIndex+len(truncateBuffer) < len(currentDir) {
-			presentWorkingDirTitle = truncateBuffer + currentDir[truncateIndex+len(truncateBuffer):]
-
-		} else {
-			presentWorkingDirTitle = ""
-		}
-	}
-
-	menuHeader := fmt.Sprintf("%s%s%s", menuTitle, titleBuffer, presentWorkingDirTitle)
-	if len(currentDirFilter) == 0 {
-		pageStatus = fmt.Sprintf("page (%d / %d)", downloadBrowserIndex+1, serverPageCountMax)
-		currentFilterStringStatus = divider
-	} else {
-		serverPageCountMax = (len(dirMetaData) - 1) / terminalHeightAvailable
-		pageRemainder := dirNumberOfItems % terminalHeightAvailable
-
-		// add additional page to fit remaining line items
-		if pageRemainder > 0 {
-			serverPageCountMax++
-		}
-
-		// Avoid 1/0 pages
-		if serverPageCountMax == 0 {
-			serverPageCountMax = 1
-		}
-
-		pageStatus = fmt.Sprintf("page (%d / %d)", downloadBrowserIndex+1, serverPageCountMax)
-		results := "result"
-		resultCount := len(dirMetaData) - 1
-		if navPtr == &rootDir {
-			resultCount++
-		}
-		if resultCount > 1 {
-			results += "s"
-		}
-		currentFilterInfo := fmt.Sprintf(" Current Filter (X to clear): \"%s\" | (%d %s) ", currentDirFilter, resultCount, results)
-		divider := ""
-		for i := 0; i < (terminalWidthAvailable-len(currentFilterInfo))/2; i++ {
-			divider += "="
-		}
-		currentFilterStringStatus = divider + currentFilterInfo + divider
-	}
-
-	//Render download menu
-	ClearScreen()
-	fmt.Println(divider)
-	fmt.Println(menuHeader)
-	fmt.Println(divider)
-	renderMetaData(dirMetaData, terminalHeightAvailable, terminalWidthAvailable)
-	fmt.Println(currentFilterStringStatus)
-	fmt.Println(pageStatus)
-	fmt.Println("<<F <B | N> L>>")
-
-	return dirMetaData
-}
-
 func truncateStringTo(stringToTruncate string, rawMenuLength int, terminalWidthAvailable int) string {
 	screenWidthLeft := terminalWidthAvailable - rawMenuLength
 	truncateBuffer := screenWidthLeft / 2 //amount to keep on beginning and end of string
@@ -350,7 +238,136 @@ func renderDownloadQueueMetaData(terminalHeightAvailable int, terminalWidthAvail
 	}
 }
 
-// file navigation
+// server download index
+
+func renderServerDownloadList() map[int]map[string]bool {
+	bufferHeight := 7 //lines consumed by menu elements
+	notificationBar := ""
+	dirNumberOfItems := len(navPtr.subDirs) + len(navPtr.files)
+	terminalHeightAvailable, terminalWidthAvailable := getTerminalDims(bufferHeight)
+
+	serverPageCountMax = dirNumberOfItems / terminalHeightAvailable
+	pageRemainder := dirNumberOfItems % terminalHeightAvailable
+
+	// add additional page to fit remaining line items
+	if pageRemainder > 0 {
+		serverPageCountMax++
+	}
+
+	// Avoid 1/0 pages
+	if serverPageCountMax == 0 {
+		serverPageCountMax = 1
+	}
+
+	//Create header divider of appropriate length
+	divider := ""
+	for i := 0; i < terminalWidthAvailable; i++ {
+		divider += "="
+		notificationBar += "="
+	}
+
+	//Render variables
+	titleBuffer := ""
+	pageStatus := ""
+	currentFilterStringStatus := ""
+	menuTitle := "SERVER DOWNLOAD INDEX"
+	dirMetaData := getCurrentDirMetaData()
+	currentDir := getPresentWorkingDirectory()
+	tmpTitle := fmt.Sprintf("%s%s", menuTitle, currentDir)
+	titleBufferLength := terminalWidthAvailable - len(tmpTitle)
+	truncateIndex := 0
+	truncateBuffer := ""
+	presentWorkingDirTitle := ""
+
+	if titleBufferLength*-1 >= len(currentDir) {
+		//check case if space to be buffered is longer than len(currentDir) (overflow), do not render PWD
+		truncateIndex = 0
+		truncateBuffer = ""
+		presentWorkingDirTitle = ""
+	} else {
+
+		if titleBufferLength < 0 {
+			//check if title overflow
+			truncateIndex = titleBufferLength * -1
+			truncateBuffer = " ~~~"
+		} else {
+			// fill empty space
+			for i := 0; i < titleBufferLength; i++ {
+				titleBuffer = titleBuffer + " "
+			}
+		}
+
+		if truncateIndex+len(truncateBuffer) < len(currentDir) {
+			presentWorkingDirTitle = truncateBuffer + currentDir[truncateIndex+len(truncateBuffer):]
+
+		} else {
+			presentWorkingDirTitle = ""
+		}
+	}
+
+	menuHeader := fmt.Sprintf("%s%s%s", menuTitle, titleBuffer, presentWorkingDirTitle)
+	// format header to show download notifications
+	if downloadNotification != "" {
+		notificationBar = " " + downloadNotification + " "
+		downloadNotification = ""
+		tmpTitleLength := len(notificationBar)
+		numberOfIterations := (terminalWidthAvailable - tmpTitleLength) / 2
+		if terminalWidthAvailable-(numberOfIterations*2+tmpTitleLength) > 0 {
+			notificationBar += "="
+		}
+		for i := 0; i < (terminalWidthAvailable-tmpTitleLength)/2; i++ {
+			notificationBar = "=" + notificationBar + "="
+		}
+	}
+
+	// format menu to show current search string
+	if len(currentDirFilter) == 0 {
+		pageStatus = fmt.Sprintf("page (%d / %d)", downloadBrowserIndex+1, serverPageCountMax)
+		currentFilterStringStatus = divider
+	} else {
+		serverPageCountMax = (len(dirMetaData) - 1) / terminalHeightAvailable
+		pageRemainder := dirNumberOfItems % terminalHeightAvailable
+
+		// add additional page to fit remaining line items
+		if pageRemainder > 0 {
+			serverPageCountMax++
+		}
+
+		// Avoid 1/0 pages
+		if serverPageCountMax == 0 {
+			serverPageCountMax = 1
+		}
+
+		pageStatus = fmt.Sprintf("page (%d / %d)", downloadBrowserIndex+1, serverPageCountMax)
+		results := "result"
+		resultCount := len(dirMetaData) - 1
+		if navPtr == &rootDir {
+			resultCount++
+		}
+		if resultCount > 1 {
+			results += "s"
+		}
+		currentFilterInfo := fmt.Sprintf(" Current Filter (X to clear): \"%s\" | (%d %s) ", currentDirFilter, resultCount, results)
+		divider := ""
+		for i := 0; i < (terminalWidthAvailable-len(currentFilterInfo))/2; i++ {
+			divider += "="
+		}
+		currentFilterStringStatus = divider + currentFilterInfo + divider
+	}
+
+	//Render download menu
+	ClearScreen()
+	fmt.Println(terminalWidthAvailable, len(notificationBar), terminalWidthAvailable-len(notificationBar))
+	fmt.Println(divider)
+	fmt.Println(menuHeader)
+	fmt.Println(notificationBar)
+	renderMetaData(dirMetaData, terminalHeightAvailable, terminalWidthAvailable)
+	fmt.Println(currentFilterStringStatus)
+	fmt.Println(pageStatus)
+	fmt.Println("<<F <B | N> L>>")
+
+	return dirMetaData
+}
 
 func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAvailable int, terminalWidthAvailable int) {
 	verticalHeightBuffer := terminalHeightAvailable

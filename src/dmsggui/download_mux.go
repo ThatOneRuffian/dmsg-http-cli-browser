@@ -7,6 +7,7 @@ import (
 )
 
 var downloadQueue = make(map[int]downloadItem)
+var downloadNotification = ""
 
 type downloadItem struct {
 	fileName           string
@@ -28,7 +29,7 @@ func initMuxDownload(serverPublicKey string, MainDownloadsLoc string, _fileName 
 	}
 
 	downloadQueue[newIndex] = newDownloadItem
-
+	downloadNotification = fmt.Sprintf("Added %s to download queue", _fileName)
 	//start download
 	go dmsggetWrapper(serverPublicKey, MainDownloadsLoc, getPresentWorkingDirectory()+_fileName, "", false)
 
