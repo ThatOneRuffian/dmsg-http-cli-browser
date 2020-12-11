@@ -195,10 +195,9 @@ ExitLoop:
 func downloadQueuePageHandler() {
 	runQueueRefresh := true
 
-DownloadQueueMenu:
 	go downloadQueueRefreshScren(&runQueueRefresh)
 
-SearchLoop:
+DownloadQueueMenu:
 
 	consoleInput := bufio.NewReader(os.Stdin)
 	userChoice, _ := consoleInput.ReadString('\n')
@@ -207,6 +206,7 @@ SearchLoop:
 	switch userChoice {
 	case "C":
 		clearFinishedDownloadsFromQueue()
+
 	case "Q":
 		ClearScreen()
 		os.Exit(1)
@@ -245,7 +245,7 @@ SearchLoop:
 			//reset download queue page number
 		}
 		//renderServerDownloadList()
-		goto SearchLoop
+		goto DownloadQueueMenu
 
 	case "X":
 		currentDirFilter = ""
@@ -261,6 +261,9 @@ SearchLoop:
 		}
 
 	}
+	ClearScreen()
+	renderDownloadQueuePage()
+	fmt.Print("(C to Clear finished downloads, E to Exit download queue, G to Goto page, Q to quit): ")
 	goto DownloadQueueMenu
 ExitLoop:
 	runQueueRefresh = false
