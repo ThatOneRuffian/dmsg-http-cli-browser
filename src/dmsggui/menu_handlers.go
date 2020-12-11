@@ -156,8 +156,9 @@ SearchLoop:
 		if err != nil {
 			break
 		}
-		if userInputVar >= 1 && userInputVar <= len(directoryMetaData) {
+		_, ok := directoryMetaData[userInputVar]
 
+		if userInputVar >= 1 && ok {
 			//determine if the key is a dir or a file
 			for index := range directoryMetaData[userInputVar] {
 				// navigate up a directory
