@@ -170,7 +170,6 @@ func renderDownloadQueuePage() {
 	//Render variables
 	titleBuffer := ""
 	pageStatus := ""
-	currentFilterStringStatus := ""
 	menuTitle := "DOWNLOAD QUEUE"
 	tmpTitle := fmt.Sprintf("%s Download Progress", menuTitle)
 	titleBufferLength := terminalWidthAvailable - len(tmpTitle)
@@ -186,17 +185,12 @@ func renderDownloadQueuePage() {
 
 	menuHeader := fmt.Sprintf("%s%s Download Progress", menuTitle, titleBuffer)
 
-	if len(currentDirFilter) == 0 {
-		pageStatus = fmt.Sprintf("page (%d / %d)", downloadBrowserIndex+1, serverPageCountMax)
-		currentFilterStringStatus = divider
-	}
-
 	//Render download queue
 	fmt.Println(divider)
 	fmt.Println(menuHeader)
 	fmt.Println(divider)
 	renderDownloadQueueMetaData(terminalHeightAvailable, terminalWidthAvailable)
-	fmt.Println(currentFilterStringStatus)
+	fmt.Println(divider)
 	fmt.Println(pageStatus)
 	fmt.Println("<<F <B | N> L>>")
 }
