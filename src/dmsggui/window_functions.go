@@ -284,7 +284,7 @@ func renderDownloadQueuePage() {
 	pageStatus := ""
 	currentFilterStringStatus := ""
 	menuTitle := "DOWNLOAD QUEUE"
-	tmpTitle := fmt.Sprintf("%s Progress", menuTitle)
+	tmpTitle := fmt.Sprintf("%s Download Progress", menuTitle)
 	titleBufferLength := terminalWidthAvailable - len(tmpTitle)
 
 	if titleBufferLength < 0 {
@@ -296,7 +296,7 @@ func renderDownloadQueuePage() {
 		}
 	}
 
-	menuHeader := fmt.Sprintf("%s%s Progress", menuTitle, titleBuffer)
+	menuHeader := fmt.Sprintf("%s%s Download Progress", menuTitle, titleBuffer)
 
 	if len(currentDirFilter) == 0 {
 		pageStatus = fmt.Sprintf("page (%d / %d)", downloadBrowserIndex+1, serverPageCountMax)
@@ -327,19 +327,18 @@ func renderDownloadQueueMetaData(terminalHeightAvailable int, terminalWidthAvail
 		downloadPercentage := (currentFileSize / downloadQueue[index].fileSize) * 100
 		// check if download is actually 100%
 		if (downloadPercentage == 100) && (currentFileSize == downloadQueue[index].fileSize) && *downloadQueue[index].downloadStatus {
-			var markAsDone bool
-			markAsDone = false
+			markAsDone := false
 			downloadPercentage = 100
 			*downloadQueue[index].downloadStatus = markAsDone
 		} else if downloadPercentage == 100 && *downloadQueue[index].downloadStatus {
 			downloadPercentage = 99
 		}
-		tmpLineEntry := fmt.Sprintf("%d) %v  %.0f%%", index+1, downloadQueue[index].fileName, downloadPercentage)
+		tmpLineEntry := fmt.Sprintf("%d) %v  (%.0f/%.0f)  %.0f%%", index+1, downloadQueue[index].fileName, currentFileSize, downloadQueue[index].fileSize, downloadPercentage)
 		spaceToFill := terminalWidthAvailable - len(tmpLineEntry)
 		for i := 0; i < spaceToFill; i++ {
 			horizontalFill += "-"
 		}
-		lineEntry := fmt.Sprintf("%d) %v %s %.0f%%", index+1, downloadQueue[index].fileName, horizontalFill, downloadPercentage)
+		lineEntry := fmt.Sprintf("%d) %v %s (%.0f/%.0f)  %.0f%%", index+1, downloadQueue[index].fileName, horizontalFill, currentFileSize, downloadQueue[index].fileSize, downloadPercentage)
 		fmt.Println(lineEntry)
 		horizontalFill = ""
 		verticalHeightBuffer--
