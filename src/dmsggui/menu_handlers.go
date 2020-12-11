@@ -20,7 +20,7 @@ ServerMenu:
 	currentDirFilter = ""
 	renderServerBrowser()
 
-	fmt.Print("(A to Add server, D to Delete a server, G to Goto page, Q to quit): ")
+	fmt.Print("(A to Add server, D to Delete a server, G to Goto page, V to View Downloads, Q to quit): ")
 	userChoice, _ := consoleInput.ReadString('\n')
 	userChoice = strings.ToUpper(stripIllegalChars(userChoice))
 	switch userChoice {
@@ -87,7 +87,7 @@ ServerIndexMenu:
 	directoryMetaData := renderServerDownloadList()
 SearchLoop:
 	consoleInput := bufio.NewReader(os.Stdin)
-	fmt.Print("(R to Refresh Server Index, E to Exit Server File Browser, G to Goto page, S to Search Dir, Q to quit): ")
+	fmt.Print("(R to Refresh Server Index, E to Exit Server File Browser, G to Goto page, S to Search Dir, V to View Downloads, Q to quit): ")
 	userChoice, _ := consoleInput.ReadString('\n')
 	userChoice = strings.ToUpper(stripIllegalChars(userChoice))
 	switch userChoice {
@@ -175,7 +175,7 @@ SearchLoop:
 						for fileName := range directoryMetaData[userInputVar] {
 							// download file
 							ClearScreen()
-							initMuxDownload(serverPublicKey, MainDownloadsLoc, fileName, 100000.0)
+							initMuxDownload(serverPublicKey, MainDownloadsLoc, fileName)
 						}
 					}
 				}

@@ -10,14 +10,13 @@ type downloadItem struct {
 }
 
 //InitMuxDownload adds items to the multiplexed download queue
-func initMuxDownload(serverPublicKey string, MainDownloadsLoc string, _fileName string, _fileSize float64) {
+func initMuxDownload(serverPublicKey string, MainDownloadsLoc string, _fileName string) {
 	//create object to track file stats and add object to queue
 	newIndex := len(downloadQueue)
 
 	newDownloadItem := downloadItem{
 		fileName:           _fileName,
-		fileSize:           _fileSize,
-		downloadStatus:     0,
+		fileSize:           navPtr.files[_fileName],
 		serverFriendlyName: serverPublicKey,
 	}
 

@@ -324,7 +324,7 @@ func renderDownloadQueueMetaData(terminalHeightAvailable int, terminalWidthAvail
 	}
 	sort.Ints(indexes)
 	for index := range indexes {
-		downloadPercentage := getDownloadFileSize(downloadQueue[index].fileName) / downloadQueue[index].fileSize
+		downloadPercentage := (getDownloadFileSize(downloadQueue[index].fileName) / downloadQueue[index].fileSize) * 100
 		tmpLineEntry := fmt.Sprintf("%d) %v  %.0f%%", index+1, downloadQueue[index].fileName, downloadPercentage)
 		spaceToFill := terminalWidthAvailable - len(tmpLineEntry)
 		for i := 0; i < spaceToFill; i++ {
@@ -343,59 +343,6 @@ func renderDownloadQueueMetaData(terminalHeightAvailable int, terminalWidthAvail
 }
 
 // file navigation
-func getCurrentDirMetaData() map[int]map[string]bool {
-	var subDirKeys []string
-	var fileNames []string
-	returnValue := make(map[int]map[string]bool)
-	swapDir := make(map[string]bool)
-	lengthOfFilterList := len(currentDirFilter)
-	//dump dir/file keys in current dir and sort A-Z
-	if navPtr != &rootDir {
-		//add key for directory back
-		subDirKeys = append(subDirKeys, "..")
-	}
-
-	for key := range navPtr.subDirs {
-		//append subdir keys
-		subDirKeys = append(subDirKeys, key)
-	}
-
-	for key := range navPtr.files {
-		//append file keys
-		fileNames = append(fileNames, key)
-	}
-
-	sort.Strings(fileNames)
-	sort.Strings(subDirKeys)
-
-	//merge metadata
-	for key, value := range subDirKeys {
-		if lengthOfFilterList > 0 {
-			if strings.Contains(strings.ToUpper(value), strings.ToUpper(string(currentDirFilter))) || strings.Contains(strings.ToUpper(value), "..") {
-				swapDir[value] = true
-				returnValue[key+1] = swapDir
-				swapDir = make(map[string]bool)
-			}
-		} else if lengthOfFilterList == 0 {
-			swapDir[value] = true
-			returnValue[key+1] = swapDir
-			swapDir = make(map[string]bool)
-		}
-	}
-
-	for key, value := range fileNames {
-		if strings.Contains(strings.ToUpper(value), strings.ToUpper(string(currentDirFilter))) {
-			swapDir[value] = false
-			returnValue[key+1+len(subDirKeys)] = swapDir
-			swapDir = make(map[string]bool)
-		} else if lengthOfFilterList == 0 {
-			swapDir[value] = false
-			returnValue[key+1+len(subDirKeys)] = swapDir
-			swapDir = make(map[string]bool)
-		}
-	}
-	return returnValue
-}
 
 func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAvailable int, terminalWidthAvailable int) {
 	verticalHeightBuffer := terminalHeightAvailable
@@ -457,17 +404,6 @@ func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAva
 		fmt.Println("-")
 	}
 END:
-}
-
-func isMetaDataSorted(directoryMetaData map[int]map[string]bool) bool {
-	metaDataLength := len(directoryMetaData)
-	isSorted := true
-	for index := range directoryMetaData {
-		if index > metaDataLength {
-			isSorted = false
-		}
-	}
-	return isSorted
 }
 
 func drawDirEntry(entryName string, terminalWidthAvailable int, index int) {

@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -211,4 +212,69 @@ func createDirPath(fullDirPath []string) {
 
 func resetDownLoadPageIndex() {
 	downloadBrowserIndex = downloadBrowserStartIndex
+}
+
+func getCurrentDirMetaData() map[int]map[string]bool {
+	var subDirKeys []string
+	var fileNames []string
+	returnValue := make(map[int]map[string]bool)
+	swapDir := make(map[string]bool)
+	lengthOfFilterList := len(currentDirFilter)
+	//dump dir/file keys in current dir and sort A-Z
+	if navPtr != &rootDir {
+		//add key for directory back
+		subDirKeys = append(subDirKeys, "..")
+	}
+
+	for key := range navPtr.subDirs {
+		//append subdir keys
+		subDirKeys = append(subDirKeys, key)
+	}
+
+	for key := range navPtr.files {
+		//append file keys
+		fileNames = append(fileNames, key)
+	}
+
+	sort.Strings(fileNames)
+	sort.Strings(subDirKeys)
+
+	//merge metadata
+	for key, value := range subDirKeys {
+		if lengthOfFilterList > 0 {
+			if strings.Contains(strings.ToUpper(value), strings.ToUpper(string(currentDirFilter))) || strings.Contains(strings.ToUpper(value), "..") {
+				swapDir[value] = true
+				returnValue[key+1] = swapDir
+				swapDir = make(map[string]bool)
+			}
+		} else if lengthOfFilterList == 0 {
+			swapDir[value] = true
+			returnValue[key+1] = swapDir
+			swapDir = make(map[string]bool)
+		}
+	}
+
+	for key, value := range fileNames {
+		if strings.Contains(strings.ToUpper(value), strings.ToUpper(string(currentDirFilter))) {
+			swapDir[value] = false
+			returnValue[key+1+len(subDirKeys)] = swapDir
+			swapDir = make(map[string]bool)
+		} else if lengthOfFilterList == 0 {
+			swapDir[value] = false
+			returnValue[key+1+len(subDirKeys)] = swapDir
+			swapDir = make(map[string]bool)
+		}
+	}
+	return returnValue
+}
+
+func isMetaDataSorted(directoryMetaData map[int]map[string]bool) bool {
+	metaDataLength := len(directoryMetaData)
+	isSorted := true
+	for index := range directoryMetaData {
+		if index > metaDataLength {
+			isSorted = false
+		}
+	}
+	return isSorted
 }
