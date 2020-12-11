@@ -227,7 +227,6 @@ func getDownloadFileSize(fileName string) float64 {
 	fileInfo, err := os.Stat(MainDownloadsLoc + "/" + fileName)
 
 	if err != nil {
-		fmt.Println("Error:", err)
 		returnValue = 0.0
 	} else {
 		returnValue = float64(fileInfo.Size())

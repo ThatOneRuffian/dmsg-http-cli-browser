@@ -197,10 +197,12 @@ DownloadQueueMenu:
 	renderDownloadQueuePage()
 SearchLoop:
 	consoleInput := bufio.NewReader(os.Stdin)
-	fmt.Print("(E to Exit download queue, G to Goto page, S to Search download queue, Q to quit): ")
+	fmt.Print("(C to Clear finished downloads, E to Exit download queue, G to Goto page, S to Search download queue, Q to quit): ")
 	userChoice, _ := consoleInput.ReadString('\n')
 	userChoice = strings.ToUpper(stripIllegalChars(userChoice))
 	switch userChoice {
+	case "C":
+		clearFinishedDownloadsFromQueue()
 	case "Q":
 		ClearScreen()
 		os.Exit(1)

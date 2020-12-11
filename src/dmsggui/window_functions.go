@@ -323,8 +323,18 @@ func renderDownloadQueueMetaData(terminalHeightAvailable int, terminalWidthAvail
 		indexes = append(indexes, index)
 	}
 	sort.Ints(indexes)
-	for index := range indexes {
-		downloadPercentage := (getDownloadFileSize(downloadQueue[index].fileName) / downloadQueue[index].fileSize) * 100
+	for _, index := range indexes {
+		currentFileSize := getDownloadFileSize(downloadQueue[index].fileName)
+		downloadPercentage := (currentFileSize / downloadQueue[index].fileSize) * 100
+		// check if download is actually 100%
+		if (downloadPercentage == 100) && (currentFileSize == downloadQueue[index].fileSize) && *downloadQueue[index].downloadStatus {
+			var markAsDone bool
+			markAsDone = false
+			downloadPercentage = 100
+			*downloadQueue[index].downloadStatus = markAsDone
+		} else if downloadPercentage == 100 && *downloadQueue[index].downloadStatus {
+			downloadPercentage = 99
+		}
 		tmpLineEntry := fmt.Sprintf("%d) %v  %.0f%%", index+1, downloadQueue[index].fileName, downloadPercentage)
 		spaceToFill := terminalWidthAvailable - len(tmpLineEntry)
 		for i := 0; i < spaceToFill; i++ {
