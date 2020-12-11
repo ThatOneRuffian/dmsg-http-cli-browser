@@ -193,12 +193,12 @@ ExitLoop:
 
 // Handler for download queue page
 func downloadQueuePageHandler() {
+	runQueueRefresh := true
 DownloadQueueMenu:
-	renderDownloadQueuePage()
-SearchLoop:
+	go downloadQueueRefreshScren(&runQueueRefresh)
 	consoleInput := bufio.NewReader(os.Stdin)
-	fmt.Print("(C to Clear finished downloads, E to Exit download queue, G to Goto page, S to Search download queue, Q to quit): ")
 	userChoice, _ := consoleInput.ReadString('\n')
+SearchLoop:
 	userChoice = strings.ToUpper(stripIllegalChars(userChoice))
 	switch userChoice {
 	case "C":
@@ -259,4 +259,5 @@ SearchLoop:
 	}
 	goto DownloadQueueMenu
 ExitLoop:
+	runQueueRefresh = false
 }

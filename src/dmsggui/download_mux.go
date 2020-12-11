@@ -3,6 +3,7 @@ package dmsggui
 import (
 	"fmt"
 	"sort"
+	"time"
 )
 
 var downloadQueue = make(map[int]downloadItem)
@@ -31,6 +32,14 @@ func initMuxDownload(serverPublicKey string, MainDownloadsLoc string, _fileName 
 	//start download
 	go dmsggetWrapper(serverPublicKey, MainDownloadsLoc, getPresentWorkingDirectory()+_fileName, "", false)
 
+}
+
+func downloadQueueRefreshScren(run *bool) {
+	for *run {
+		renderDownloadQueuePage()
+		fmt.Print("(C to Clear finished downloads, E to Exit download queue, G to Goto page, S to Search download queue, Q to quit): ")
+		time.Sleep(5 * time.Second)
+	}
 }
 
 func clearFinishedDownloadsFromQueue() {

@@ -307,7 +307,6 @@ func renderDownloadQueuePage() {
 	fmt.Println(divider)
 	fmt.Println(menuHeader)
 	fmt.Println(divider)
-	//renderMetaData(dirMetaData, terminalHeightAvailable, terminalWidthAvailable)
 	renderDownloadQueueMetaData(terminalHeightAvailable, terminalWidthAvailable)
 	fmt.Println(currentFilterStringStatus)
 	fmt.Println(pageStatus)
