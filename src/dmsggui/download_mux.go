@@ -1,6 +1,9 @@
 package dmsggui
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 
 var downloadQueue = make(map[int]downloadItem)
 
@@ -32,11 +35,17 @@ func initMuxDownload(serverPublicKey string, MainDownloadsLoc string, _fileName 
 
 func clearFinishedDownloadsFromQueue() {
 	tmpList := make(map[int]downloadItem)
-
+	sortedIndexes := []int{}
+	newIndex := 0
 	for index := range downloadQueue {
+		sortedIndexes = append(sortedIndexes, index)
+	}
+	sort.Ints(sortedIndexes)
+	for index := range sortedIndexes {
 		fmt.Println("index", index)
 		if *downloadQueue[index].downloadStatus {
-			tmpList[index] = downloadQueue[index]
+			tmpList[newIndex] = downloadQueue[index]
+			newIndex++
 		}
 	}
 	downloadQueue = tmpList
