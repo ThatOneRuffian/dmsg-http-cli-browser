@@ -12,7 +12,7 @@ func main() {
 	dmsggui.RetryAttemptsUserInput = "3"
 
 	//parse user arguments
-	flag.StringVar(&dmsggui.DiscoveryServer, "dmsg-disc", "", "Specify the dmsg discovery URL. Default is dmsgget's default discovery URL.")
+	flag.StringVar(&dmsggui.DiscoveryServer, "dmsg-disc", "", "Specify the dmsg discovery URL (e.g. 'http://192.168.1.123'). Default is dmsgget's default discovery URL.")
 	flag.StringVar(&dmsggui.DownloadLocationUserInput, "d", dmsggui.DownloadLocationUserInput, "Specify directory to download files to.")
 	flag.StringVar(&dmsggui.RetryAttemptsUserInput, "r", dmsggui.RetryAttemptsUserInput, "Specify number of download attempts.")
 	flag.StringVar(&dmsggui.DiscoveryServerPort, "p", "80", "Specify the port number of the discovery server.")
