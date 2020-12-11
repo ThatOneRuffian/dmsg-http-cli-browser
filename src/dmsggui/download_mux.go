@@ -29,7 +29,7 @@ func initMuxDownload(serverPublicKey string, MainDownloadsLoc string, _fileName 
 	}
 
 	downloadQueue[newIndex] = newDownloadItem
-	downloadNotification = fmt.Sprintf("Added %s to download queue", _fileName)
+	downloadNotification = fmt.Sprintf("Added %s to Download Queue", _fileName)
 	//start download
 	go dmsggetWrapper(serverPublicKey, MainDownloadsLoc, getPresentWorkingDirectory()+_fileName, "", false)
 
