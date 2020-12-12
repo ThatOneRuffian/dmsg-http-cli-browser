@@ -15,6 +15,8 @@ var mainMenuPageCountMax int
 //serverPageCountMax holds the max page given the current server's index and terminal height
 var serverPageCountMax int
 
+var downloadQueuePageMax int
+
 //SavedServers stores server cache - initalized on loadCache
 var SavedServers map[int][2]string
 
@@ -148,17 +150,17 @@ func renderDownloadQueuePage() {
 	numberOfQueueItems := len(downloadQueue)
 	terminalHeightAvailable, terminalWidthAvailable := getTerminalDims(bufferHeight)
 
-	serverPageCountMax = numberOfQueueItems / terminalHeightAvailable
+	downloadQueuePageMax = numberOfQueueItems / terminalHeightAvailable
 	pageRemainder := numberOfQueueItems % terminalHeightAvailable
 
 	// add additional page to fit remaining line items
 	if pageRemainder > 0 {
-		serverPageCountMax++
+		downloadQueuePageMax++
 	}
 
 	// Avoid 1/0 pages
-	if serverPageCountMax == 0 {
-		serverPageCountMax = 1
+	if downloadQueuePageMax == 0 {
+		downloadQueuePageMax = 1
 	}
 
 	//Create header divider of appropriate length
@@ -169,7 +171,7 @@ func renderDownloadQueuePage() {
 
 	//Render variables
 	titleBuffer := ""
-	pageStatus := ""
+	pageStatus := fmt.Sprintf("page (%d / %d)", downloadQueueIndex+1, downloadQueuePageMax)
 	menuTitle := "DOWNLOAD QUEUE"
 	tmpTitle := fmt.Sprintf("%s Download Progress", menuTitle)
 	titleBufferLength := terminalWidthAvailable - len(tmpTitle)
@@ -204,26 +206,34 @@ func renderDownloadQueueMetaData(terminalHeightAvailable int, terminalWidthAvail
 		indexes = append(indexes, index)
 	}
 	sort.Ints(indexes)
+
 	for _, index := range indexes {
-		currentFileSize := getDownloadFileSize(downloadQueue[index].fileName)
-		downloadPercentage := (currentFileSize / downloadQueue[index].fileSize) * 100
-		// check if download is actually 100%
-		if (downloadPercentage == 100) && (currentFileSize >= downloadQueue[index].fileSize) && *downloadQueue[index].downloadStatus {
-			markAsDone := false
-			downloadPercentage = 100
-			*downloadQueue[index].downloadStatus = markAsDone
-		} else if downloadPercentage == 100 && *downloadQueue[index].downloadStatus {
-			downloadPercentage = 99
+		indexOffset := index + downloadQueueIndex*terminalHeightAvailable
+		if _, ok := downloadQueue[indexOffset]; ok {
+			currentFileSize := getDownloadFileSize(downloadQueue[indexOffset].fileName)
+			downloadPercentage := (currentFileSize / downloadQueue[indexOffset].fileSize) * 100
+			// check if download is actually 100%
+			if (downloadPercentage == 100) && (currentFileSize >= downloadQueue[indexOffset].fileSize) && *downloadQueue[indexOffset].downloadStatus {
+				markAsDone := false
+				downloadPercentage = 100
+				*downloadQueue[indexOffset].downloadStatus = markAsDone
+			} else if downloadPercentage == 100 && *downloadQueue[indexOffset].downloadStatus {
+				downloadPercentage = 99
+			}
+			tmpLineEntry := fmt.Sprintf("%d) %v  (%.0f/%.0f)  %.0f%%", indexOffset+1, downloadQueue[indexOffset].fileName, currentFileSize, downloadQueue[indexOffset].fileSize, downloadPercentage)
+			spaceToFill := terminalWidthAvailable - len(tmpLineEntry)
+			for i := 0; i < spaceToFill; i++ {
+				horizontalFill += "-"
+			}
+			lineEntry := fmt.Sprintf("%d) %v %s (%.0f/%.0f)  %.0f%%", indexOffset+1, downloadQueue[indexOffset].fileName, horizontalFill, currentFileSize, downloadQueue[indexOffset].fileSize, downloadPercentage)
+			fmt.Println(lineEntry)
+			horizontalFill = ""
+			verticalHeightBuffer--
 		}
-		tmpLineEntry := fmt.Sprintf("%d) %v  (%.0f/%.0f)  %.0f%%", index+1, downloadQueue[index].fileName, currentFileSize, downloadQueue[index].fileSize, downloadPercentage)
-		spaceToFill := terminalWidthAvailable - len(tmpLineEntry)
-		for i := 0; i < spaceToFill; i++ {
-			horizontalFill += "-"
+
+		if verticalHeightBuffer == 0 {
+			break
 		}
-		lineEntry := fmt.Sprintf("%d) %v %s (%.0f/%.0f)  %.0f%%", index+1, downloadQueue[index].fileName, horizontalFill, currentFileSize, downloadQueue[index].fileSize, downloadPercentage)
-		fmt.Println(lineEntry)
-		horizontalFill = ""
-		verticalHeightBuffer--
 	}
 
 	//vertical buffer

@@ -207,6 +207,7 @@ DownloadQueueMenu:
 	switch userChoice {
 	case "C":
 		clearFinishedDownloadsFromQueue()
+		downloadQueueIndex = 0
 
 	case "Q":
 		ClearScreen()
@@ -215,9 +216,11 @@ DownloadQueueMenu:
 		goto ExitLoop
 
 	case "B":
-
+		if downloadQueueIndex > 0 {
+			downloadQueueIndex--
+		}
 	case "F":
-		resetDownLoadPageIndex()
+		downloadQueueIndex = 0
 	case "G":
 		fmt.Print("Enter page number:")
 		consoleReader := bufio.NewReader(os.Stdin)
@@ -232,9 +235,12 @@ DownloadQueueMenu:
 		}
 
 	case "L":
-
+		downloadQueueIndex = downloadQueuePageMax - 1
 	case "N":
+		if downloadQueueIndex < downloadQueuePageMax-1 {
 
+			downloadQueueIndex++
+		}
 	case "S":
 		fmt.Print("Search current download queue for the following substring (X to clear current filter): ")
 		consoleInput := bufio.NewReader(os.Stdin)
