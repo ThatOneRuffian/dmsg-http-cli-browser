@@ -448,10 +448,10 @@ func drawDirEntry(entryName string, terminalWidthAvailable int, index int) {
 	horizontalFill := ""
 	//detect and format dirs with names that will overflow current terminal width
 
-	if len(tmpLineEntry) >= terminalWidthAvailable {
+	if len(tmpLineEntry) > terminalWidthAvailable {
 		entryName = truncateStringTo(entryName, len(tmpBasicLineEntry), terminalWidthAvailable)
 	}
-	for i := terminalWidthAvailable - len(tmpLineEntry); i > 0; i-- {
+	for i := terminalWidthAvailable - len(tmpBasicLineEntry) - len(entryName); i > 0; i-- {
 		horizontalFill += "-"
 	}
 
@@ -484,7 +484,7 @@ func drawFileEntry(entryName string, terminalWidthAvailable int, index int) {
 	tmpBasicLineEntry := fmt.Sprintf("%d)   %.2f %s", index, fileSize, fileSizeUnits)
 	horizontalFill := ""
 
-	if len(tmpBasicLineEntry)+len(entryName) >= terminalWidthAvailable {
+	if len(tmpBasicLineEntry)+len(entryName) > terminalWidthAvailable {
 		entryName = truncateStringTo(entryName, len(tmpBasicLineEntry), terminalWidthAvailable)
 	}
 
