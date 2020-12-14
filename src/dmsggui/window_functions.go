@@ -215,8 +215,8 @@ func renderDownloadQueueMetaData(terminalHeightAvailable int, terminalWidthAvail
 
 			currentFileSize := getDownloadFileSize(fileName)
 			downloadPercentage := (currentFileSize / downloadQueue[indexOffset].fileSize) * 100
-			// check if download is actually 100%
-			if (downloadPercentage == 100) && (currentFileSize >= fileSize) && *downloadQueue[indexOffset].downloadStatus {
+			// check if download is actually 100% and non-zero
+			if (downloadPercentage == 100) && (currentFileSize >= fileSize) && *downloadQueue[indexOffset].downloadStatus || downloadQueue[indexOffset].fileSize == 0 {
 				markAsDone := false
 				downloadPercentage = 100
 				*downloadQueue[indexOffset].downloadStatus = markAsDone
