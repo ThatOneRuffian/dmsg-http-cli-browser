@@ -199,6 +199,7 @@ func renderDownloadQueuePage() {
 
 func renderDownloadQueueMetaData(terminalHeightAvailable int, terminalWidthAvailable int) {
 	verticalHeightBuffer := terminalHeightAvailable
+	fileName := ""
 	horizontalFill := ""
 	// sort index
 	indexes := []int{}
@@ -220,12 +221,19 @@ func renderDownloadQueueMetaData(terminalHeightAvailable int, terminalWidthAvail
 			} else if downloadPercentage == 100 && *downloadQueue[indexOffset].downloadStatus {
 				downloadPercentage = 99
 			}
-			tmpLineEntry := fmt.Sprintf("%d) %v  (%.0f/%.0f)  %.0f%%", indexOffset+1, downloadQueue[indexOffset].fileName, currentFileSize, downloadQueue[indexOffset].fileSize, downloadPercentage)
+			tmpBasicLineEntry := fmt.Sprintf("%d)   (%.0f/%.0f)  %.0f%%", indexOffset+1, currentFileSize, downloadQueue[indexOffset].fileSize, downloadPercentage)
+			tmpLineEntry := tmpBasicLineEntry + downloadQueue[indexOffset].fileName
 			spaceToFill := terminalWidthAvailable - len(tmpLineEntry)
+			if len(tmpLineEntry) >= terminalWidthAvailable {
+				fileName = truncateStringTo(downloadQueue[indexOffset].fileName, len(tmpBasicLineEntry), terminalWidthAvailable)
+			} else {
+				fileName = downloadQueue[indexOffset].fileName
+			}
 			for i := 0; i < spaceToFill; i++ {
 				horizontalFill += "-"
 			}
-			lineEntry := fmt.Sprintf("%d) %v %s (%.0f/%.0f)  %.0f%%", indexOffset+1, downloadQueue[indexOffset].fileName, horizontalFill, currentFileSize, downloadQueue[indexOffset].fileSize, downloadPercentage)
+
+			lineEntry := fmt.Sprintf("%d) %v %s (%.0f/%.0f)  %.0f%%", indexOffset+1, fileName, horizontalFill, currentFileSize, downloadQueue[indexOffset].fileSize, downloadPercentage)
 			fmt.Println(lineEntry)
 			horizontalFill = ""
 			verticalHeightBuffer--
