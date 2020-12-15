@@ -320,17 +320,22 @@ func renderServerDownloadList() map[int]map[string]bool {
 	menuHeader := fmt.Sprintf("%s%s%s", menuTitle, titleBuffer, presentWorkingDirTitle)
 	// format header to show download notifications
 	if downloadNotification != "" {
-		notificationBar = " " + downloadNotification + " "
-		downloadNotification = ""
+		notificationBar = "= " + downloadNotification + " ="
 		tmpTitleLength := len(notificationBar)
 		numberOfIterations := (terminalWidthAvailable - tmpTitleLength) / 2
+
+		// check if title overflow
+		if terminalWidthAvailable-len(notificationBar) < 0 {
+			notificationBar = truncateStringTo(notificationBar, 0, terminalWidthAvailable)
+		} else {
+			// add notification bar padding
+			for i := 0; i < (terminalWidthAvailable-tmpTitleLength)/2; i++ {
+				notificationBar = "=" + notificationBar + "="
+			}
+		}
 		// if notification bar requires extra padding
 		if terminalWidthAvailable-(numberOfIterations*2+tmpTitleLength) > 0 {
 			notificationBar += "="
-		}
-		// add notification bar padding
-		for i := 0; i < (terminalWidthAvailable-tmpTitleLength)/2; i++ {
-			notificationBar = "=" + notificationBar + "="
 		}
 	}
 
@@ -378,6 +383,8 @@ func renderServerDownloadList() map[int]map[string]bool {
 	fmt.Println(currentFilterStringStatus)
 	fmt.Println(pageStatus)
 	fmt.Println("<<F <B | N> L>>")
+
+	downloadNotification = ""
 
 	return dirMetaData
 }
