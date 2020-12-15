@@ -324,9 +324,11 @@ func renderServerDownloadList() map[int]map[string]bool {
 		downloadNotification = ""
 		tmpTitleLength := len(notificationBar)
 		numberOfIterations := (terminalWidthAvailable - tmpTitleLength) / 2
+		// if notification bar requires extra padding
 		if terminalWidthAvailable-(numberOfIterations*2+tmpTitleLength) > 0 {
 			notificationBar += "="
 		}
+		// add notification bar padding
 		for i := 0; i < (terminalWidthAvailable-tmpTitleLength)/2; i++ {
 			notificationBar = "=" + notificationBar + "="
 		}
