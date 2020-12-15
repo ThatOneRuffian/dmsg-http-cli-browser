@@ -40,7 +40,7 @@ func downloadQueueRefreshScren(run *bool) {
 		ClearScreen()
 		renderDownloadQueuePage()
 		fmt.Print("(C to Clear finished downloads, E to Exit download queue, G to Goto page, Q to quit): ")
-		time.Sleep(2 * time.Second)
+		time.Sleep(3 * time.Second)
 	}
 }
 
