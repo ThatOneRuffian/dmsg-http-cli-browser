@@ -189,16 +189,24 @@ func sttyWrapperGetTerminalWidth() (int, error) {
 func getTerminalDims(bufferHeight int) (int, int) {
 	terminalHeightAvailable := 1
 	terminalWidthAvailable := 1
-	retry := true
-Retry:
+	retryCounts := 3
+
 	if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
+	RetryHeight:
 		terminalHeight, heightError := sttyWrapperGetTerminalHeight()
+		if heightError != nil && retryCounts > 0 {
+			retryCounts--
+			goto RetryHeight
+		}
+
+	RetryWidth:
 		terminalWidth, widthError := sttyWrapperGetTerminalWidth()
+		if widthError != nil && retryCounts > 0 {
+			retryCounts--
+			goto RetryWidth
+		}
+
 		if heightError != nil || widthError != nil {
-			if retry {
-				retry = false
-				goto Retry
-			}
 
 			fmt.Println("Error fetching terminal dimensions")
 			fmt.Println(heightError)
