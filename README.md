@@ -32,6 +32,7 @@ The client operates as a simple bookmark manager for public keys that are runnin
 - Server public key management
 - Simple UI
 - Paginated server/file browsing
+- Simultaneous downloads
 - Search current directory
 - UI scales to terminal size (Optional dependency: tput)
 
