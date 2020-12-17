@@ -230,8 +230,8 @@ DownloadQueueMenu:
 
 		if err != nil {
 
-		} else if pageNumber > 0 && pageNumber-1 < serverPageCountMax {
-			downloadBrowserIndex = pageNumber - 1
+		} else if pageNumber > 0 && pageNumber-1 < downloadQueuePageMax {
+			downloadQueueIndex = pageNumber - 1
 		}
 
 	case "L":
@@ -241,22 +241,6 @@ DownloadQueueMenu:
 
 			downloadQueueIndex++
 		}
-	case "S":
-		fmt.Print("Search current download queue for the following substring (X to clear current filter): ")
-		consoleInput := bufio.NewReader(os.Stdin)
-		inputQuery, _ := consoleInput.ReadString('\n')
-		inputQuery = stripIllegalChars(inputQuery)
-		//do not reset page number when there is no input
-		if len(inputQuery) > 0 {
-			//currentDirFilter = inputQuery
-			//reset download queue page number
-		}
-		//renderServerDownloadList()
-		goto DownloadQueueMenu
-
-	case "X":
-		currentDirFilter = ""
-		//reset download queue page number
 
 	default:
 		userInputVar, err := strconv.Atoi(userChoice)
