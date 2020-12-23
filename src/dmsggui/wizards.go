@@ -37,6 +37,15 @@ DeletePrompt:
 			deleteConfirm, _ := deleteConfirmInput.ReadString('\n')
 			deleteConfirm = strings.ToUpper(stripIllegalChars(deleteConfirm))
 
+			// catch typed out responses
+			if len(deleteConfirm) > 0 {
+				if deleteConfirm == "YES" {
+					deleteConfirm = "Y"
+				} else if deleteConfirm == "NO" {
+					deleteConfirm = "N"
+				}
+			}
+
 			switch deleteConfirm {
 
 			case "Y":
