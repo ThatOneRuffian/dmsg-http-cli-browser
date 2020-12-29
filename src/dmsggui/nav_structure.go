@@ -7,6 +7,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"unicode"
 )
 
 // navPtr points to the current directory object being browsed
@@ -217,6 +218,9 @@ func resetDownLoadPageIndex() {
 func getCurrentDirMetaData() map[int]map[string]bool {
 	var subDirKeys []string
 	var fileNames []string
+	var capFileNames []string
+	var capDirNames []string
+
 	returnValue := make(map[int]map[string]bool)
 	swapDir := make(map[string]bool)
 	lengthOfFilterList := len(currentDirFilter)
@@ -228,16 +232,31 @@ func getCurrentDirMetaData() map[int]map[string]bool {
 
 	for key := range navPtr.subDirs {
 		//append subdir keys
-		subDirKeys = append(subDirKeys, key)
+		if unicode.IsUpper(rune(key[0])) {
+			capDirNames = append(capDirNames, key) //track upper names for proper sorting
+			newKey := strings.ToLower(string(key))
+			subDirKeys = append(subDirKeys, newKey)
+		} else {
+			subDirKeys = append(subDirKeys, key)
+		}
 	}
 
 	for key := range navPtr.files {
 		//append file keys
-		fileNames = append(fileNames, key)
+		if unicode.IsUpper(rune(key[0])) {
+			capFileNames = append(capFileNames, key) //track upper names for proper sorting
+			newKey := strings.ToLower(string(key))
+			fileNames = append(fileNames, newKey)
+		} else {
+			fileNames = append(fileNames, key)
+		}
 	}
 
 	sort.Strings(fileNames)
+	sortAlphaZed(capFileNames, fileNames)
+
 	sort.Strings(subDirKeys)
+	sortAlphaZed(capDirNames, subDirKeys)
 
 	//merge metadata
 	for key, value := range subDirKeys {
@@ -266,6 +285,17 @@ func getCurrentDirMetaData() map[int]map[string]bool {
 		}
 	}
 	return returnValue
+}
+
+func sortAlphaZed(capNames []string, listToSort []string) {
+	for _, nameToCap := range capNames {
+		searchName := strings.ToLower(string(nameToCap))
+		for index, fileName := range listToSort {
+			if strings.Compare(searchName, fileName) == 0 {
+				listToSort[index] = nameToCap
+			}
+		}
+	}
 }
 
 func isMetaDataSorted(directoryMetaData map[int]map[string]bool) bool {
