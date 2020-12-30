@@ -367,6 +367,16 @@ func renderServerDownloadList() map[int]map[string]bool {
 			results += "s"
 		}
 		currentFilterInfo := fmt.Sprintf(" Current Filter (X to clear): \"%s\" | (%d %s) ", currentDirFilter, resultCount, results)
+		baseFilterInfo := fmt.Sprintf(" Current Filter (X to clear): \"\" | (%d %s) ", resultCount, results)
+
+		// check if screen overflow and truncate displayed search string if need be
+		if terminalWidthAvailable-len(currentFilterInfo) < 0 {
+			paddingSize := 2
+			currentDirFilterTmp := currentDirFilter
+			currentDirFilterTmp = truncateStringTo(currentDirFilterTmp, len(baseFilterInfo)+paddingSize, terminalWidthAvailable)
+			currentFilterInfo = fmt.Sprintf(" Current Filter (X to clear): \"%s\" | (%d %s) ", currentDirFilterTmp, resultCount, results)
+			currentFilterInfo = "=" + currentFilterInfo + "="
+		}
 		divider := ""
 		for i := 0; i < (terminalWidthAvailable-len(currentFilterInfo))/2; i++ {
 			divider += "="
