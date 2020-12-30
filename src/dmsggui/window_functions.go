@@ -363,7 +363,7 @@ func renderServerDownloadList() map[int]map[string]bool {
 		if navPtr == &rootDir {
 			resultCount++
 		}
-		if resultCount > 1 {
+		if resultCount != 1 {
 			results += "s"
 		}
 		currentFilterInfo := fmt.Sprintf(" Current Filter (X to clear): \"%s\" | (%d %s) ", currentDirFilter, resultCount, results)
