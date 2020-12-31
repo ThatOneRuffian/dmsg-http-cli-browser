@@ -2,7 +2,6 @@ package dmsggui
 
 import (
 	"fmt"
-	"math"
 	"os"
 	"os/exec"
 	"runtime"
@@ -478,5 +477,10 @@ func drawFileEntry(entryName string, terminalWidthAvailable int, index int) {
 }
 
 func calcNumberOfPages(numberOfLineItems int, LineItemsAvailable int) int {
-	return int(math.Ceil(float64(numberOfLineItems) / float64(LineItemsAvailable)))
+	returnValue := numberOfLineItems / LineItemsAvailable
+	remainder := numberOfLineItems % LineItemsAvailable
+	if remainder > 0 {
+		returnValue++
+	}
+	return returnValue
 }
