@@ -333,7 +333,7 @@ func renderServerDownloadList() map[int]map[string]bool {
 		pageStatus = fmt.Sprintf("page (%d / %d)", downloadBrowserIndex+1, serverPageCountMax)
 		currentFilterStringStatus = divider
 	} else {
-		serverPageCountMax = calcNumberOfPages(len(dirMetaData)+1, terminalHeightAvailable)
+		serverPageCountMax = calcNumberOfPages(len(dirMetaData), terminalHeightAvailable)
 
 		// Avoid 1/0 pages
 		if serverPageCountMax == 0 {
@@ -388,49 +388,27 @@ func renderMetaData(directoryMetaData map[int]map[string]bool, terminalHeightAva
 		fmt.Println("[EMPTY SERVER DMSG-HTTP-SERVER RESPONSE OR NO INDEX FILE FOUND OR NO SEARCH RESULTS IN ROOT DIR]")
 	} else {
 
-		if isMetaDataSorted(directoryMetaData) { // if the meta data is sorted
-			for index := 1 + downloadBrowserIndex*terminalHeightAvailable; index <= len(directoryMetaData); index++ {
+		metaKeys := []int{}
+		for key := range directoryMetaData {
+			metaKeys = append(metaKeys, key)
+		}
+		sort.Ints(metaKeys)
+		for index := range metaKeys {
+			indexOffset := index + downloadBrowserIndex*terminalHeightAvailable
 
-				for entryName := range directoryMetaData[index] {
-					// if entry is a directory
-					if directoryMetaData[index][entryName] {
-						drawDirEntry(entryName, terminalWidthAvailable, index)
-
+			if indexOffset < len(metaKeys) {
+				filteredIndexValue := metaKeys[indexOffset]
+				for fileName, isDir := range directoryMetaData[filteredIndexValue] {
+					if isDir {
+						drawDirEntry(fileName, terminalWidthAvailable, filteredIndexValue)
 					} else {
-						drawFileEntry(entryName, terminalWidthAvailable, index)
+						drawFileEntry(fileName, terminalWidthAvailable, filteredIndexValue)
 					}
-
 					verticalHeightBuffer--
 					if verticalHeightBuffer == 0 {
 						goto END
 					}
-
 				}
-			}
-		} else { // if the meta data is unsorted
-			metaKeys := []int{}
-			for key := range directoryMetaData {
-				metaKeys = append(metaKeys, key)
-			}
-			sort.Ints(metaKeys)
-			for index := range metaKeys {
-				indexOffset := index + downloadBrowserIndex*terminalHeightAvailable
-
-				if indexOffset < len(metaKeys) {
-					filteredIndexValue := metaKeys[indexOffset]
-					for fileName, isDir := range directoryMetaData[filteredIndexValue] {
-						if isDir {
-							drawDirEntry(fileName, terminalWidthAvailable, filteredIndexValue)
-						} else {
-							drawFileEntry(fileName, terminalWidthAvailable, filteredIndexValue)
-						}
-						verticalHeightBuffer--
-						if verticalHeightBuffer == 0 {
-							goto END
-						}
-					}
-				}
-
 			}
 
 		}
