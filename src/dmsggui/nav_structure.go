@@ -297,14 +297,3 @@ func sortAlphaZed(capNames []string, listToSort []string) {
 		}
 	}
 }
-
-func isMetaDataSorted(directoryMetaData map[int]map[string]bool) bool {
-	metaDataLength := len(directoryMetaData)
-	isSorted := true
-	for index := range directoryMetaData {
-		if index > metaDataLength {
-			isSorted = false
-		}
-	}
-	return isSorted
-}
