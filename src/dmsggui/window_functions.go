@@ -333,7 +333,7 @@ func renderServerDownloadList() map[int]map[string]bool {
 		pageStatus = fmt.Sprintf("page (%d / %d)", downloadBrowserIndex+1, serverPageCountMax)
 		currentFilterStringStatus = divider
 	} else {
-		serverPageCountMax = calcNumberOfPages((len(dirMetaData) - 1), terminalHeightAvailable)
+		serverPageCountMax = calcNumberOfPages(len(dirMetaData)+1, terminalHeightAvailable)
 
 		// Avoid 1/0 pages
 		if serverPageCountMax == 0 {
