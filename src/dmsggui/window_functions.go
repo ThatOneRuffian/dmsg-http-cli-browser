@@ -94,6 +94,12 @@ func renderHomeMenuServerList(terminalHeightAvailable int, terminalWidthAvailabl
 	for index := range sortedIndex {
 		indexOffset := index + (terminalHeightAvailable * mainMenuBrowserIndex)
 
+		_, ok := SavedServers[indexOffset]
+
+		if !ok {
+			break
+		}
+
 		serverFriendlyName := SavedServers[indexOffset][0]
 
 		tmpLineEntry := fmt.Sprintf("%d) %s ", indexOffset+1, serverFriendlyName)
