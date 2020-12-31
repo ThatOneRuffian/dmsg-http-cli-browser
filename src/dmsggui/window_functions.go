@@ -2,6 +2,7 @@ package dmsggui
 
 import (
 	"fmt"
+	"math"
 	"os"
 	"os/exec"
 	"runtime"
@@ -45,13 +46,7 @@ func renderServerBrowser() {
 	bufferHeight := 7 //lines consumed by menu elements
 	dirNumberOfItems := len(SavedServers)
 	terminalHeightAvailable, terminalWidthAvailable := getTerminalDims(bufferHeight)
-	mainMenuPageCountMax = dirNumberOfItems / terminalHeightAvailable
-	pageRemainder := dirNumberOfItems % terminalHeightAvailable
-
-	// add additional page to fit remaining line items
-	if pageRemainder > 0 {
-		mainMenuPageCountMax++
-	}
+	mainMenuPageCountMax = calcNumberOfPages(dirNumberOfItems, terminalHeightAvailable)
 
 	// Avoid 1/0 pages
 	if mainMenuPageCountMax == 0 {
@@ -98,7 +93,9 @@ func renderHomeMenuServerList(terminalHeightAvailable int, terminalWidthAvailabl
 
 	for index := range sortedIndex {
 		indexOffset := index + (terminalHeightAvailable * mainMenuBrowserIndex)
+
 		serverFriendlyName := SavedServers[indexOffset][0]
+
 		tmpLineEntry := fmt.Sprintf("%d) %s ", indexOffset+1, serverFriendlyName)
 		horizontalFill := ""
 		for i := terminalWidthAvailable - len(tmpLineEntry); i > 0; i-- {
@@ -149,14 +146,7 @@ func renderDownloadQueuePage() {
 	bufferHeight := 7 //lines consumed by menu elements
 	numberOfQueueItems := len(downloadQueue)
 	terminalHeightAvailable, terminalWidthAvailable := getTerminalDims(bufferHeight)
-
-	downloadQueuePageMax = numberOfQueueItems / terminalHeightAvailable
-	pageRemainder := numberOfQueueItems % terminalHeightAvailable
-
-	// add additional page to fit remaining line items
-	if pageRemainder > 0 {
-		downloadQueuePageMax++
-	}
+	downloadQueuePageMax = calcNumberOfPages(numberOfQueueItems, terminalHeightAvailable)
 
 	// Avoid 1/0 pages
 	if downloadQueuePageMax == 0 {
@@ -257,14 +247,7 @@ func renderServerDownloadList() map[int]map[string]bool {
 	notificationBar := ""
 	dirNumberOfItems := len(navPtr.subDirs) + len(navPtr.files)
 	terminalHeightAvailable, terminalWidthAvailable := getTerminalDims(bufferHeight)
-
-	serverPageCountMax = dirNumberOfItems / terminalHeightAvailable
-	pageRemainder := dirNumberOfItems % terminalHeightAvailable
-
-	// add additional page to fit remaining line items
-	if pageRemainder > 0 {
-		serverPageCountMax++
-	}
+	serverPageCountMax = calcNumberOfPages(dirNumberOfItems, terminalHeightAvailable)
 
 	// Avoid 1/0 pages
 	if serverPageCountMax == 0 {
@@ -344,13 +327,7 @@ func renderServerDownloadList() map[int]map[string]bool {
 		pageStatus = fmt.Sprintf("page (%d / %d)", downloadBrowserIndex+1, serverPageCountMax)
 		currentFilterStringStatus = divider
 	} else {
-		serverPageCountMax = (len(dirMetaData) - 1) / terminalHeightAvailable
-		pageRemainder := dirNumberOfItems % terminalHeightAvailable
-
-		// add additional page to fit remaining line items
-		if pageRemainder > 0 {
-			serverPageCountMax++
-		}
+		serverPageCountMax = calcNumberOfPages((len(dirMetaData) - 1), terminalHeightAvailable)
 
 		// Avoid 1/0 pages
 		if serverPageCountMax == 0 {
@@ -514,4 +491,8 @@ func drawFileEntry(entryName string, terminalWidthAvailable int, index int) {
 	//draw line
 	lineEntry := fmt.Sprintf("%d) %s %s %.2f %s", index, entryName, horizontalFill, fileSize, fileSizeUnits)
 	fmt.Println(lineEntry)
+}
+
+func calcNumberOfPages(numberOfLineItems int, LineItemsAvailable int) int {
+	return int(math.Ceil(float64(numberOfLineItems) / float64(LineItemsAvailable)))
 }
