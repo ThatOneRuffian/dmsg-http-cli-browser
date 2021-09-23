@@ -1,4 +1,4 @@
-# dmsg-http-cli-browser
+# dmsg-http-cli-browser (Deprecated - Not Working - Switch to VPN+sFTP)
 
 
 **What is it?**
